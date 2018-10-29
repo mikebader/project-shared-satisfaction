@@ -1,0 +1,323 @@
+---
+title: "Satisfaction with Multiethnic Neighborhoods"
+author: "Michael Bader"
+date: "10/26/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir = '/Users/bader/work/projects/multiethnic_nhoods/')
+```
+
+```{r libraries, message=FALSE}
+rm(list=ls())
+library(Amelia)
+library(broom)
+library(ggplot2)
+library(huxtable)
+library(mitools)
+library(stargazer)
+library(survey)
+library(tidyverse)
+library(xtable)
+source('analysis/broom_mi.R')
+```
+
+This file documents the analysis for the paper "Satisfaction with Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
+
+## Hypotheses
+The paper examines three hypotheses: 
+
+1. Whites will be less likely to be satisfied living in integrated neighborhoods than other racial groups, and they will be much less likely to be extremely satisfied;
+2. Whites will be less likely to believe that their neighborhoods have improved compared to other racial groups; and
+3. Whites will be less likely to consider moving to other multiracial neighborhoods in the Washington, DC area. 
+
+The paper examines hypotheses among the overall sample as well as by neighborhood type. 
+
+## Variables
+
+### Dependent Variables
+#### Satisfaction Variable
+The current neighborhood satisfaction variable comes from Question 5: "How satisfied are you with your neighborhood as a place to live?" Responses of "Extremely satisfied" and "Very satisfied" are coded as "satisfied"; other responses ("Somewhat satisfied" and "Not at all satisfied" and coded as "unsatisfied"). 
+
+#### Neighborhood Change Variable
+The satisfaction with neighborhood change variable comes from Question 9: "Looking back over the past five years or so, would you say that your neighborhood has:" Response options "Become a much better place to live" and "Become a somewhat better place to live" are coded as "better" and the other three responses are coded as "not better". 
+
+```{r dependent-variables}
+dataDIR <- '~/work/data/dcas/dcas2016/'
+load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
+
+dcas$satisfied <- dcas$nhd.satisfaction %in% c(
+                       'Extremely satisfied','Very satisfied')
+table(dcas[, c('nhd.satisfaction','satisfied')])
+dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')
+table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
+
+dcas$better <- dcas$nhd.change %in% c(
+                       'Much better', 'Somewhat better')
+table(dcas[, c('nhd.change','better')])
+dcas$much_better <- dcas$nhd.change=='Much better'
+table(dcas[, c('nhd.change','much_better')])
+```
+
+### Independent Variable
+The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r sum(is.na(dcas$dem.race))`). 
+
+```{r independent-variables}
+table(dcas$dem.race, useNA='always')
+means <- prop.table(table(dcas$dem.race))
+names <- c("\\emph{Race}&&\\\\Asian or Pacific Islander", "Black", "Latinx", "White")
+dcas$dem.race <- relevel(dcas$dem.race, ref='white')
+```
+
+### Control Variables
+I included control variables in the models. All control variables were centered at their means. 
+
+**Demographic characteristics**
+
+* *Age*, calculated from answer to Question 49: "In what year were you born?"
+
+* *Foreign born*, answer to Question 58: "Where were you born?"
+
+* *Gender*, male or female
+
+* *Kids*, if answer to Question 2--"How many children ages 17 or under live in your household?"--is greater than zero
+
+* *Marital status*, if answer to Question 60--"What is your marital status"-- is "Now married or in a married-style arrangement"
+
+```{r demographic-variables}
+center <- function(x) { ## Function to mean-center but not scale vars
+    scale(as.numeric(dcas[[x]]), scale=FALSE)
+}
+
+dcas$agec <- scale(dcas$dem.age, scale=FALSE)
+dcas$forbornc <- center('dem.forborn')
+dcas$man <- dcas$dem.gender.mf=='Male'
+dcas$manc <- center('man')
+dcas$kids <- as.numeric(as.character(dcas$q2)) > 0
+dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
+dcas$kidsc <- center('kids')
+dcas$married <- grepl("Now married", dcas$dem.marital.stat)
+table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
+dcas$marriedc <- center('married')
+
+## Save values for descriptive table
+means <- c(means, apply(
+    dcas[,c('dem.age', 'dem.forborn', 'man', 'kids', 'married')],2, mean, na.rm=TRUE))
+names <- c(names, 
+           c('\\emph{Demographics}&&\\\\Age', 'Foreign Born', 'Man', 
+             'Children present', 'Married'))
+```
+**Economic Status**
+
+* *Educational attainment*, five categories based on Question 59, "What is the highest level of school you have completed or the highest degree you have received?"
+* *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?"
+
+```{r economic-variables}
+educ_dummies <- paste0('educ',1:5)
+dcas[,educ_dummies] <- lapply(1:5,
+        function(i) {unclass(dcas$dem.educ.attain)==i})
+for(i in 1:5) { ##Check recoding
+    print(table(dcas[,c('dem.educ.attain',paste0('educ',i))]))
+}
+dcas[,c(paste0(educ_dummies,'c'))] <- scale(dcas[,paste0('educ',1:5)], 
+                                          scale=FALSE)
+educ_names <- levels(dcas$dem.educ.attain)
+educ_names[1] <- paste0("\\emph{Educational Attainment}&&\\\\", educ_names[1])
+
+inc_dummies <- paste0('inc',1:4)
+dcas[,inc_dummies] <- lapply(1:4,
+        function(i) {unclass(dcas$dem.income.cat4)==i})
+for(i in 1:4) { ## Check recoding
+    print(table(dcas[,c('dem.income.cat4',paste0('inc',i))]))
+}
+dcas[,c(paste0(inc_dummies, 'c'))] <- scale(dcas[,paste0('inc',1:4)],
+                                         scale=FALSE)
+inc_names <- sanitize(levels(dcas$dem.income.cat4))
+inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
+means <- c(means, apply(dcas[, c(educ_dummies, inc_dummies)], 2, mean, na.rm=TRUE))
+names <- c(names, educ_names, inc_names)
+```
+
+**Neighborhood Experience**
+
+* *Years in neighborhood*, based on Question 4: "How many years have you lived in your current neighborhood?"
+
+* *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?"
+
+```{r nhood-variables}
+dcas$nhdyrs <- as.numeric(as.character(dcas$q4))
+dcas$nhdyrsc <- scale(dcas$nhdyrs, scale=FALSE)
+qplot(dcas$nhdyrsc)
+
+dcas$nhdsize1 <- unclass(dcas$nhd.size)%in%c(1,2)
+dcas$nhdsize2 <- unclass(dcas$nhd.size)%in%c(3,4)
+dcas$nhdsize3 <- unclass(dcas$nhd.size)==5
+for (i in 1:3) { ## Check recoding
+    print(table(dcas[, c('nhd.size',paste0('nhdsize',i))]))
+}
+nhd_dummies <- paste0('nhdsize',1:3)
+dcas[, paste0(nhd_dummies,'c')] <- scale(dcas[, nhd_dummies], scale=FALSE)
+
+dcas$quad <- dcas$neighborhood=='Global Neighborhood'
+table(dcas[,c('neighborhood','quad')])
+dcas$quadc <- center('quad')
+
+means <- c(means, 
+           apply(dcas[, c('nhdyrs', nhd_dummies, 'quadc')], 2, mean, na.rm=TRUE))
+names <- c(names, '\\emph{Neighborhood Characteristics}\\\\Years in Neighborhood', 
+                  '1-9 blocks', '10-50 blocks', '>50 blocks', 
+                  'Quadrivial Neighborhood')
+```
+
+**Political Ideology**
+
+* *Political ideology*, three categories based on Question 65: "In general, would you describe your political views as…"
+
+```{r political-variables}
+# dcas$pol1 <- unclass(dcas$dem.political)%in%c(1,2)
+# dcas$pol2 <- unclass(dcas$dem.political)==3
+# dcas$pol3 <- unclass(dcas$dem.political)%in%c(4,5)
+# for(i in 1:3) { ## Check recoding
+#     print(table(dcas[, c('dem.political', paste0('pol',i))]))
+# }
+# pol_dummies <- paste0('pol',1:3)
+# dcas[, paste0(pol_dummies,'c')] <- scale(dcas[, pol_dummies], scale=FALSE)
+# 
+# means <- c(means, apply(dcas[, pol_dummies], 2, mean, na.rm=TRUE))
+# names <- c(names, 
+#            '\\emph{Political Ideology}\\\\Conservative', 'Moderate', 'Liberal')
+```
+
+## Descriptive Statistics
+Descriptive statistics are calculated unweighted.
+
+```{r descriptives}
+varnames <- c('dem.race',names(means)[5:length(names(means))])
+sigmas <- apply(dcas[, varnames[-1:-4]], 2, sd, na.rm=TRUE)
+continuous_vars <- grep('age|nhdyrs',attr(sigmas, 'names'), perl=TRUE)
+sigmas[-continuous_vars] <- NA
+sigmas <- c(rep(NA,4), sigmas) # Add NAs for race variables
+
+descriptives <- matrix(c(names, round(means, 2), round(sigmas, 2)), ncol=3)
+descriptive_tbl <- as.table(descriptives)
+colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
+print.xtable(xtable(descriptive_tbl,
+                    caption='Estimated means and standard deviations of independent and control variables',
+                    align=c('l','l','p{.5in}','p{.5in}')),
+                booktabs=TRUE,
+                caption.placement='top',
+                include.rownames=FALSE, 
+                file='analysis/tables/descriptives.tex',
+                sanitize.text.function = identity)
+```
+
+## Analysis
+### Multiple Imputation & Survey Weights
+Several variables have a substantial amount of missing data. I used the Amelia package to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design. 
+
+```{r weights}
+vars <- c('satisfied', 'extremely_satisfied', 'better',  'much_better',
+          'dem.race', 'agec', 'forbornc', 'manc', 'kidsc', 'marriedc', 
+          'educ1c', 'educ2c', 'educ3c', 'educ5c', 'inc1c',
+          'inc3c', 'inc4c', 'nhdyrsc', 'nhdsize1c', 'nhdsize3c', 'quadc')
+idvars <- c('studycase','weight', 'sample_strata')
+dcassub <- dcas[, c(vars, idvars)]
+nominals <- vars[!(vars %in% c('agec', 'nhdyrsc'))]
+dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , p2s = F, idvars=c('studycase','weight','sample_strata'))
+dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
+```
+
+
+### Satisfaction
+#### Bivariate Relationship with Race
+Plot the mean value of satisfaction by each racial group using survey weights. 
+
+```{r dependent-descriptives}
+satisfied_means <- MIcombine(with(dcassvy, 
+                        svyby(~satisfied, ~dem.race, svymean)))
+satisfied_means <- summary(satisfied_means)
+satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'), 
+                             satisfied=satisfied_means[5:8,1],
+                             ci=satisfied_means[5:8,2])
+satisfied_plt <- ggplot(satisfied_vals, aes(x=dem.race, y=satisfied)) + 
+    geom_errorbar(aes(ymin=satisfied-ci, ymax=satisfied+ci), width=0.1) +
+    geom_point() +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
+    labs(y='Proportion', x='Race')
+satisfied_plt
+ggsave('analysis/images/satisfied_descriptive.png', plot=satisfied_plt,
+            height=3, width=4, units='in')
+```
+
+**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. 
+
+```{r bivariate-extremely-satisfied}
+extreme_diffs <- MIcombine(with(dcassvy, 
+                    svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
+                    ))
+odds <- 1/exp(coef(extreme_diffs))
+```
+
+The odds of a white resident saying that they are extremely satisfied are 
+`r round(odds[['dem.raceapi']],2)` higher than Asians, 
+`r round(odds[['dem.raceblack']],2)` higher than blacks, and 
+`r round(odds[['dem.racelatino']],2)` than Latinx residents. 
+
+#### Multivariate Analysis
+Runs three models. The first includes only race; the second adds demographic characteristics; and the third adds the resident's experience with the neighborhood. Results are saved to LaTeX table saved at `analysis/tables/satisfaction.tex` (code suppressed). 
+
+```{r satisfied-analysis}
+m1 <- MIcombine(with(dcassvy,
+        svyglm(satisfied ~ dem.race, family=binomial)
+))
+m1 <- with(dcassvy,
+           svyglm(satisfied ~ dem.race, family=quasibinomial))
+summary(m1)
+m2 <- MIcombine(with(dcassvy,
+        svyglm(satisfied ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
+               educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
+            family=quasibinomial)
+))        
+summary(m2)
+m3 <- MIcombine(with(dcassvy,
+        svyglm(satisfied ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
+                 educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
+                 nhdyrsc + nhdsize1c + nhdsize3c + quadc,
+            family=quasibinomial)
+))
+summary(m3)
+```
+
+```{r report-satisfaction-analysis, include=FALSE}
+regression_labels <- c('\\emph{Race}\\\\ Asian','Black','Latinx',
+                       '\\emph{Demographics}\\\\Age','Foreign Born','Man',
+                       'Children Present', 'Married',
+                       sanitize(levels(dcas$dem.educ.attain)[c(1:3,5)]),
+                       sanitize(levels(dcas$dem.income.cat4)[c(1,3:4)]),
+                       paste0('\\emph{Neighborhood Characteristics}\\\\',
+                              'Years in neighborhood'),
+                       '1-9 blocks', '$>$50 blocks',
+                       'Quadrivial Neighborhood'
+                       )
+
+## Save stargazer output to file following advice here: 
+## https://stackoverflow.com/a/44330389
+satisfaction_results <- stargazer(m1, m2, m3,
+          title=paste("Estimated coefficients for logistic regression of",
+                      "individual characteristics on being satisfied with",
+                      "own neighborhood"),
+          covariate.labels=regression_labels,
+          dep.var.caption='', dep.var.labels.include=FALSE,
+          no.space=TRUE, align=TRUE, font.size='small',
+          label='tab:satisfaction')
+cat(satisfaction_results, sep="\n", file='analysis/tables/satisfaction.tex')
+```
+
+##Notes
+Consider only using educational attainment rather than both education and income. The two are highly correlated and would avoid having to impute. 
+
+```{r}
+ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
+```
