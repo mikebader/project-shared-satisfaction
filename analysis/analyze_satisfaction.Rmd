@@ -20,7 +20,7 @@ library(survey)
 library(tidyverse)
 library(xtable)
 source('broom_mi.R') ## Saves multiple imputation 
-                              ## objects for use with tidyverse
+                     ## objects for use with tidyverse
 ```
 
 This file documents the analysis for the paper "Satisfaction with Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
@@ -296,7 +296,7 @@ regression_labels <- c('Asian','Black','Latinx',
                        '1-9 blocks', '$>$50 blocks',
                        'Quadrivial Neighborhood'
                        )
-sat_tbl <- huxreg(m1_sat, m2_sat, m3_sat, statistics=c(), align=".") 
+sat_tbl <- huxreg(m1_sat, m2_sat, m3_sat, statistics=c(), align=".", borders=0) 
 intercept <- sat_tbl[2:3,]
 sat_tbl[seq(4,(length(regression_labels)+1)*2,2),1] <- regression_labels
 sat_tbl <- sat_tbl %>%
@@ -312,10 +312,10 @@ sat_tbl <- sat_tbl[c(-2,-3),] %>% add_rows(intercept, after=43) %>%
     set_bottom_border(c(1,45),everywhere,1) %>%
     set_italic(c(2,9), everywhere, TRUE) %>%
     set_caption('Estimated coefficients predicting neighborhood satisfaction') %>%
-    set_all_padding(0)
+    set_all_padding(0) 
 font_size(sat_tbl) <- 9.5
 sat_tbl
-cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
+cat(to_latex(sat_tbl[c(1:45,50),]), file='tables/satisfaction.tex')
 ```
 
 ### Neighborhood Improvement
@@ -379,19 +379,48 @@ Whites are
 m1_bet <- MIcombine(with(dcassvy,
         svyglm(better ~ dem.race, family=binomial)
 ))
+summary(m1_bet)
 m2_bet <- MIcombine(with(dcassvy,
         svyglm(better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
                educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
             family=binomial)
-))        
+))
+summary(m2_bet)
 m3_bet <- MIcombine(with(dcassvy,
         svyglm(better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
                  educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
                  nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
             family=binomial)
 ))
-huxreg(m1_bet, m2_bet, m3_bet, statistics=c())
+summary(m3_bet)
 
+regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
+bet_tbl <- huxreg(m1_bet, m2_bet, m3_bet, statistics=c(), borders=0)
+intercept <- bet_tbl[2:3,]
+bet_tbl[seq(4,(length(regression_labels_bet)+1)*2,2),1] <- regression_labels_bet
+bet_tbl <- bet_tbl %>%
+    insert_row(c('Race','','',''),
+               after=(which(bet_tbl$names=="(Intercept)")+1)) %>%
+    insert_row(c('Demographics','','',''),
+               after=(which(bet_tbl$names=="Latinx")+2)) %>%
+    insert_row(c('Education','','',''),
+               after=(which(bet_tbl$names=="Married")+3)) %>%
+    insert_row(c('Neighborhood Sentiment','','',''), 
+               after=(which(bet_tbl$names=="$150,000+")+4))
+bet_tbl <- bet_tbl[c(-2,-3),] %>% 
+    add_rows(intercept, 
+        after=(which(bet_tbl$names=='Extremely satisfied')+1)) %>%
+    set_bottom_border(c(1,45),everywhere,1) %>%
+    set_italic(c(2,9), everywhere, TRUE) %>%
+    set_caption('Estimated coefficients predicting neighborhood improvement') %>%
+    set_all_padding(0)
+font_size(bet_tbl) <- 9.5
+cat(to_latex(bet_tbl[c(1:45, 52),]), file='tables/improvement.tex')
+```
+
+
+
+```{r much-better-analysis}
 ## Outcome: Much Better
 m1_mbet <- MIcombine(with(dcassvy,
         svyglm(much_better ~ dem.race, family=binomial)
@@ -408,6 +437,10 @@ m3_mbet <- MIcombine(with(dcassvy,
             family=quasibinomial)
 ))
 huxreg(m1_mbet, m2_mbet, m3_mbet, statistics = c())
+
+
+
+
 ```
 
 ##Notes
