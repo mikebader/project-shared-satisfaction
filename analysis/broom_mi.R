@@ -29,6 +29,7 @@ nobs.MIresult <- function() {
     NULL
 }
 
+print('source(broom_mi.R) run successfully')
 # tidy(m1, conf_int=TRUE)
 # glance(m1)
 # huxreg(m1, statistics=c(''))

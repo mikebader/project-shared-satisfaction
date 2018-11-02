@@ -12,7 +12,7 @@
 
 
 
-\title{Multiethnic Neighborhoods}
+\title{Satisfaction and Stability in Multiethnic Neighborhoods}
 \author{Michael D.M.~Bader}
 
 \begin{document}
@@ -80,34 +80,91 @@ To measure whether a respondent perceived the neighborhood improvement, the ques
 
 
 \subsection{Independent and Control Variables}
+\paragraph{Race and ethnicity.} To test racial differences in neighborhood satisfaction, perception of improvement, and residential preferences, I used self-identified race and ethnicity as the independent variable for all analyses. Respondents were asked about Hispanic ethnicity and race separately, and respondents were allowed to indicate more than one race. The variables was recoded so that groups would be mutually exclusive. I coded as Latino and respondent who indicated \emph{Latino} ethnicity. I classified as \emph{black} anyone who responded that they were black and whom did not indicate Latino ethnicity; as \emph{Asian} anyone who responded that they were Asian or Asian-American or Pacific Islander or Native Hawaiian, and whom did not indicate Latino ethnicity; and as \emph{white} anyone who responded that they were white along and not Latino. We removed anyone else classified as ``other'' in our analysis, leaving 1,162 respondents. 
+
+\paragraph{Control variables.} I included several control variables to control for familial and socioeconomic differences across racial groups. Demographic controls included \emph{gender} (reference=``woman''), marital status (reference=``married or in a marriage-like arrangement''), and whether the household had any children under the age of 18 living at the household. We also controlled for the respondent's age  and whether they were born outside of the United States. 
+
+Socioeconomic controls included educational attainment and income. We asked respondents to report the highest degree that they had earned and classified responses into five categories: less than high school, a high school degree or GED, some college or a two-year degree, a bachelor's degree, and a professional degree. I made the modal category, those who earned a bachelor's degree, the reference category (to demonstrate the high levels of educational attainment in the D.C.\ area, 29~percent of respondents reported a professional degree). Income was classified into four categories: less than \$40,000, \$40,000 to less than \$75,000, \$75,000 to less than \$150,000, and \$150,000 or more. I set \$75,000 to less than \$150,000, the modal category, as the reference. 
+
+Finally, I included three variables to control for the respondent's experience with the neighborhood that could influence their perceptions of the neighborhood. I controlled for the number of years a respondent lived in the neighborhood. I also included a control for the respondents' reported size of their neighborhood. I classified responses into three categories: one for those who said their neighborhood was one to nine blocks, one for those that said their neighborhood was ten to fifty blocks, and one for those that said their neighborhood was larger than fifty blocks. Third, I included a control to measure whether the respondent lived in a quadrivial neighborhood (compared to a disproportionately Latino neighborhood). Table~\ref{tab:descriptives} reports the un-weighted descriptive statistics of the independent and control variables. 
+
+\abouthere{Table}{tab:descriptives}
 
 \subsection{Method}
+I used logistic regressions to analyze each of the outcomes. Because the data were collected using a complex survey sample design, survey weights were applied to all analyses to reduce bias in the estimates. In addition, there were large proportions of missing data on several variables. I used multiple imputation to account for missingness. All reported coefficients, therefore, account for both survey design and missing data. I used R version 3.5.0 with the \texttt{survey} to account for sample design and \texttt{Amelia} library to account for missing data \needcite. All code for this analysis is available through a replication package available at \TK.
+
+I centered all covariates except for race around their means. Centering facilitated the interpretation of race in the model because the base (logged) odds represented the mean white respondent in the survey.As a result the race coefficients were compared to one another at the conditional grand mean of survey. 
 
 \section{Results}
+\subsection{Neighborhood Satisfaction}
+Overall, 68~percent of residents were satisfied with their neighborhoods: 70~percent in quadrivial neighborhoods and 66~percent in disproportionately Latino neighborhoods. Figure~\ref{fig:satisfaction} show that neighborhood evaluations were remarkably similar across the four racial groups: fewer than two percentage points separate the group with the highest reported satisfaction (Latinos) from the group with the lowest (Asians). 
+
+\abouthere{Figure}{fig:satisfaction}
+
+Table~\ref{tab:satisfaction} reports estimates of a series of models predicting neighborhood satisfaction. The baseline model includes only race and replicates the results of Figure~\ref{fig:satisfaction}. The coefficients changed very little after adding the demographic and socioeconomic variables to the model, which can be seen in the second column. Adding controls measuring residents' neighborhood experience, reported in column three, also did not affect the consistency in satisfaction across neighborhoods. Among the controls, only the resident's perception of the size of their neighborhood was associated with satisfaction. Residents who perceived their neighborhood to consist of one to nine blocks were half as likely to be satisfied with their neighborhood compared to residents whose perceived neighborhoods were 10 to 50 blocks. None of the demographic and socioeconomic controls were associated with neighborhood satisfaction at a level statistically distinguishable from having no influence. 
+
+\abouthere{Table}{tab:satisfaction}
+
+I also examined whether the intensity of satisfaction varied by racial group. To do this, I conducted the same analysis but changed the outcome to be include as satisfied only respondents who were \emph{extremely satisfied} in their neighborhood. Twenty-eight percent of whites reported being extremely satisfied with their neighborhood, a value one-and-a-half to almost two times as high as other racial groups, though the differences could not be statistically distinguished from the null (results available in supplement). 
+
+\subsection{Neighborhood Improvement}
+The first analysis revealed that residents of all racial groups experience satisfaction in their neighborhoods at similar rates to one another. The small distinction that existed showed whites being more extremely satisfied compared to people of color. The next analysis examined whether racial groups perceived changes in the neighborhood to be in the same direction. 
+
+The left panel of Figure~\ref{fig:improvement} shows the percentage of respondents who identified as each racial group who thought that their neighborhoods had gotten somewhat or much better. Whites and blacks were slightly less likely than Asians and Latinos to say that neighborhoods have improved, but the magnitudes of differences are very small. Table~\ref{tab:improvement} confirms the lack of differences between racial groups in perceiving neighborhood improvement, even after adding controls for demographic, socioeconomic, and neighborhood experience variables. Among the control variables, men were more likely than women to have perceived improvement, while residents who attained a professional degree, those who viewed a small area as their neighborhood, and those who lived in the neighborhood longer all were less likely to have perceived neighborhood improvement. 
+
+\abouthere{Table}{tab:improvement}
+
+Although perceptions of improvement did not vary by race, the intensity with which residents perceived improvement did. The right side of Figure~\ref{fig:improvement} shows that whites reported a lower intensity of improvements compared to people of color. that whites were far less likely to indicate that neighborhoods have gotten ``much better.'' Only eight percent of white respondents perceived their neighborhoods to have gotten much better, compared to seventeen percent of Asians and blacks and nineteen percent of Latinos. 
+
+\abouthere{Figure}{fig:improvement}
+
+Table~\ref{tab:muchbetter} shows that the racial differences could not be explained by demographic, socioeconomic, or neighborhood experience factors. Controlling for just demographic and socioeconomic characteristics reduced the differences of Asians and Latinos from whites, though the former was a small change in magnitude. All three coefficients for racial groups become substantially larger after adding in controls for neighborhood experience. Asians, Latinos, and Blacks were each approximately three times more likely to report substantial improvement compared to whites. 
+
+\abouthere{Table}{tab:muchbetter}
+
+It appears that some of the intensity might resulted from whites being more likely to be extremely satisfied in their neighborhoods. As I described above, whites were more likely to say they had extreme satisfaction in their neighborhood than other groups. It's possible that white respondents would report less improvement because they already perceived the neighborhood as being an extremely satisfying place to live. The model shows the inverse: improvement was more strongly associated with extreme satisfaction and racial disparities increased after controlling for the intensity of satisfaction. 
+
+\subsection{Preferences for Multiethnic Neighborhoods}
 
 
+\clearpage
+\section{Figures}
+%%%%% SATISFACTION %%%%%
+\begin{figure}[ht!]
+\centering
+\includegraphics[scale=.25]{../analysis/images/satisfied_descriptive.png}
+\caption{Proportion of respondents reporting that they are extremely or very satisfied with their neighborhood, by race}
+\label{fig:satisfaction}
+\end{figure}
+
+%%%%% IMPROVEMENT %%%%%
+\begin{sidewaysfigure}
+\begin{subfigure}{.49\textwidth}
+\includegraphics[scale=.25]{../analysis/images/better_descriptive.png}
+\caption{}
+\label{subfig:better}
+\end{subfigure}\quad\begin{subfigure}{.49\textwidth}
+\includegraphics[scale=.25]{../analysis/images/much_better_descriptive.png}
+\caption{}
+\label{subfig:muchbetter}
+\end{subfigure}
+\caption{Proportion of residents of multiethnic neighborhoods that reported that their neighborhoods (\subref{subfig:improvement}) have gotten somewhat or much better and (\subref{subfig:muchbetter}) have gotten much better.}
+\label{fig:improvement}
+\end{sidewaysfigure}
 
 
-
-
-
-
-
-
+\clearpage
 \section{Tables}
 \input{../analysis/tables/descriptives.tex}
 \input{../analysis/tables/satisfaction.tex}
 \input{../analysis/tables/improvement.tex}
+\input{../analysis/tables/muchbetter.tex}
+
+\clearpage
+\section{Supplement}
 \input{../analysis/tables/consider_entropy.tex}
 \input{../analysis/tables/never_entropy.tex}
 
 
-\section{Figures}
-\begin{figure}
-\centering
-\includegraphics[scale=.35]{../analysis/images/satisfied_descriptive.png}
-\caption{Proportion of respondents reporting that they are extremely or very satisfied with their neighborhood, by race}
-\label{fig:satisfied}
-\end{figure}
 
 \end{document}

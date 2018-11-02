@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r libraries, message=FALSE}
 rm(list=ls())
+print(R.version.string)
 library(Amelia)
 library(broom)
 library(ggplot2)
@@ -46,6 +47,8 @@ The satisfaction with neighborhood change variable comes from Question 9: "Looki
 ```{r dependent-variables}
 dataDIR <- '~/work/data/dcas/dcas2016/'
 load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
+
+sum(!is.na(dcas$dem.race))
 
 dcas$satisfied <- dcas$nhd.satisfaction %in% c(
                        'Extremely satisfied','Very satisfied')
@@ -165,7 +168,7 @@ dcas$quadc <- center('quad')
 
 means <- c(means, 
            apply(dcas[, c('nhdyrs', nhd_dummies, 'quad')], 2, mean, na.rm=TRUE))
-names <- c(names, '\\emph{Neighborhood Characteristics}\\\\Years in Neighborhood', 
+names <- c(names, '\\emph{Neighborhood Experience}\\\\Years in Neighborhood', 
                   '1-9 blocks', '10-50 blocks', '>50 blocks', 
                   'Quadrivial Neighborhood')
 ```
@@ -203,9 +206,9 @@ descriptives <- matrix(c(names, round(means, 2), round(sigmas, 2)), ncol=3)
 descriptive_tbl <- as.table(descriptives)
 colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
 print.xtable(xtable(descriptive_tbl,
-                    caption='Estimated means and standard deviations of independent and control variables',
-                    align=c('l','l','p{.5in}','p{.5in}')),
-                booktabs=TRUE,
+                    caption='Un-weighted means and standard deviations of independent and control variables',
+                    align=c('l','l','p{.5in}','p{.5in}'), label='tab:descriptives'),
+                booktabs=TRUE, 
                 caption.placement='top',
                 include.rownames=FALSE, 
                 file='tables/descriptives.tex',
@@ -234,12 +237,24 @@ dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputation
 Plot the mean value of satisfaction by each racial group using survey weights. 
 
 ```{r dependent-descriptives}
+mean_satisfied <- MIcombine(with(dcassvy,
+                        svymean(~satisfied)))
+mean_satisfied_nhoodtype <- MIcombine(with(dcassvy,
+                        svyby(~satisfied, ~quadc, svymean)))
+satisfied_nhoodtype <- MIcombine(with(dcassvy, 
+                        svyglm(satisfied ~ quadc, family=quasibinomial)))
+summary(satisfied_nhoodtype)
+```
+Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the sample were either very or extremely satisfied with their neighborhoods; `r round(coef(mean_satisfied_nhoodtype)[4], 2)*100` of residents in quadrivial neighborhoods and `r round(coef(mean_satisfied_nhoodtype)[3], 2)*100` of disproportionately Latino neighborhoods.
+
+```{r satisfaction-bivariate}
 satisfied_means <- MIcombine(with(dcassvy, 
                         svyby(~satisfied, ~dem.race, svymean)))
-satisfied_means <- summary(satisfied_means)
+satisfied_means <- satisfied_means
+satisfied_ci <- 1.96*sqrt(diag(satisfied_means$variance))
 satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'), 
-                             satisfied=satisfied_means[5:8,1],
-                             ci=satisfied_means[5:8,2])
+                             satisfied=coef(satisfied_means)[5:8],
+                             ci=satisfied_ci[5:8])
 satisfied_plt <- ggplot(satisfied_vals, aes(x=dem.race, y=satisfied)) + 
     geom_errorbar(aes(ymin=satisfied-ci, ymax=satisfied+ci), width=0.1) +
     geom_point() +
@@ -250,27 +265,19 @@ ggsave('images/satisfied_descriptive.png', plot=satisfied_plt,
             height=3, width=4, units='in')
 ```
 
-**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. 
+ 
 
-```{r bivariate-extremely-satisfied}
-extreme_diffs <- MIcombine(with(dcassvy, 
-                    svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
-                    ))
-odds <- 1/exp(coef(extreme_diffs))
-```
-
-The odds of a white resident saying that they are extremely satisfied are 
-`r round(odds[['dem.raceapi']],2)` higher than Asians, 
-`r round(odds[['dem.raceblack']],2)` higher than blacks, and 
-`r round(odds[['dem.racelatino']],2)` than Latinx residents. 
 
 #### Multivariate Analysis
-Runs three models. The first includes only race; the second adds demographic characteristics; and the third adds the resident's experience with the neighborhood. Results are saved to LaTeX table saved at `analysis/tables/satisfaction.tex` (code suppressed). 
+Run three models. The first includes only race; the second adds demographic characteristics; and the third adds the resident's experience with the neighborhood. Results are saved to LaTeX table saved at `analysis/tables/satisfaction.tex` (code suppressed). 
+
+**Satisfied.**
 
 ```{r satisfied-analysis, warning=FALSE}
 m1_sat <- MIcombine(with(dcassvy,
         svyglm(satisfied ~ dem.race, family=binomial)
 ))
+summary(m1_sat)
 m2_sat <- MIcombine(with(dcassvy,
         svyglm(satisfied ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
                educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
@@ -304,18 +311,59 @@ sat_tbl <- sat_tbl %>%
                after=(which(sat_tbl$names=="(Intercept)")+1)) %>%
     insert_row(c('Demographics','','',''),
                after=(which(sat_tbl$names=="Latinx")+2)) %>%
-    insert_row(c('Education','','',''),
+    insert_row(c('Socioeconomic','','',''),
                after=(which(sat_tbl$names=="Married")+3)) %>%
-    insert_row(c('Neighborhood Sentiment','','',''), after=38)
+    insert_row(c('Neighborhood experience','','',''), after=38)
 
 sat_tbl <- sat_tbl[c(-2,-3),] %>% add_rows(intercept, after=43) %>%
     set_bottom_border(c(1,45),everywhere,1) %>%
     set_italic(c(2,9), everywhere, TRUE) %>%
     set_caption('Estimated coefficients predicting neighborhood satisfaction') %>%
-    set_all_padding(0) 
+    set_all_padding(0) %>%
+    set_label('tab:satisfaction')
 font_size(sat_tbl) <- 9.5
 sat_tbl
 cat(to_latex(sat_tbl[c(1:45,50),]), file='tables/satisfaction.tex')
+```
+
+Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks. 
+
+**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. 
+
+```{r bivariate-extremely-satisfied}
+extreme_diffs <- MIcombine(with(dcassvy, 
+                    svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
+                    ))
+extreme_prob_white <- exp(coef(extreme_diffs)[1])/(1+exp(coef(extreme_diffs)[1]))
+extreme_odds <- exp(coef(extreme_diffs))
+
+```
+
+`r round(extreme_prob_white, 2)*100` percent of white residents reported being extremely satisfied with their neighborhoods. That value was 
+`r round(1/extreme_odds[['dem.raceapi']],2)` times higher than Asians, 
+`r round(1/extreme_odds[['dem.raceblack']],2)` times higher than blacks, and 
+`r round(1/extreme_odds[['dem.racelatino']],2)` times than Latinx residents. 
+
+```{r extremely-satisfied-analysis}
+m1_esat <- MIcombine(with(dcassvy,
+        svyglm(extremely_satisfied ~ dem.race, family=binomial)
+))
+summary(m1_esat)
+m2_esat <- MIcombine(with(dcassvy,
+        svyglm(extremely_satisfied ~ dem.race + agec + forbornc + manc + 
+                kidsc + marriedc +
+               educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
+            family=quasibinomial)
+))        
+summary(m2_esat)
+m3_esat <- MIcombine(with(dcassvy,
+        svyglm(extremely_satisfied ~ dem.race + agec + forbornc + manc + 
+                kidsc + marriedc +
+                educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
+                nhdyrsc + nhdsize1c + nhdsize3c + quadc,
+            family=quasibinomial)
+))
+summary(m3_esat)
 ```
 
 ### Neighborhood Improvement
@@ -335,45 +383,13 @@ better_plt <- ggplot(better_vals, aes(x=dem.race, y=better)) +
     scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
     labs(y='Proportion', x='Race')
 better_plt
-ggsave('images/better_descriptive.png', plot=satisfied_plt,
+ggsave('images/better_descriptive.png', plot=better_plt,
             height=3, width=4, units='in')
 better_model <- MIcombine(with(dcassvy, 
                     svyglm(better ~ dem.race, family=quasibinomial)))
 ```
 
 The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable. 
-
-But, there is a difference for those who say that the neighborhood has gotten "much better" over the past five years. Whites, on this measure, were much less likely to indicate that their neighborhoods have gotten much better. I examine whether that might be due to the fact that whites are more likely to say that they are "extremely satisfied" in their neighborhoods relative to other racial groups. 
-
-```{r much-better-descriptives}
-much_better_means <- MIcombine(with(dcassvy,
-                        svyby(~much_better, ~dem.race, svymean)))
-much_better_means <- summary(much_better_means)
-much_better_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'), 
-                               much_better=much_better_means[5:8,1], 
-                               ci=much_better_means[5:8,2])
-much_better_plt <- ggplot(much_better_vals, aes(x=dem.race, y=much_better)) +
-    geom_errorbar(aes(ymin=much_better-ci, ymax=much_better+ci), width=0.1) +
-    geom_point() +
-    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
-    labs(y='Proportion', x='Race')
-much_better_plt
-
-much_better_model <- MIcombine(with(dcassvy, 
-                        svyglm(much_better ~ dem.race, family=quasibinomial)))
-much_better_satis_model <- MIcombine(with(dcassvy, 
-                        svyglm(much_better ~ dem.race + extremely_satisfied,
-                               family=quasibinomial)))
-betas <- much_better_satis_model$coefficients
-odds <- exp(betas)
-odds
-list(coef(much_better_model), coef(much_better_satis_model))
-```
-
-Whites are 
-`r round(odds[2],2)` times less likely than Asians, 
-`r round(odds[3],2)` times less likely than blacks, and
-`r round(odds[4],2)` times less likely than Latinxs to report that their neighborhoods have gotten "much better". Adding whether respondents were extremely satisfied with their neighborhood actually *exacerbated* racial differences in how likely respondents were to say that their neighborhood had gotten much better.
 
 ```{r improvement-analysis, warning=FALSE}
 m1_bet <- MIcombine(with(dcassvy,
@@ -393,7 +409,9 @@ m3_bet <- MIcombine(with(dcassvy,
             family=binomial)
 ))
 summary(m3_bet)
+```
 
+```{r report-better-analysis, results='hide'}
 regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
 bet_tbl <- huxreg(m1_bet, m2_bet, m3_bet, statistics=c(), borders=0)
 intercept <- bet_tbl[2:3,]
@@ -403,9 +421,9 @@ bet_tbl <- bet_tbl %>%
                after=(which(bet_tbl$names=="(Intercept)")+1)) %>%
     insert_row(c('Demographics','','',''),
                after=(which(bet_tbl$names=="Latinx")+2)) %>%
-    insert_row(c('Education','','',''),
+    insert_row(c('Socioeconomic','','',''),
                after=(which(bet_tbl$names=="Married")+3)) %>%
-    insert_row(c('Neighborhood Sentiment','','',''), 
+    insert_row(c('Neighborhood experience','','',''), 
                after=(which(bet_tbl$names=="$150,000+")+4))
 bet_tbl <- bet_tbl[c(-2,-3),] %>% 
     add_rows(intercept, 
@@ -418,6 +436,41 @@ font_size(bet_tbl) <- 9.5
 cat(to_latex(bet_tbl[c(1:45, 52),]), file='tables/improvement.tex')
 ```
 
+
+**Extreme Improvement.**
+But, there is a difference for those who say that the neighborhood has gotten "much better" over the past five years. Whites, on this measure, were much less likely to indicate that their neighborhoods have gotten much better. I examine whether that might be due to the fact that whites are more likely to say that they are "extremely satisfied" in their neighborhoods relative to other racial groups. 
+
+```{r much-better-descriptives}
+much_better_means <- MIcombine(with(dcassvy,
+                        svyby(~much_better, ~dem.race, svymean)))
+much_better_means <- summary(much_better_means)
+much_better_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'), 
+                               much_better=much_better_means[5:8,1], 
+                               ci=much_better_means[5:8,2])
+much_better_plt <- ggplot(much_better_vals, aes(x=dem.race, y=much_better)) +
+    geom_errorbar(aes(ymin=much_better-ci, ymax=much_better+ci), width=0.1) +
+    geom_point() +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
+    labs(y='Proportion', x='Race')
+much_better_plt
+ggsave('images/much_better_descriptive.png', plot=much_better_plt,
+    height=3, width=4, units='in')
+       
+much_better_model <- MIcombine(with(dcassvy, 
+                        svyglm(much_better ~ dem.race, family=quasibinomial)))
+much_better_satis_model <- MIcombine(with(dcassvy, 
+                        svyglm(much_better ~ dem.race + extremely_satisfied,
+                               family=quasibinomial)))
+betas <- much_better_satis_model$coefficients
+odds <- exp(betas)
+odds
+list(coef(much_better_model), coef(much_better_satis_model))
+```
+
+Whites are 
+`r round(odds[2],2)` times less likely than Asians, 
+`r round(odds[3],2)` times less likely than blacks, and
+`r round(odds[4],2)` times less likely than Latinxs to report that their neighborhoods have gotten "much better". Adding whether respondents were extremely satisfied with their neighborhood actually *exacerbated* racial differences in how likely respondents were to say that their neighborhood had gotten much better.
 
 
 ```{r much-better-analysis}
@@ -436,13 +489,14 @@ m3_mbet <- MIcombine(with(dcassvy,
                  nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
             family=quasibinomial)
 ))
-huxreg(m1_mbet, m2_mbet, m3_mbet, statistics = c())
+mbet_tbl <- huxreg(m1_mbet, m2_mbet, m3_mbet, statistics = c())
+mbet_odds <- exp(coef(m3_mbet)[2:4])
+```
 
-
+```{r report-much-better-results}
 
 
 ```
-
 ##Notes
 Consider only using educational attainment rather than both education and income. The two are highly correlated and would avoid having to impute. 
 
