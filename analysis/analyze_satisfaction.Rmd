@@ -22,6 +22,7 @@ library(tidyverse)
 library(xtable)
 source('broom_mi.R') ## Saves multiple imputation 
                      ## objects for use with tidyverse
+source('report_models.R')
 ```
 
 This file documents the analysis for the paper "Satisfaction with Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
@@ -63,8 +64,20 @@ dcas$much_better <- dcas$nhd.change=='Much better'
 table(dcas[, c('nhd.change','much_better')])
 ```
 
+### Preferences for Other Communities
+```{r rename-commvars}
+## Change names to have search dimension first and commname second
+## Help on regex part: https://stackoverflow.com/questions/952275/regex-group-capture-in-r-with-multiple-capture-groups
+search.vars <- grep('nhd\\.srch.+\\.', names(dcas), value=TRUE)
+new_search_matches <- regmatches(
+    search.vars, regexec('nhd\\.srch\\.(.+)\\.(.+)$', search.vars))
+new_search_names <- sapply(new_search_matches, function(x){
+    paste(rev(x[2:3]), collapse='_')})
+names(dcas)[names(dcas)%in%search.vars] <- new_search_names
+N <- sum(is.na(dcas$dem.race))
+```
 ### Independent Variable
-The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r sum(is.na(dcas$dem.race))`). 
+The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r N`). 
 
 ```{r independent-variables}
 table(dcas$dem.race, useNA='always')
@@ -223,9 +236,10 @@ Several variables have a substantial amount of missing data. I used the Amelia p
 vars <- c('satisfied', 'extremely_satisfied', 'better',  'much_better',
           'dem.race', 'agec', 'forbornc', 'manc', 'kidsc', 'marriedc', 
           'educ1c', 'educ2c', 'educ3c', 'educ5c', 'inc1c',
-          'inc3c', 'inc4c', 'nhdyrsc', 'nhdsize1c', 'nhdsize3c', 'quadc')
+          'inc3c', 'inc4c', 'nhdyrsc', 'nhdsize1c', 'nhdsize3c', 'quadc',
+          unlist(new_search_names))
 idvars <- c('studycase','weight', 'sample_strata')
-dcassub <- dcas[, c(vars, idvars)]
+dcassub <- dcas[!is.na(dcas$dem.race), c(vars, idvars)]
 nominals <- vars[!(vars %in% c('agec', 'nhdyrsc'))]
 dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , p2s = F, idvars=c('studycase','weight','sample_strata'))
 dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
@@ -250,7 +264,6 @@ Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the s
 ```{r satisfaction-bivariate}
 satisfied_means <- MIcombine(with(dcassvy, 
                         svyby(~satisfied, ~dem.race, svymean)))
-satisfied_means <- satisfied_means
 satisfied_ci <- 1.96*sqrt(diag(satisfied_means$variance))
 satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'), 
                              satisfied=coef(satisfied_means)[5:8],
@@ -274,21 +287,20 @@ Run three models. The first includes only race; the second adds demographic char
 **Satisfied.**
 
 ```{r satisfied-analysis, warning=FALSE}
+m1 <- 'dem.race'
+m2 <- paste0(m1, '+ agec + forbornc + manc + kidsc + marriedc + ',
+             'educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c')
+m3 <- paste0(m2, '+ nhdyrsc + nhdsize1c + nhdsize3c + quadc')
 m1_sat <- MIcombine(with(dcassvy,
-        svyglm(satisfied ~ dem.race, family=binomial)
+        svyglm(as.formula(paste('satisfied ~',m1)), family=binomial)
 ))
 summary(m1_sat)
 m2_sat <- MIcombine(with(dcassvy,
-        svyglm(satisfied ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-               educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
-            family=quasibinomial)
+        svyglm(as.formula(paste('satisfied ~', m2)), family=quasibinomial)
 ))        
 summary(m2_sat)
 m3_sat <- MIcombine(with(dcassvy,
-        svyglm(satisfied ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-                 educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
-                 nhdyrsc + nhdsize1c + nhdsize3c + quadc,
-            family=quasibinomial)
+        svyglm(as.formula(paste('satisfied ~', m3)), family=quasibinomial)
 ))
 summary(m3_sat)
 ```
@@ -303,27 +315,12 @@ regression_labels <- c('Asian','Black','Latinx',
                        '1-9 blocks', '$>$50 blocks',
                        'Quadrivial Neighborhood'
                        )
-sat_tbl <- huxreg(m1_sat, m2_sat, m3_sat, statistics=c(), align=".", borders=0) 
-intercept <- sat_tbl[2:3,]
-sat_tbl[seq(4,(length(regression_labels)+1)*2,2),1] <- regression_labels
-sat_tbl <- sat_tbl %>%
-    insert_row(c('Race','','',''),
-               after=(which(sat_tbl$names=="(Intercept)")+1)) %>%
-    insert_row(c('Demographics','','',''),
-               after=(which(sat_tbl$names=="Latinx")+2)) %>%
-    insert_row(c('Socioeconomic','','',''),
-               after=(which(sat_tbl$names=="Married")+3)) %>%
-    insert_row(c('Neighborhood experience','','',''), after=38)
-
-sat_tbl <- sat_tbl[c(-2,-3),] %>% add_rows(intercept, after=43) %>%
-    set_bottom_border(c(1,45),everywhere,1) %>%
-    set_italic(c(2,9), everywhere, TRUE) %>%
-    set_caption('Estimated coefficients predicting neighborhood satisfaction') %>%
-    set_all_padding(0) %>%
-    set_label('tab:satisfaction')
-font_size(sat_tbl) <- 9.5
+sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
+                caption=paste0('Estimated coefficients predicting ',
+                               ' neighborhood satisfaction'),
+                label='tab:satisfaction')
 sat_tbl
-cat(to_latex(sat_tbl[c(1:45,50),]), file='tables/satisfaction.tex')
+cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
 
 Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks. 
@@ -331,6 +328,9 @@ Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(
 **Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. 
 
 ```{r bivariate-extremely-satisfied}
+extreme_means <- MIcombine(with(dcassvy,
+                    svyby(~extremely_satisfied, ~dem.race, svymean)
+                    ))
 extreme_diffs <- MIcombine(with(dcassvy, 
                     svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
                     ))
@@ -346,21 +346,16 @@ extreme_odds <- exp(coef(extreme_diffs))
 
 ```{r extremely-satisfied-analysis}
 m1_esat <- MIcombine(with(dcassvy,
-        svyglm(extremely_satisfied ~ dem.race, family=binomial)
+        svyglm(as.formula(paste('extremely_satisfied ~', m1)), family=binomial)
 ))
 summary(m1_esat)
 m2_esat <- MIcombine(with(dcassvy,
-        svyglm(extremely_satisfied ~ dem.race + agec + forbornc + manc + 
-                kidsc + marriedc +
-               educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
+        svyglm(as.formula(paste('extremely_satisfied ~', m2)),
             family=quasibinomial)
 ))        
 summary(m2_esat)
 m3_esat <- MIcombine(with(dcassvy,
-        svyglm(extremely_satisfied ~ dem.race + agec + forbornc + manc + 
-                kidsc + marriedc +
-                educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
-                nhdyrsc + nhdsize1c + nhdsize3c + quadc,
+        svyglm(as.formula(paste('extremely_satisfied ~', m3)),
             family=quasibinomial)
 ))
 summary(m3_esat)
@@ -392,48 +387,30 @@ better_model <- MIcombine(with(dcassvy,
 The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable. 
 
 ```{r improvement-analysis, warning=FALSE}
+m3 <- paste(m3, "+ extremely_satisfied")
 m1_bet <- MIcombine(with(dcassvy,
-        svyglm(better ~ dem.race, family=binomial)
+        svyglm(as.formula(paste('better ~', m1)), family=binomial)
 ))
 summary(m1_bet)
 m2_bet <- MIcombine(with(dcassvy,
-        svyglm(better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-               educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
-            family=binomial)
+        svyglm(as.formula(paste('better ~', m2)), family=binomial)
 ))
 summary(m2_bet)
 m3_bet <- MIcombine(with(dcassvy,
-        svyglm(better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-                 educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
-                 nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
-            family=binomial)
+        svyglm(as.formula(paste('better ~', m3)), family=binomial)
 ))
 summary(m3_bet)
 ```
 
 ```{r report-better-analysis, results='hide'}
 regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
-bet_tbl <- huxreg(m1_bet, m2_bet, m3_bet, statistics=c(), borders=0)
-intercept <- bet_tbl[2:3,]
-bet_tbl[seq(4,(length(regression_labels_bet)+1)*2,2),1] <- regression_labels_bet
-bet_tbl <- bet_tbl %>%
-    insert_row(c('Race','','',''),
-               after=(which(bet_tbl$names=="(Intercept)")+1)) %>%
-    insert_row(c('Demographics','','',''),
-               after=(which(bet_tbl$names=="Latinx")+2)) %>%
-    insert_row(c('Socioeconomic','','',''),
-               after=(which(bet_tbl$names=="Married")+3)) %>%
-    insert_row(c('Neighborhood experience','','',''), 
-               after=(which(bet_tbl$names=="$150,000+")+4))
-bet_tbl <- bet_tbl[c(-2,-3),] %>% 
-    add_rows(intercept, 
-        after=(which(bet_tbl$names=='Extremely satisfied')+1)) %>%
-    set_bottom_border(c(1,45),everywhere,1) %>%
-    set_italic(c(2,9), everywhere, TRUE) %>%
-    set_caption('Estimated coefficients predicting neighborhood improvement') %>%
-    set_all_padding(0)
-font_size(bet_tbl) <- 9.5
-cat(to_latex(bet_tbl[c(1:45, 52),]), file='tables/improvement.tex')
+bet_tbl <- report_models(m1_bet, m2_bet, m3_bet, 
+                reglabels=regression_labels_bet,
+                caption=paste0('Estimated coefficients predicting ',
+                               'neighborhood improvement'),
+                label='tab:improvement')
+bet_tbl
+cat(to_latex(bet_tbl), file='tables/improvement.tex')
 ```
 
 
@@ -478,23 +455,197 @@ Whites are
 m1_mbet <- MIcombine(with(dcassvy,
         svyglm(much_better ~ dem.race, family=binomial)
 ))
+summary(m1_bet)
 m2_mbet <- MIcombine(with(dcassvy,
         svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
                educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
             family=quasibinomial)
 ))        
+summary(m2_bet)
 m3_mbet <- MIcombine(with(dcassvy,
         svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
                  educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
                  nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
             family=quasibinomial)
 ))
-mbet_tbl <- huxreg(m1_mbet, m2_mbet, m3_mbet, statistics = c())
-mbet_odds <- exp(coef(m3_mbet)[2:4])
+summary(m3_bet)
+(mbet_odds <- exp(coef(m3_mbet)[2:4]))
 ```
 
 ```{r report-much-better-results}
+mbet_tbl <- report_models(m1_mbet, m2_mbet, m3_mbet, 
+                reglabels=regression_labels_bet,
+                caption=paste0('Estimated coefficients predicting ',
+                               'neighborhood has gotten ``much better\'\''),
+                label='tab:muchbetter')
+mbet_tbl
+cat(to_latex(mbet_tbl), file='tables/muchbetter.tex')
+```
 
+```{r future-descriptives}
+srch_mean <- function(comm, dimension) {
+    out_fmla <- as.formula(paste0('~ ',dimension, '_', comm))
+    overall <- summary(MIcombine(with(dcassvy,
+        svymean(out_fmla))))
+    res <- MIcombine(with(dcassvy,
+        svyby(out_fmla, ~dem.race, svymean)))
+    res_df <- data_frame(prop=summary(res)[5:8, 1], 
+                      se=summary(res)[5:8, 2],
+                      comm=comm, race=levels(dcas$dem.race))
+    res_df <- bind_rows(data_frame(prop=overall[2,1], se=overall[2,2], 
+                     comm=comm, race='overall'), res_df)
+    return(res_df)
+}
+# comm_names <- sapply(new_search_matches[seq(1,51,5)],function(x){x[2]})
+## Ordered by state, county, distance from downtown
+comm_names <- c('columbia.heights', 'brightwood', 
+                'langley.park', 'hyattsville', 'greenbelt',
+                'wheaton', 'germantown', 
+                'arlington', 
+                'annandale', 'huntington', 'herndon')
+consider_means <- bind_rows(lapply(comm_names, srch_mean, 'cons'))
+consider_means$ci <- 1.96*consider_means$se
+
+nconsider_means <- bind_rows(lapply(comm_names, srch_mean, 'nc'))
+nconsider_means$ci <- 1.96*nconsider_means$se
+```
+
+
+```{r plot-consider-descriptives}
+consider_means$comm <- ordered(consider_means$comm,
+                               levels=comm_names)
+consider_means$race <- ordered(consider_means$race,
+                               levels=c('api', 'black', 'latino', 'white',
+                                        'overall'))
+consider_plt_df <- consider_means[consider_means$race=='overall',
+                                  c('comm','prop')] %>%
+                   rename(overall = prop) %>%
+                   mutate(pos=c(0,2,8,10,12,16,18,24,28,30,32)) %>%
+                   right_join(consider_means[consider_means$race!='overall',],
+                              by='comm')
+dodge_width <- 1
+ggplot(consider_plt_df, aes(x=pos, y=prop, shape=race)) + 
+    geom_errorbar(aes(ymin=overall,ymax=prop), 
+                  position=position_dodge(dodge_width), width=0) +
+    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
+    annotate("text", x=counties$x, y=.3, label=counties$name, size=3, hjust=1) +
+    scale_x_continuous(breaks=c(0,2,8,10,12,16,18,24,28,30,32),
+                       labels=levels(consider_plt_df$comm)) +
+    scale_y_continuous(breaks=seq(0,.25,0.05), limits=c(0,.30)) +
+    labs(
+        x='Community', y='Proportion', 
+        title='Proportion willing to consider community by race' 
+    ) + 
+    coord_flip() +
+    scale_shape_manual(values=c(21,22,23,24)) +
+    theme_bw() + theme(
+        panel.grid.minor = element_blank())
+ggsave(file='images/')
+
+
+### Separate plot for consider by each race
+# colors <- c('darkslategray4', 'tomato1')
+# for(grp in c('overall', 'white','black','latino','api')){
+#     color_scale <- if(grp=='overall') rev(colors) else colors
+#     ggplot(subset(consider_means, race==grp|race=='overall'), 
+#            aes(x=comm, y=prop, color=race)) + 
+#         geom_point(size=1.5) +
+#         scale_color_manual(values=color_scale) +
+#         coord_flip() + ylim(c(0,.25)) +
+#         labs(
+#             x='Community', y='Proportion', 
+#             title='Proportion willing to consider neighborhood' 
+#         )
+#     ggsave(sprintf('images/consider_%s.png', grp), 
+#            width=8, height=4.5, units='in')
+# }
+
+```
+
+```{r plot-not-consider-descriptives}
+nconsider_means$comm <- ordered(nconsider_means$comm,
+                               levels=comm_names)
+nconsider_means$race <- ordered(nconsider_means$race,
+                               levels=c('api', 'black', 'latino', 'white',
+                                        'overall'))
+nconsider_plt_df <- nconsider_means[nconsider_means$race=='overall',
+                                  c('comm','prop')] %>%
+                   rename(overall = prop) %>%
+                   mutate(pos=c(0,2,8,10,12,16,18,24,28,30,32)) %>%
+                   right_join(nconsider_means[nconsider_means$race!='overall',],
+                              by='comm')
+
+ggplot(nconsider_plt_df, aes(x=pos, y=prop, shape=race)) + 
+    geom_errorbar(aes(ymin=overall,ymax=prop), 
+                  position=position_dodge(dodge_width), width=0) +
+    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
+    annotate("text", x=counties$x, y=.73, label=counties$name, size=3, hjust=1) +
+    scale_x_continuous(breaks=c(0,2,8,10,12,16,18,24,28,30,32),
+                       labels=levels(consider_plt_df$comm)) +
+    scale_y_continuous(breaks=seq(0,.5,0.1), limits=c(0,.75)) +
+    labs(
+        x='Community', y='Proportion', 
+        title='Proportion willing to consider community by race' 
+    ) + 
+    coord_flip() +
+    scale_shape_manual(values=c(21,22,23,24)) +
+    theme_bw() + theme(
+        panel.grid.minor = element_blank())
+
+```
+
+```{r future-analysis}
+load(paste0(dataDIR,'Dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
+srch_reg <- function(comm, dimension, indvars='dem.race') {
+    outvar <- paste(dimension, comm, sep='_')
+    fmla <- as.formula(paste(outvar, indvars, sep='~'))
+    res <- MIcombine((with(dcassvy,
+        svyglm(fmla, family=quasibinomial))))
+}
+
+## Make table with model with race only 
+cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
+cons_race_tbl <- huxreg(cons_raceonly, 
+                        statistics=c(''), error_format='', borders=0)
+comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
+cons_race_tbl[1,] <- c('', comm_titles)
+cons_race_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+cons_race_tbl <- cons_race_tbl[c(1,seq(2,8,2)),]
+cons_race_tbl <- t(cons_race_tbl)
+
+## Add model with controls
+cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2)
+cons_cont_tbl <- huxreg(cons_racecont, 
+                        statistics=c(''), error_format='', borders=0,
+                        coefs=c('(Intercept)', 'dem.raceapi', 'dem.raceblack',
+                                'dem.racelatino'))
+cons_cont_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+cons_cont_tbl <- cons_cont_tbl[seq(2,8,2),]
+
+for(i in 1:4) {
+    cons_race_tbl <- insert_column(cons_race_tbl,
+                                   as.character(cons_cont_tbl[i, ]),
+                                   after=i+4)
+    i = i + 1
+}
+insert_row(cons_race_tbl, c('*** p < 0.001; ** p < 0.01; * p < 0.05', 
+                            rep('',ncol(cons_race_tbl)-1)), 
+           after=nrow(cons_race_tbl))
+tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(cons_race_tbl))
+cat(tex, file='tables/consider.tex')
+```
+
+```{r any-other}
+cons_vars <- grep('^cons_', names(dcas), value=TRUE)
+cons_vars
+
+for(comm in grep('^dk_', names(dcas), value=TRUE)) {
+     print(comm)
+     out_fmla <- as.formula(paste0('~',comm))
+     res <- MIcombine(with(dcassvy, 
+         svyby(out_fmla, '~dem.race', svymean)))
+     res <- summary(res)
+} 
 
 ```
 ##Notes

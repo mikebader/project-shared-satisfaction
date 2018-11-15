@@ -12,7 +12,7 @@ report_models <- function(...,reglabels=c(), label='', caption='') {
                    after=(which(ht$names=="Married")+3)) %>%
         insert_row(c('Neighborhood experience','','',''),
                    after=which(ht$names=="$150,000+")+4) %>%
-        set_bottom_border(c(1, length(ht$names)+1), everywhere, 1) %>%
+        set_bottom_border(c(1, length(ht$names)+2), everywhere, 1) %>%
         set_italic(which(ht$names %in% section_labels), everywhere, TRUE) %>%
         set_font_size(9.5) %>%
         set_caption(caption) %>%
