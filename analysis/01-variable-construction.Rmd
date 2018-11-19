@@ -1,0 +1,173 @@
+# Variable Construction 
+
+## Dependent Variables
+### Satisfaction Variable
+The current neighborhood satisfaction variable comes from Question 5: "How satisfied are you with your neighborhood as a place to live?" Responses of "Extremely satisfied" and "Very satisfied" are coded as "satisfied"; other responses ("Somewhat satisfied" and "Not at all satisfied" and coded as "unsatisfied"). 
+
+### Neighborhood Change Variable
+The satisfaction with neighborhood change variable comes from Question 9: "Looking back over the past five years or so, would you say that your neighborhood has:" Response options "Become a much better place to live" and "Become a somewhat better place to live" are coded as "better" and the other three responses are coded as "not better". 
+
+```{r dependent-variables}
+dataDIR <- '~/work/data/dcas/dcas2016/'
+load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
+
+sum(!is.na(dcas$dem.race))
+
+dcas$satisfied <- dcas$nhd.satisfaction %in% c(
+                       'Extremely satisfied','Very satisfied')
+table(dcas[, c('nhd.satisfaction','satisfied')])
+dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')
+table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
+
+dcas$better <- dcas$nhd.change %in% c(
+                       'Much better', 'Somewhat better')
+table(dcas[, c('nhd.change','better')])
+dcas$much_better <- dcas$nhd.change=='Much better'
+table(dcas[, c('nhd.change','much_better')])
+```
+
+## Preferences for Other Communities
+```{r rename-commvars}
+## Change names to have search dimension first and commname second
+## Help on regex part: https://stackoverflow.com/questions/952275/regex-group-capture-in-r-with-multiple-capture-groups
+search.vars <- grep('nhd\\.srch.+\\.', names(dcas), value=TRUE)
+new_search_matches <- regmatches(
+    search.vars, regexec('nhd\\.srch\\.(.+)\\.(.+)$', search.vars))
+new_search_names <- sapply(new_search_matches, function(x){
+    paste(rev(x[2:3]), collapse='_')})
+names(dcas)[names(dcas)%in%search.vars] <- new_search_names
+N <- sum(is.na(dcas$dem.race))
+```
+## Independent Variable
+The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r N`). 
+
+```{r independent-variables}
+table(dcas$dem.race, useNA='always')
+means <- prop.table(table(dcas$dem.race))
+names <- c("\\emph{Race}&&\\\\Asian or Pacific Islander", "Black", "Latinx", "White")
+dcas$dem.race <- relevel(dcas$dem.race, ref='white')
+```
+
+## Control Variables
+I included control variables in the models. All control variables were centered at their means. 
+
+**Demographic characteristics**
+
+* *Age*, calculated from answer to Question 49: "In what year were you born?"
+
+* *Foreign born*, answer to Question 58: "Where were you born?"
+
+* *Gender*, male or female
+
+* *Kids*, if answer to Question 2--"How many children ages 17 or under live in your household?"--is greater than zero
+
+* *Marital status*, if answer to Question 60--"What is your marital status"-- is "Now married or in a married-style arrangement"
+
+```{r demographic-variables}
+center <- function(x) { ## Function to mean-center but not scale vars
+    scale(as.numeric(dcas[[x]]), scale=FALSE)
+}
+
+dcas$agec <- scale(dcas$dem.age, scale=FALSE)
+dcas$forbornc <- center('dem.forborn')
+dcas$man <- dcas$dem.gender.mf=='Male'
+dcas$manc <- center('man')
+dcas$kids <- as.numeric(as.character(dcas$q2)) > 0
+dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
+dcas$kidsc <- center('kids')
+dcas$married <- grepl("Now married", dcas$dem.marital.stat)
+table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
+dcas$marriedc <- center('married')
+
+## Save values for descriptive table
+means <- c(means, apply(
+    dcas[,c('dem.age', 'dem.forborn', 'man', 'kids', 'married')],2, mean, na.rm=TRUE))
+names <- c(names, 
+           c('\\emph{Demographics}&&\\\\Age', 'Foreign Born', 'Man', 
+             'Children present', 'Married'))
+```
+**Economic Status**
+
+* *Educational attainment*, five categories based on Question 59, "What is the highest level of school you have completed or the highest degree you have received?"
+* *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?"
+
+```{r economic-variables}
+educ_dummies <- paste0('educ',1:5)
+dcas[,educ_dummies] <- lapply(1:5,
+        function(i) {unclass(dcas$dem.educ.attain)==i})
+for(i in 1:5) { ##Check recoding
+    print(table(dcas[,c('dem.educ.attain',paste0('educ',i))]))
+}
+dcas[,c(paste0(educ_dummies,'c'))] <- scale(dcas[,paste0('educ',1:5)], 
+                                          scale=FALSE)
+educ_names <- levels(dcas$dem.educ.attain)
+educ_names[1] <- paste0("\\emph{Educational Attainment}&&\\\\", educ_names[1])
+
+inc_dummies <- paste0('inc',1:4)
+dcas[,inc_dummies] <- lapply(1:4,
+        function(i) {unclass(dcas$dem.income.cat4)==i})
+for(i in 1:4) { ## Check recoding
+    print(table(dcas[,c('dem.income.cat4',paste0('inc',i))]))
+}
+dcas[,c(paste0(inc_dummies, 'c'))] <- scale(dcas[,paste0('inc',1:4)],
+                                         scale=FALSE)
+inc_names <- sanitize(levels(dcas$dem.income.cat4))
+inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
+means <- c(means, apply(dcas[, c(educ_dummies, inc_dummies)], 2, mean, na.rm=TRUE))
+names <- c(names, educ_names, inc_names)
+```
+
+**Neighborhood Experience**
+
+* *Years in neighborhood*, based on Question 4: "How many years have you lived in your current neighborhood?"
+
+* *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?"
+
+```{r nhood-variables}
+dcas$nhdyrs <- as.numeric(as.character(dcas$q4))
+dcas$nhdyrsc <- scale(dcas$nhdyrs, scale=FALSE)
+qplot(dcas$nhdyrsc)
+
+dcas$nhdsize1 <- unclass(dcas$nhd.size)%in%c(1,2)
+dcas$nhdsize2 <- unclass(dcas$nhd.size)%in%c(3,4)
+dcas$nhdsize3 <- unclass(dcas$nhd.size)==5
+for (i in 1:3) { ## Check recoding
+    print(table(dcas[, c('nhd.size',paste0('nhdsize',i))]))
+}
+nhd_dummies <- paste0('nhdsize',1:3)
+dcas[, paste0(nhd_dummies,'c')] <- scale(dcas[, nhd_dummies], scale=FALSE)
+
+dcas$quad <- dcas$neighborhood=='Global Neighborhood'
+table(dcas[,c('neighborhood','quad')])
+dcas$quadc <- center('quad')
+
+means <- c(means, 
+           apply(dcas[, c('nhdyrs', nhd_dummies, 'quad')], 2, mean, na.rm=TRUE))
+names <- c(names, '\\emph{Neighborhood Experience}\\\\Years in Neighborhood', 
+                  '1-9 blocks', '10-50 blocks', '>50 blocks', 
+                  'Quadrivial Neighborhood')
+```
+
+## Descriptive Statistics of Control & Independent Variables
+Descriptive statistics are calculated unweighted.
+
+```{r descriptives}
+names(means)
+varnames <- names(means)[-1:-4]
+sigmas <- c(rep(NA,4), apply(dcas[,varnames], 2, sd, na.rm=TRUE))
+continuous_vars <- grep('age|nhdyrs',attr(sigmas, 'names'), perl=TRUE)
+sigmas[-continuous_vars] <- NA
+
+descriptives <- matrix(c(names, round(means, 2), round(sigmas, 2)), ncol=3)
+descriptive_tbl <- as.table(descriptives)
+colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
+print.xtable(xtable(descriptive_tbl,
+                    caption='Un-weighted means and standard deviations of independent and control variables',
+                    align=c('l','l','p{.5in}','p{.5in}'), label='tab:descriptives'),
+             booktabs=TRUE,
+             caption.placement='top',
+             include.rownames=FALSE,
+             file='tables/descriptives.tex',
+             sanitize.text.function = identity)
+```
+

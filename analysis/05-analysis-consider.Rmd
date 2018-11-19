@@ -1,0 +1,193 @@
+# Analysis of Future Stability of Multiethnic Neighborhoods
+
+The long-term stability of multiethnic neighborhoods requires that residents of all races consider moving to existing multiethnic neighborhoods. The subsequent analyses assess how likely residents are to consider neighborhoods and how likely they are to actively not consider multiethnic neighborhoods. 
+
+The 2016 DCAS asked residents these questions of 11 neighborhoods in the DC area. Below is a plot of the racial composition of those neighborhoods. 
+
+For all of the results, the communities are grouped by county and, within county, ordered by closest to the District to the farthest away. This order is defined in the object `comm_names`. 
+
+```{r plot-racial-composition}
+## Ordered by state, county, distance from downtown
+comm_names <- c('columbia.heights', 'brightwood',
+                'langley.park', 'hyattsville', 'greenbelt',
+                'wheaton', 'germantown',
+                'arlington',
+                'annandale', 'huntington', 'herndon')
+
+load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
+comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
+comms <- comms[order(comms$pctnhw),]
+comm_order <- comms$commname
+comms_long <- gather(comms, commnum, values, pctnhw, pctnhb, pctlat, pctapi)
+comms_long$commname <- ordered(comms_long$commname, levels=comm_order)
+comms_long$commnum <- ordered(comms_long$commnum, levels=c('pctapi', 'pctnhb', 'pctlat', 'pctnhw'))
+
+ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='identity', position=position_stack()) + coord_flip()
+```
+
+## Analyze Where People Would Consider Moving
+Analyze four models for each of the 11 communities:
+
+1. **Constant-only model** will be used to plot the distance of each racial group from the overall mean consideration of the neighborhood.
+
+2. **Race-only model** will be used to analyze the influence of race accounting for no other demographic characteristics.
+
+3. **Model with controls** will be used to analyze the influence of race accounting for other demographic characteristics.
+
+4. **Model with controls only** will be used to plot the distance of each racial group from the overall conditional mean.
+
+To do this, define the `srch_reg` function to run weighted regression with multiple imputation. Use the `srch_reg` function to cycle through each of the eleven outcomes.
+
+
+```{r consider-analysis}
+load(paste0(dataDIR,'Dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
+srch_reg <- function(comm, dimension, indvars='dem.race') {
+    outvar <- paste(dimension, comm, sep='_')
+    fmla <- as.formula(paste(outvar, indvars, sep='~'))
+    res <- MIcombine((with(dcassvy,
+                           svyglm(fmla, family=quasibinomial))))
+}
+
+## Constant-only
+cons_constant <- lapply(comm_names, srch_reg, 'cons', '1')
+
+## Race-only
+cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
+
+## Race with controls
+cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2)
+
+## Controls-only
+cons_contonly <- lapply(comm_names, srch_reg, 'cons', sub('dem.race\\+','',m2))
+```
+
+Report the regression coefficients from the race-only and race-with-controls models. (The output of the huxtable is not pretty -- that needs to be fixed).
+
+```{r consider-report-analysis, warning=FALSE}
+srch_tbl <- function(base, controls) {
+
+    comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
+    base_tbl <- huxreg(base, statistics=c(''), error_format = '', borders = 0)
+    base_tbl[1,] <- c('', comm_titles)
+    base_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+    base_tbl <- t(base_tbl[seq(2,8,2),])
+
+    cont_tbl <- huxreg(controls,
+                       statistics=c(''), error_format='', borders=0,
+                       coefs=c('(Intercept)', 'dem.raceapi', 'dem.raceblack',
+                               'dem.racelatino'))
+    cont_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+    cont_tbl <- cont_tbl[seq(2,8,2),]
+
+    for(i in 1:4) {
+        rownum <- i+4
+        base_tbl <- insert_column(base_tbl, as.character(cont_tbl[i, ]),
+                                  after=ncol(base_tbl))
+    }
+    insert_row(base_tbl, c('*** p < 0.001; ** p < 0.01; * p < 0.05',
+                           rep('',ncol(base_tbl)-1)),
+               after=nrow(base_tbl))
+    return(base_tbl)
+}
+
+cons_tbl <- srch_tbl(cons_raceonly, cons_racecont)
+tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(cons_tbl))
+cat(tex, file='tables/consider.tex')
+```
+
+Create a plot with the predicted probability for each racial group plotted for each community. Then draw a line from the predicted probability for a racial group to the overall predicted probability with controls.
+
+First, analyze the data with all controls (but not race). The centered variables make the intercept the grand mean unconditional on race. Save those values into a data frame called `cons_overall`.
+
+Next, compute predicted probabilities for each of the racial groups from the models with controls. Create a long dataset with probabilities by each race for each community. Merge the long dataframe with the overall dataset created above.
+
+```{r future-plot-functions, include=FALSE}
+ypos <- c(0,2,8,10,12,16,18,24,28,30,32)
+counties <- list(name=c('Fairfax, VA', 'Arlington, VA', 'Montgomery, MD',
+                        'Prince George\'s, MD', 'Washington, DC'),
+                 x=c(30, 24, 17, 10, 1))
+dodge_width <- 1
+races <- c('white','asian','black','latino')
+
+srch_gather <- function(res, overall=FALSE) {
+    sumres <- summary(res)
+    if(overall==FALSE) {
+        logits <- sumres[1,1] + c(0, sumres[2:4,1])
+        ci <- 1.96*sumres[1:4,2]
+    }
+    else {
+        logits <- sumres[1,1]
+        ci <- 1.96*sumres[1,2]
+    }
+    lci <- logits-ci
+    uci <- logits+ci
+    probs <- exp(logits)/(1+exp(logits))
+    uci <- exp(logits+ci)/(1+exp(logits+ci))
+    lci <- exp(logits-ci)/(1+exp(logits-ci))
+    out <- matrix(c(probs,lci,uci), nrow=1)
+}
+make_prob_df <- function(regs, overall=FALSE) {
+    reg_matrix <- t(sapply(regs, srch_gather, overall))
+    if(overall==TRUE) {
+        prob_df <- reg_matrix %>%
+            as_data_frame() %>%
+            mutate(comm=comm_names, pos=ypos)
+        names(prob_df)[1:3] <- c('prob', 'lci', 'uci')
+    }
+    else {
+        prob_df <- data.frame(
+            prob=matrix(reg_matrix[,1:4], ncol=1),
+            lci=matrix(reg_matrix[5:8], ncol=1),
+            uci=matrix(reg_matrix[9:12], ncol=1),
+            race=rep(races, each=11),
+            comm=rep(comm_names, 4)
+        )
+    }
+    return(prob_df)
+}
+srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
+    plt_params <- if(consider==TRUE) list(ypos=.33,
+                                          ybreaks=seq(0,.25,0.05),
+                                          ylims=c(0,.35)) else
+                                              list(ypos=.73,
+                                                   ybreaks=seq(0,.50,0.1),
+                                                   ylims=c(0,.75))
+    for(i in 1:2) {
+        df <- prob_dfs[[i]]
+        plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
+            geom_errorbar(aes(ymin=prob_overall,ymax=prob),
+                          position=position_dodge(dodge_width), width=0) +
+            geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
+            annotate("text", x=counties$x, y=plt_params$ypos,
+                     label=counties$name, size=3, hjust=1) +
+            scale_x_continuous(breaks=ypos,
+                               labels=levels(df$comm)) +
+            scale_y_continuous(breaks=plt_params$ybreaks,
+                               limits=plt_params$ylims) +
+            labs(x='Community', y='Proportion') +
+            coord_flip() +
+            scale_shape_manual(values=c(21,22,23,24)) +
+            theme_bw() + theme(
+                panel.grid.minor = element_blank())
+        ggsave(plt, file=fnames[i],
+               units='in', width=8, height=4.5)
+    }
+}
+```
+
+```{r consider-plot-results}
+## Relies on convenience functions in .Rmd that are not included in workbook
+cons_constant_probs <- make_prob_df(cons_constant, overall=TRUE)
+cons_overall_probs  <- make_prob_df(cons_contonly, overall=TRUE)
+cons_raceonly_probs <- make_prob_df(cons_raceonly) %>%
+    left_join(cons_constant_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+cons_racecont_probs <- make_prob_df(cons_racecont) %>%
+    left_join(cons_overall_probs, by='comm', suffix=c('', '_overall')) %>%
+    as_tibble()
+
+prob_dfs <- list(cons_raceonly_probs, cons_racecont_probs)
+fnames <- sprintf('images/%s.png', c('consider', 'consider_controls'))
+srch_plots(prob_dfs, fnames)
+```
+

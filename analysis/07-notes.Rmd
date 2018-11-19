@@ -1,0 +1,6 @@
+# Notes
+Consider only using educational attainment rather than both education and income. The two are highly correlated and would avoid having to impute.
+
+```{r}
+ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
+```

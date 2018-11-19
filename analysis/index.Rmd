@@ -1,0 +1,43 @@
+---
+title: "Satisfaction and Stability in Multiethnic Neighborhoods"
+author: "Michael Bader"
+date: "11/19/2018"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+---
+
+# Motivation
+This file documents the analysis for the paper "Satisfaction and Stability in Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
+
+## Hypotheses
+The paper examines three hypotheses: 
+
+1. Whites will be less likely to be satisfied living in integrated neighborhoods than other racial groups, and they will be much less likely to be extremely satisfied;
+2. Whites will be less likely to believe that their neighborhoods have improved compared to other racial groups; and
+3. Whites will be less likely to consider moving to other multiracial neighborhoods in the Washington, DC area. 
+
+The paper examines hypotheses among the overall sample as well as by neighborhood type. 
+
+
+# Setup
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r libraries, message=FALSE}
+rm(list=ls())
+print(R.version.string)
+library(Amelia)
+library(broom)
+library(ggplot2)
+library(huxtable)
+library(mitools)
+library(survey)
+library(tidyverse)
+library(xtable)
+```
+
+
+
+

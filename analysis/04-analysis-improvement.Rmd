@@ -1,0 +1,123 @@
+## Neighborhood Improvement
+
+### Bivariate Analysis
+Plot the mean value of respondents who indicated that they think that the neighborhood has gotten better in the past five years.
+
+```{r improvement-descriptives}
+better_means <- MIcombine(with(dcassvy,
+                               svyby(~better, ~dem.race, svymean)))
+better_means <- summary(better_means)
+better_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
+                          better=better_means[5:8,1],
+                          ci=better_means[5:8,2])
+better_plt <- ggplot(better_vals, aes(x=dem.race, y=better)) +
+    geom_errorbar(aes(ymin=better-ci, ymax=better+ci), width=0.1) +
+    geom_point() +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
+    labs(y='Proportion', x='Race')
+better_plt
+ggsave('images/better_descriptive.png', plot=better_plt,
+       height=3, width=4, units='in')
+better_model <- MIcombine(with(dcassvy,
+                               svyglm(better ~ dem.race, family=quasibinomial)))
+```
+
+The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable.
+
+### Multivariate Analysis
+```{r improvement-analysis, warning=FALSE, results='hide'}
+m3 <- paste(m3, "+ extremely_satisfied")
+m1_bet <- MIcombine(with(dcassvy,
+                         svyglm(as.formula(paste('better ~', m1)), family=binomial)
+))
+summary(m1_bet)
+m2_bet <- MIcombine(with(dcassvy,
+                         svyglm(as.formula(paste('better ~', m2)), family=binomial)
+))
+summary(m2_bet)
+m3_bet <- MIcombine(with(dcassvy,
+                         svyglm(as.formula(paste('better ~', m3)), family=binomial)
+))
+summary(m3_bet)
+```
+
+```{r report-better-analysis}
+regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
+bet_tbl <- report_models(m1_bet, m2_bet, m3_bet,
+                         reglabels=regression_labels_bet,
+                         caption=paste0('Estimated coefficients predicting ',
+                                        'neighborhood improvement'),
+                         label='tab:improvement')
+bet_tbl
+cat(to_latex(bet_tbl), file='tables/improvement.tex')
+```
+
+
+**Extreme Improvement.**
+But, there is a difference for those who say that the neighborhood has gotten "much better" over the past five years. Whites, on this measure, were much less likely to indicate that their neighborhoods have gotten much better. I examine whether that might be due to the fact that whites are more likely to say that they are "extremely satisfied" in their neighborhoods relative to other racial groups.
+
+```{r much-better-descriptives}
+much_better_means <- MIcombine(with(dcassvy,
+                                    svyby(~much_better, ~dem.race, svymean)))
+much_better_means <- summary(much_better_means)
+much_better_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
+                               much_better=much_better_means[5:8,1],
+                               ci=much_better_means[5:8,2])
+much_better_plt <- ggplot(much_better_vals, aes(x=dem.race, y=much_better)) +
+    geom_errorbar(aes(ymin=much_better-ci, ymax=much_better+ci), width=0.1) +
+    geom_point() +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
+    labs(y='Proportion', x='Race')
+much_better_plt
+ggsave('images/much_better_descriptive.png', plot=much_better_plt,
+       height=3, width=4, units='in')
+
+much_better_model <- MIcombine(with(dcassvy,
+                                    svyglm(much_better ~ dem.race, family=quasibinomial)))
+much_better_satis_model <- MIcombine(with(dcassvy,
+                                          svyglm(much_better ~ dem.race + extremely_satisfied,
+                                                 family=quasibinomial)))
+betas <- much_better_satis_model$coefficients
+odds <- exp(betas)
+odds
+list(coef(much_better_model), coef(much_better_satis_model))
+```
+
+Whites are
+`r round(odds[2],2)` times less likely than Asians,
+`r round(odds[3],2)` times less likely than blacks, and
+`r round(odds[4],2)` times less likely than Latinxs to report that their neighborhoods have gotten "much better". Adding whether respondents were extremely satisfied with their neighborhood actually *exacerbated* racial differences in how likely respondents were to say that their neighborhood had gotten much better.
+
+
+```{r much-better-analysis, results='hide'}
+## Outcome: Much Better
+m1_mbet <- MIcombine(with(dcassvy,
+                          svyglm(much_better ~ dem.race, family=binomial)
+))
+summary(m1_bet)
+m2_mbet <- MIcombine(with(dcassvy,
+                          svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
+                                     educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
+                                 family=quasibinomial)
+))
+summary(m2_bet)
+m3_mbet <- MIcombine(with(dcassvy,
+                          svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
+                                     educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
+                                     nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
+                                 family=quasibinomial)
+))
+summary(m3_bet)
+(mbet_odds <- exp(coef(m3_mbet)[2:4]))
+```
+
+```{r report-much-better-results}
+mbet_tbl <- report_models(m1_mbet, m2_mbet, m3_mbet,
+                          reglabels=regression_labels_bet,
+                          caption=paste0('Estimated coefficients predicting ',
+                                         'neighborhood has gotten ``much better\'\''),
+                          label='tab:muchbetter')
+mbet_tbl
+cat(to_latex(mbet_tbl), file='tables/muchbetter.tex')
+```
+

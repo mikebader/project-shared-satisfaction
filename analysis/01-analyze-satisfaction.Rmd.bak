@@ -1,40 +1,3 @@
----
-title: "Satisfaction with Multiethnic Neighborhoods"
-author: "Michael Bader"
-date: "10/26/2018"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r libraries, message=FALSE}
-rm(list=ls())
-print(R.version.string)
-library(Amelia)
-library(broom)
-library(ggplot2)
-library(huxtable)
-library(mitools)
-library(survey)
-library(tidyverse)
-library(xtable)
-source('broom_mi.R') ## Saves multiple imputation 
-                     ## objects for use with tidyverse
-source('report_models.R')
-```
-
-This file documents the analysis for the paper "Satisfaction with Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
-
-## Hypotheses
-The paper examines three hypotheses: 
-
-1. Whites will be less likely to be satisfied living in integrated neighborhoods than other racial groups, and they will be much less likely to be extremely satisfied;
-2. Whites will be less likely to believe that their neighborhoods have improved compared to other racial groups; and
-3. Whites will be less likely to consider moving to other multiracial neighborhoods in the Washington, DC area. 
-
-The paper examines hypotheses among the overall sample as well as by neighborhood type. 
 
 ## Variables
 
@@ -223,13 +186,13 @@ vars <- c('satisfied', 'extremely_satisfied', 'better',  'much_better',
 idvars <- c('studycase','weight', 'sample_strata')
 dcassub <- dcas[!is.na(dcas$dem.race), c(vars, idvars)]
 nominals <- vars[!(vars %in% c('agec', 'nhdyrsc'))]
-dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , p2s = F, idvars=c('studycase','weight','sample_strata'))
+dcasmi <- amelia(dcassub, m=2, noms=nominals, emburn = c (500 , 500) , p2s = F, idvars=c('studycase','weight','sample_strata'))
 dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
 ```
 
 
 ### Satisfaction
-#### Bivariate Relationship with Race
+#### Bivariate Analysis (Satisfaction by Race)
 Plot the mean value of satisfaction by each racial group using survey weights. 
 
 ```{r dependent-descriptives}
@@ -268,7 +231,7 @@ Run three models. The first includes only race; the second adds demographic char
 
 **Satisfied.**
 
-```{r satisfied-analysis, warning=FALSE}
+```{r satisfied-analysis, warning=FALSE, results='hide'}
 m1 <- 'dem.race'
 m2 <- paste0(m1, '+ agec + forbornc + manc + kidsc + marriedc + ',
              'educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c')
@@ -287,7 +250,7 @@ m3_sat <- MIcombine(with(dcassvy,
 summary(m3_sat)
 ```
 
-```{r report-satisfaction-analysis, results='hide'}
+```{r report-satisfaction-analysis}
 regression_labels <- c('Asian','Black','Latinx',
                        'Age','Foreign Born','Male',
                        'Children Present', 'Married',
@@ -326,7 +289,7 @@ extreme_odds <- exp(coef(extreme_diffs))
 `r round(1/extreme_odds[['dem.raceblack']],2)` times higher than blacks, and 
 `r round(1/extreme_odds[['dem.racelatino']],2)` times than Latinx residents. 
 
-```{r extremely-satisfied-analysis}
+```{r extremely-satisfied-analysis, results='hide'}
 m1_esat <- MIcombine(with(dcassvy,
         svyglm(as.formula(paste('extremely_satisfied ~', m1)), family=binomial)
 ))
@@ -588,7 +551,7 @@ First, analyze the data with all controls (but not race). The centered variables
 
 Next, compute predicted probabilities for each of the racial groups from the models with controls. Create a long dataset with probabilities by each race for each community. Merge the long dataframe with the overall dataset created above.  
 
-```{r future-plot-functions}
+```{r future-plot-functions, include=FALSE}
 ypos <- c(0,2,8,10,12,16,18,24,28,30,32)
 counties <- list(name=c('Fairfax, VA', 'Arlington, VA', 'Montgomery, MD',
                         'Prince George\'s, MD', 'Washington, DC'),
@@ -648,7 +611,7 @@ srch_plots <- function(prob_dfs, prob_names, consider=TRUE) {
             annotate("text", x=counties$x, y=plt_params$ypos, 
                      label=counties$name, size=3, hjust=1) +
             scale_x_continuous(breaks=ypos,
-                               labels=levels(consider_plt_df$comm)) +
+                               labels=levels(df$comm)) +
             scale_y_continuous(breaks=plt_params$ybreaks, 
                                limits=plt_params$ylims) +
             labs(x='Community', y='Proportion') +
@@ -656,7 +619,6 @@ srch_plots <- function(prob_dfs, prob_names, consider=TRUE) {
             scale_shape_manual(values=c(21,22,23,24)) +
             theme_bw() + theme(
                 panel.grid.minor = element_blank())
-        plts <- list(plts, plt)
         ggsave(plt, file=sprintf('images/%s.png', prob_names[i]),
                units='in', width=8, height=4.5)
     }
@@ -664,6 +626,7 @@ srch_plots <- function(prob_dfs, prob_names, consider=TRUE) {
 ```
 
 ```{r consider-plot-results}
+## Relies on convenience functions in .Rmd that are not included in workbook
 cons_constant_probs <- make_prob_df(cons_constant, overall=TRUE)
 cons_overall_probs  <- make_prob_df(cons_contonly, overall=TRUE)
 cons_raceonly_probs <- make_prob_df(cons_raceonly) %>%
@@ -691,6 +654,11 @@ ncons_racecont <- lapply(comm_names, srch_reg, 'nc', m2)
 ## Controls-only
 ncons_contonly <- lapply(comm_names, srch_reg, 'nc', sub('dem.race\\+','',m2))
 
+ncons_tbl <- srch_tbl(ncons_raceonly, ncons_racecont)
+tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(ncons_tbl))
+cat(tex, file='tables/consider.tex')
+
+
 ncons_constant_probs <- make_prob_df(ncons_constant, overall=TRUE)
 ncons_overall_probs  <- make_prob_df(ncons_contonly, overall=TRUE)
 ncons_raceonly_probs <- make_prob_df(ncons_raceonly) %>%
@@ -705,50 +673,7 @@ prob_names <- c('notconsider', 'notconsider_controls')
 srch_plots(prob_dfs, prob_names, consider=FALSE)
 ```
 
-Plot predicted probabilities by race using `geom_point` and a line extending from the predicted probability for the racial group to the overall predicted probability in the model with all controls other than race. 
-```{r plot-consider-analysis-pt3}
-ggplot(cons_probs, aes(x=pos, y=prob, shape=race)) + 
-    geom_errorbar(aes(ymin=prob_overall,ymax=prob), 
-                  position=position_dodge(dodge_width), width=0) +
-    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
-    annotate("text", x=counties$x, y=.3, label=counties$name, size=3, hjust=1) +
-    scale_x_continuous(breaks=ypos,
-                       labels=levels(consider_plt_df$comm)) +
-    scale_y_continuous(breaks=seq(0,.25,0.05), limits=c(0,.30)) +
-    labs(x='Community', y='Proportion') + 
-    coord_flip() +
-    scale_shape_manual(values=c(21,22,23,24)) +
-    theme_bw() + theme(
-        panel.grid.minor = element_blank())
-plt
 
-```
-```{r plot-not-consider-pt1}
-races <- c('white','asian','black','latino')
-cons_overall <- mutate(cons_overall, pos=ypos)
-cons_probs_list <- t(sapply(cons_racecont, srch_gather))
-cons_probs <- data.frame(prob=matrix(cons_probs_list[,1:4], ncol=1),
-                         lci=matrix(cons_probs_list[,5:8], ncol=1),
-                         uci=matrix(cons_probs_list[,9:12], ncol=1),
-                         race=rep(races,each=11), comm=rep(comm_names,4)) %>%
-    left_join(cons_overall, by='comm', suffix=c('','_overall')) %>%
-    as_tibble()
-```
-
-
-```{r any-other}
-cons_vars <- grep('^cons_', names(dcas), value=TRUE)
-cons_vars
-
-for(comm in grep('^dk_', names(dcas), value=TRUE)) {
-     print(comm)
-     out_fmla <- as.formula(paste0('~',comm))
-     res <- MIcombine(with(dcassvy, 
-         svyby(out_fmla, '~dem.race', svymean)))
-     res <- summary(res)
-} 
-
-```
 ##Notes
 Consider only using educational attainment rather than both education and income. The two are highly correlated and would avoid having to impute. 
 

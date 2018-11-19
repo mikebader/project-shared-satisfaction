@@ -1,0 +1,107 @@
+## Satisfaction in Multiethnic Neighborhoods
+
+### Bivariate Analysis
+Plot the mean value of satisfaction by each racial group using survey weights.
+
+```{r dependent-descriptives}
+mean_satisfied <- MIcombine(with(dcassvy,
+                                 svymean(~satisfied)))
+mean_satisfied_nhoodtype <- MIcombine(with(dcassvy,
+                                           svyby(~satisfied, ~quadc, svymean)))
+satisfied_nhoodtype <- MIcombine(with(dcassvy,
+                                      svyglm(satisfied ~ quadc, family=quasibinomial)))
+summary(satisfied_nhoodtype)
+```
+Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the sample were either very or extremely satisfied with their neighborhoods; `r round(coef(mean_satisfied_nhoodtype)[4], 2)*100` of residents in quadrivial neighborhoods and `r round(coef(mean_satisfied_nhoodtype)[3], 2)*100` of disproportionately Latino neighborhoods.
+
+```{r satisfaction-bivariate}
+satisfied_means <- MIcombine(with(dcassvy,
+                                  svyby(~satisfied, ~dem.race, svymean)))
+satisfied_ci <- 1.96*sqrt(diag(satisfied_means$variance))
+satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
+                             satisfied=coef(satisfied_means)[5:8],
+                             ci=satisfied_ci[5:8])
+satisfied_plt <- ggplot(satisfied_vals, aes(x=dem.race, y=satisfied)) +
+    geom_errorbar(aes(ymin=satisfied-ci, ymax=satisfied+ci), width=0.1) +
+    geom_point() +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
+    labs(y='Proportion', x='Race')
+satisfied_plt
+ggsave('images/satisfied_descriptive.png', plot=satisfied_plt,
+       height=3, width=4, units='in')
+```
+
+### Multivariate Analysis
+**Satisfied.**
+
+```{r satisfied-analysis, warning=FALSE, results='hide'}
+m1_sat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('satisfied ~',m1)), family=binomial)
+))
+summary(m1_sat)
+m2_sat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('satisfied ~', m2)), family=quasibinomial)
+))
+summary(m2_sat)
+m3_sat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('satisfied ~', m3)), family=quasibinomial)
+))
+summary(m3_sat)
+```
+
+```{r report-satisfaction-analysis}
+regression_labels <- c('Asian','Black','Latinx',
+'Age','Foreign Born','Male',
+'Children Present', 'Married',
+levels(dcas$dem.educ.attain)[c(1:3,5)],
+levels(dcas$dem.income.cat4)[c(1,3:4)],
+'Years in neighborhood',
+'1-9 blocks', '$>$50 blocks',
+'Quadrivial Neighborhood'
+)
+sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
+caption=paste0('Estimated coefficients predicting ',
+' neighborhood satisfaction'),
+label='tab:satisfaction')
+sat_tbl
+cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
+```
+
+Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks.
+
+**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group.
+
+```{r bivariate-extremely-satisfied}
+extreme_means <- MIcombine(with(dcassvy,
+svyby(~extremely_satisfied, ~dem.race, svymean)
+))
+extreme_diffs <- MIcombine(with(dcassvy,
+svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
+))
+extreme_prob_white <- exp(coef(extreme_diffs)[1])/(1+exp(coef(extreme_diffs)[1]))
+extreme_odds <- exp(coef(extreme_diffs))
+
+```
+
+`r round(extreme_prob_white, 2)*100` percent of white residents reported being extremely satisfied with their neighborhoods. That value was
+`r round(1/extreme_odds[['dem.raceapi']],2)` times higher than Asians,
+`r round(1/extreme_odds[['dem.raceblack']],2)` times higher than blacks, and
+`r round(1/extreme_odds[['dem.racelatino']],2)` times than Latinx residents.
+
+```{r extremely-satisfied-analysis, results='hide'}
+m1_esat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('extremely_satisfied ~', m1)), family=binomial)
+))
+summary(m1_esat)
+m2_esat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('extremely_satisfied ~', m2)),
+family=quasibinomial)
+))
+summary(m2_esat)
+m3_esat <- MIcombine(with(dcassvy,
+svyglm(as.formula(paste('extremely_satisfied ~', m3)),
+family=quasibinomial)
+))
+summary(m3_esat)
+```
+

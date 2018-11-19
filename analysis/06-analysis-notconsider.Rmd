@@ -1,0 +1,35 @@
+## Analyze Where People Would *Not* Consider Moving
+
+Replicate the analysis of where people would consider moving for the question where people would *not* consider moving by race. 
+
+```{r not-consider-analysis}
+## Constant-only
+ncons_constant <- lapply(comm_names, srch_reg, 'nc', '1')
+
+## Race-only
+ncons_raceonly <- lapply(comm_names, srch_reg, 'nc')
+
+## Race with controls
+ncons_racecont <- lapply(comm_names, srch_reg, 'nc', m2)
+
+## Controls-only
+ncons_contonly <- lapply(comm_names, srch_reg, 'nc', sub('dem.race\\+','',m2))
+
+ncons_tbl <- srch_tbl(ncons_raceonly, ncons_racecont)
+tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(ncons_tbl))
+cat(tex, file='tables/consider.tex')
+
+
+ncons_constant_probs <- make_prob_df(ncons_constant, overall=TRUE)
+ncons_overall_probs  <- make_prob_df(ncons_contonly, overall=TRUE)
+ncons_raceonly_probs <- make_prob_df(ncons_raceonly) %>%
+    left_join(ncons_constant_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+ncons_racecont_probs <- make_prob_df(ncons_racecont) %>%
+    left_join(ncons_overall_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+
+prob_dfs <- list(ncons_raceonly_probs, ncons_racecont_probs)
+fnames <- sprintf('images/%s.png', c('notconsider', 'notconsider_controls'))
+srch_plots(prob_dfs, fnames, consider=FALSE)
+```
