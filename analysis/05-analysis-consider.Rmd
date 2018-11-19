@@ -8,18 +8,18 @@ For all of the results, the communities are grouped by county and, within county
 
 ```{r plot-racial-composition}
 ## Ordered by state, county, distance from downtown
+load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 comm_names <- c('columbia.heights', 'brightwood',
                 'langley.park', 'hyattsville', 'greenbelt',
                 'wheaton', 'germantown',
                 'arlington',
                 'annandale', 'huntington', 'herndon')
 
-load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
-comms <- comms[order(comms$pctnhw),]
-comm_order <- comms$commname
+# comms <- comms[order(comms$pctnhw),]
+# comm_order <- comms$commname
 comms_long <- gather(comms, commnum, values, pctnhw, pctnhb, pctlat, pctapi)
-comms_long$commname <- ordered(comms_long$commname, levels=comm_order)
+comms_long$commname <- ordered(comms_long$commname, levels=comm_names)
 comms_long$commnum <- ordered(comms_long$commnum, levels=c('pctapi', 'pctnhb', 'pctlat', 'pctnhw'))
 
 ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='identity', position=position_stack()) + coord_flip()
@@ -40,7 +40,6 @@ To do this, define the `srch_reg` function to run weighted regression with multi
 
 
 ```{r consider-analysis}
-load(paste0(dataDIR,'Dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 srch_reg <- function(comm, dimension, indvars='dem.race') {
     outvar <- paste(dimension, comm, sep='_')
     fmla <- as.formula(paste(outvar, indvars, sep='~'))
@@ -70,7 +69,8 @@ srch_tbl <- function(base, controls) {
     base_tbl <- huxreg(base, statistics=c(''), error_format = '', borders = 0)
     base_tbl[1,] <- c('', comm_titles)
     base_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
-    base_tbl <- t(base_tbl[seq(2,8,2),])
+    base_tbl <- t(base_tbl[c(1,seq(2,8,2)),])
+    base_tbl
 
     cont_tbl <- huxreg(controls,
                        statistics=c(''), error_format='', borders=0,
@@ -154,6 +154,7 @@ srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
                                                    ylims=c(0,.75))
     for(i in 1:2) {
         df <- prob_dfs[[i]]
+        print(levels(df$comm))
         plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
             geom_errorbar(aes(ymin=prob_overall,ymax=prob),
                           position=position_dodge(dodge_width), width=0) +
@@ -161,7 +162,7 @@ srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
             annotate("text", x=counties$x, y=plt_params$ypos,
                      label=counties$name, size=3, hjust=1) +
             scale_x_continuous(breaks=ypos,
-                               labels=levels(df$comm)) +
+                               labels=comm_names) +
             scale_y_continuous(breaks=plt_params$ybreaks,
                                limits=plt_params$ylims) +
             labs(x='Community', y='Proportion') +
