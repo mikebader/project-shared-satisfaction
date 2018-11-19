@@ -186,24 +186,6 @@ names <- c(names, '\\emph{Neighborhood Experience}\\\\Years in Neighborhood',
                   'Quadrivial Neighborhood')
 ```
 
-**Political Ideology**
-
-* *Political ideology*, three categories based on Question 65: "In general, would you describe your political views as…"
-
-```{r political-variables}
-# dcas$pol1 <- unclass(dcas$dem.political)%in%c(1,2)
-# dcas$pol2 <- unclass(dcas$dem.political)==3
-# dcas$pol3 <- unclass(dcas$dem.political)%in%c(4,5)
-# for(i in 1:3) { ## Check recoding
-#     print(table(dcas[, c('dem.political', paste0('pol',i))]))
-# }
-# pol_dummies <- paste0('pol',1:3)
-# dcas[, paste0(pol_dummies,'c')] <- scale(dcas[, pol_dummies], scale=FALSE)
-# 
-# means <- c(means, apply(dcas[, pol_dummies], 2, mean, na.rm=TRUE))
-# names <- c(names, 
-#            '\\emph{Political Ideology}\\\\Conservative', 'Moderate', 'Liberal')
-```
 
 ## Descriptive Statistics
 Descriptive statistics are calculated unweighted.
@@ -482,6 +464,27 @@ mbet_tbl
 cat(to_latex(mbet_tbl), file='tables/muchbetter.tex')
 ```
 
+### Consider Other Multiethnic Neighborhoods
+Assess how residents of different races would consider other multiethnic neighborhoods in the DC area. First, analyze results by race descriptively. Second, analyze results with control variables. Create plots for both descriptive and analytic results.
+
+#### Racial Composition in Selectable Neighborhoods
+Plot the racial composition in the 11 selectable neighborhoods
+Racial composition of selectable communities
+```{r plot-racial-composition}
+load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
+comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
+comms <- comms[order(comms$pctnhw),]
+comm_order <- comms$commname
+comms_long <- gather(comms, commnum, values, pctnhw, pctnhb, pctlat, pctapi)
+comms_long$commname <- ordered(comms_long$commname, levels=comm_order)
+comms_long$commnum <- ordered(comms_long$commnum, levels=c('pctapi', 'pctnhb', 'pctlat', 'pctnhw'))
+
+ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='identity', position=position_stack()) + coord_flip()
+```
+
+#### Descriptive Analysis Where People Would Consider Moving
+
+
 ```{r future-descriptives}
 srch_mean <- function(comm, dimension) {
     out_fmla <- as.formula(paste0('~ ',dimension, '_', comm))
@@ -510,91 +513,20 @@ nconsider_means <- bind_rows(lapply(comm_names, srch_mean, 'nc'))
 nconsider_means$ci <- 1.96*nconsider_means$se
 ```
 
+Analyze four models for each of the 11 communities: 
 
-```{r plot-consider-descriptives}
-consider_means$comm <- ordered(consider_means$comm,
-                               levels=comm_names)
-consider_means$race <- ordered(consider_means$race,
-                               levels=c('api', 'black', 'latino', 'white',
-                                        'overall'))
-consider_plt_df <- consider_means[consider_means$race=='overall',
-                                  c('comm','prop')] %>%
-                   rename(overall = prop) %>%
-                   mutate(pos=c(0,2,8,10,12,16,18,24,28,30,32)) %>%
-                   right_join(consider_means[consider_means$race!='overall',],
-                              by='comm')
-dodge_width <- 1
-ggplot(consider_plt_df, aes(x=pos, y=prop, shape=race)) + 
-    geom_errorbar(aes(ymin=overall,ymax=prop), 
-                  position=position_dodge(dodge_width), width=0) +
-    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
-    annotate("text", x=counties$x, y=.3, label=counties$name, size=3, hjust=1) +
-    scale_x_continuous(breaks=c(0,2,8,10,12,16,18,24,28,30,32),
-                       labels=levels(consider_plt_df$comm)) +
-    scale_y_continuous(breaks=seq(0,.25,0.05), limits=c(0,.30)) +
-    labs(
-        x='Community', y='Proportion', 
-        title='Proportion willing to consider community by race' 
-    ) + 
-    coord_flip() +
-    scale_shape_manual(values=c(21,22,23,24)) +
-    theme_bw() + theme(
-        panel.grid.minor = element_blank())
-ggsave(file='images/')
+1. **Constant-only model** will be used to plot the distance of each racial group from the overall mean consideration of the neighborhood.
+
+2. **Race-only model** will be used to analyze the influence of race accounting for no other demographic characteristics.
+
+3. **Model with controls** will be used to analyze the influence of race accounting for other demographic characteristics. 
+
+4. **Model with controls only** will be used to plot the distance of each racial group from the overall conditional mean. 
+
+To do this, define the `srch_reg` function to run weighted regression with multiple imputation. Use the `srch_reg` function to cycle through each of the eleven outcomes. 
 
 
-### Separate plot for consider by each race
-# colors <- c('darkslategray4', 'tomato1')
-# for(grp in c('overall', 'white','black','latino','api')){
-#     color_scale <- if(grp=='overall') rev(colors) else colors
-#     ggplot(subset(consider_means, race==grp|race=='overall'), 
-#            aes(x=comm, y=prop, color=race)) + 
-#         geom_point(size=1.5) +
-#         scale_color_manual(values=color_scale) +
-#         coord_flip() + ylim(c(0,.25)) +
-#         labs(
-#             x='Community', y='Proportion', 
-#             title='Proportion willing to consider neighborhood' 
-#         )
-#     ggsave(sprintf('images/consider_%s.png', grp), 
-#            width=8, height=4.5, units='in')
-# }
-
-```
-
-```{r plot-not-consider-descriptives}
-nconsider_means$comm <- ordered(nconsider_means$comm,
-                               levels=comm_names)
-nconsider_means$race <- ordered(nconsider_means$race,
-                               levels=c('api', 'black', 'latino', 'white',
-                                        'overall'))
-nconsider_plt_df <- nconsider_means[nconsider_means$race=='overall',
-                                  c('comm','prop')] %>%
-                   rename(overall = prop) %>%
-                   mutate(pos=c(0,2,8,10,12,16,18,24,28,30,32)) %>%
-                   right_join(nconsider_means[nconsider_means$race!='overall',],
-                              by='comm')
-
-ggplot(nconsider_plt_df, aes(x=pos, y=prop, shape=race)) + 
-    geom_errorbar(aes(ymin=overall,ymax=prop), 
-                  position=position_dodge(dodge_width), width=0) +
-    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
-    annotate("text", x=counties$x, y=.73, label=counties$name, size=3, hjust=1) +
-    scale_x_continuous(breaks=c(0,2,8,10,12,16,18,24,28,30,32),
-                       labels=levels(consider_plt_df$comm)) +
-    scale_y_continuous(breaks=seq(0,.5,0.1), limits=c(0,.75)) +
-    labs(
-        x='Community', y='Proportion', 
-        title='Proportion willing to consider community by race' 
-    ) + 
-    coord_flip() +
-    scale_shape_manual(values=c(21,22,23,24)) +
-    theme_bw() + theme(
-        panel.grid.minor = element_blank())
-
-```
-
-```{r future-analysis}
+```{r consider-analysis}
 load(paste0(dataDIR,'Dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 srch_reg <- function(comm, dimension, indvars='dem.race') {
     outvar <- paste(dimension, comm, sep='_')
@@ -603,37 +535,206 @@ srch_reg <- function(comm, dimension, indvars='dem.race') {
         svyglm(fmla, family=quasibinomial))))
 }
 
-## Make table with model with race only 
-cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
-cons_race_tbl <- huxreg(cons_raceonly, 
-                        statistics=c(''), error_format='', borders=0)
-comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
-cons_race_tbl[1,] <- c('', comm_titles)
-cons_race_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
-cons_race_tbl <- cons_race_tbl[c(1,seq(2,8,2)),]
-cons_race_tbl <- t(cons_race_tbl)
+## Constant-only
+cons_constant <- lapply(comm_names, srch_reg, 'cons', '1')
 
-## Add model with controls
+## Race-only
+cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
+
+## Race with controls
 cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2)
-cons_cont_tbl <- huxreg(cons_racecont, 
-                        statistics=c(''), error_format='', borders=0,
+
+## Controls-only
+cons_contonly <- lapply(comm_names, srch_reg, 'cons', sub('dem.race\\+','',m2))
+```
+
+Report the regression coefficients from the race-only and race-with-controls models. (The output of the huxtable is not pretty -- that needs to be fixed). 
+
+```{r consider-report-analysis}
+srch_tbl <- function(base, controls) {
+    
+    comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
+    base_tbl <- huxreg(base, statistics=c(''), error_format = '', borders = 0)
+    base_tbl[1,] <- c('', comm_titles)
+    base_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+    base_tbl <- t(base_tbl[seq(2,8,2),])
+    
+    cont_tbl <- huxreg(controls, 
+                       statistics=c(''), error_format='', borders=0,
                         coefs=c('(Intercept)', 'dem.raceapi', 'dem.raceblack',
                                 'dem.racelatino'))
-cons_cont_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
-cons_cont_tbl <- cons_cont_tbl[seq(2,8,2),]
-
-for(i in 1:4) {
-    cons_race_tbl <- insert_column(cons_race_tbl,
-                                   as.character(cons_cont_tbl[i, ]),
-                                   after=i+4)
-    i = i + 1
+    cont_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
+    cont_tbl <- cont_tbl[seq(2,8,2),]
+    
+    for(i in 1:4) {
+        rownum <- i+4
+        base_tbl <- insert_column(base_tbl, as.character(cont_tbl[i, ]),
+                                  after=ncol(base_tbl))
+    }
+    insert_row(base_tbl, c('*** p < 0.001; ** p < 0.01; * p < 0.05',
+                           rep('',ncol(base_tbl)-1)), 
+               after=nrow(base_tbl))
+    return(base_tbl)
 }
-insert_row(cons_race_tbl, c('*** p < 0.001; ** p < 0.01; * p < 0.05', 
-                            rep('',ncol(cons_race_tbl)-1)), 
-           after=nrow(cons_race_tbl))
-tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(cons_race_tbl))
+
+cons_tbl <- srch_tbl(cons_raceonly, cons_racecont)
+tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(cons_tbl))
 cat(tex, file='tables/consider.tex')
 ```
+
+Create a plot with the predicted probability for each racial group plotted for each community. Then draw a line from the predicted probability for a racial group to the overall predicted probability with controls. 
+
+First, analyze the data with all controls (but not race). The centered variables make the intercept the grand mean unconditional on race. Save those values into a data frame called `cons_overall`.
+
+Next, compute predicted probabilities for each of the racial groups from the models with controls. Create a long dataset with probabilities by each race for each community. Merge the long dataframe with the overall dataset created above.  
+
+```{r future-plot-functions}
+ypos <- c(0,2,8,10,12,16,18,24,28,30,32)
+counties <- list(name=c('Fairfax, VA', 'Arlington, VA', 'Montgomery, MD',
+                        'Prince George\'s, MD', 'Washington, DC'),
+                 x=c(30, 24, 17, 10, 1))
+dodge_width <- 1
+races <- c('white','asian','black','latino')
+
+srch_gather <- function(res, overall=FALSE) {
+    sumres <- summary(res)
+    if(overall==FALSE) {
+        logits <- sumres[1,1] + c(0, sumres[2:4,1])
+        ci <- 1.96*sumres[1:4,2]
+    }
+    else {
+        logits <- sumres[1,1]
+        ci <- 1.96*sumres[1,2]
+    }
+    lci <- logits-ci
+    uci <- logits+ci
+    probs <- exp(logits)/(1+exp(logits))
+    uci <- exp(logits+ci)/(1+exp(logits+ci))
+    lci <- exp(logits-ci)/(1+exp(logits-ci))
+    out <- matrix(c(probs,lci,uci), nrow=1)
+}
+make_prob_df <- function(regs, overall=FALSE) {
+    reg_matrix <- t(sapply(regs, srch_gather, overall)) 
+    if(overall==TRUE) {
+        prob_df <- reg_matrix %>%
+            as_data_frame() %>%
+            mutate(comm=comm_names, pos=ypos)
+        names(prob_df)[1:3] <- c('prob', 'lci', 'uci')
+    }
+    else {
+        prob_df <- data.frame(
+            prob=matrix(reg_matrix[,1:4], ncol=1),
+            lci=matrix(reg_matrix[5:8], ncol=1),
+            uci=matrix(reg_matrix[9:12], ncol=1), 
+            race=rep(races, each=11), 
+            comm=rep(comm_names, 4)
+        )
+    }
+    return(prob_df)
+}
+srch_plots <- function(prob_dfs, prob_names, consider=TRUE) {
+    plt_params <- if(consider==TRUE) list(ypos=.33, 
+                                          ybreaks=seq(0,.25,0.05), 
+                                          ylims=c(0,.35)) else
+                                     list(ypos=.73,
+                                          ybreaks=seq(0,.50,0.1),
+                                          ylims=c(0,.75))
+    for(i in 1:2) {
+        df <- prob_dfs[[i]]
+        plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
+            geom_errorbar(aes(ymin=prob_overall,ymax=prob),
+                          position=position_dodge(dodge_width), width=0) +
+            geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
+            annotate("text", x=counties$x, y=plt_params$ypos, 
+                     label=counties$name, size=3, hjust=1) +
+            scale_x_continuous(breaks=ypos,
+                               labels=levels(consider_plt_df$comm)) +
+            scale_y_continuous(breaks=plt_params$ybreaks, 
+                               limits=plt_params$ylims) +
+            labs(x='Community', y='Proportion') +
+            coord_flip() +
+            scale_shape_manual(values=c(21,22,23,24)) +
+            theme_bw() + theme(
+                panel.grid.minor = element_blank())
+        plts <- list(plts, plt)
+        ggsave(plt, file=sprintf('images/%s.png', prob_names[i]),
+               units='in', width=8, height=4.5)
+    }
+}
+```
+
+```{r consider-plot-results}
+cons_constant_probs <- make_prob_df(cons_constant, overall=TRUE)
+cons_overall_probs  <- make_prob_df(cons_contonly, overall=TRUE)
+cons_raceonly_probs <- make_prob_df(cons_raceonly) %>%
+    left_join(cons_constant_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+cons_racecont_probs <- make_prob_df(cons_racecont) %>%
+    left_join(cons_overall_probs, by='comm', suffix=c('', '_overall')) %>%
+    as_tibble()
+
+prob_dfs <- list(cons_raceonly_probs, cons_racecont_probs)
+prob_names <- c('consider', 'consider_controls')
+srch_plots(prob_dfs, prob_names)
+```
+
+```{r not-consider}
+## Constant-only
+ncons_constant <- lapply(comm_names, srch_reg, 'nc', '1')
+
+## Race-only
+ncons_raceonly <- lapply(comm_names, srch_reg, 'nc')
+
+## Race with controls
+ncons_racecont <- lapply(comm_names, srch_reg, 'nc', m2)
+
+## Controls-only
+ncons_contonly <- lapply(comm_names, srch_reg, 'nc', sub('dem.race\\+','',m2))
+
+ncons_constant_probs <- make_prob_df(ncons_constant, overall=TRUE)
+ncons_overall_probs  <- make_prob_df(ncons_contonly, overall=TRUE)
+ncons_raceonly_probs <- make_prob_df(ncons_raceonly) %>%
+    left_join(ncons_constant_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+ncons_racecont_probs <- make_prob_df(ncons_racecont) %>%
+    left_join(ncons_overall_probs, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+
+prob_dfs <- list(ncons_raceonly_probs, ncons_racecont_probs)
+prob_names <- c('notconsider', 'notconsider_controls')
+srch_plots(prob_dfs, prob_names, consider=FALSE)
+```
+
+Plot predicted probabilities by race using `geom_point` and a line extending from the predicted probability for the racial group to the overall predicted probability in the model with all controls other than race. 
+```{r plot-consider-analysis-pt3}
+ggplot(cons_probs, aes(x=pos, y=prob, shape=race)) + 
+    geom_errorbar(aes(ymin=prob_overall,ymax=prob), 
+                  position=position_dodge(dodge_width), width=0) +
+    geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
+    annotate("text", x=counties$x, y=.3, label=counties$name, size=3, hjust=1) +
+    scale_x_continuous(breaks=ypos,
+                       labels=levels(consider_plt_df$comm)) +
+    scale_y_continuous(breaks=seq(0,.25,0.05), limits=c(0,.30)) +
+    labs(x='Community', y='Proportion') + 
+    coord_flip() +
+    scale_shape_manual(values=c(21,22,23,24)) +
+    theme_bw() + theme(
+        panel.grid.minor = element_blank())
+plt
+
+```
+```{r plot-not-consider-pt1}
+races <- c('white','asian','black','latino')
+cons_overall <- mutate(cons_overall, pos=ypos)
+cons_probs_list <- t(sapply(cons_racecont, srch_gather))
+cons_probs <- data.frame(prob=matrix(cons_probs_list[,1:4], ncol=1),
+                         lci=matrix(cons_probs_list[,5:8], ncol=1),
+                         uci=matrix(cons_probs_list[,9:12], ncol=1),
+                         race=rep(races,each=11), comm=rep(comm_names,4)) %>%
+    left_join(cons_overall, by='comm', suffix=c('','_overall')) %>%
+    as_tibble()
+```
+
 
 ```{r any-other}
 cons_vars <- grep('^cons_', names(dcas), value=TRUE)
