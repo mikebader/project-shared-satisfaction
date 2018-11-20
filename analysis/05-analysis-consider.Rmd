@@ -14,6 +14,7 @@ comm_names <- c('columbia.heights', 'brightwood',
                 'wheaton', 'germantown',
                 'arlington',
                 'annandale', 'huntington', 'herndon')
+races <- c('white','asian','black','latino')
 
 comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
 # comms <- comms[order(comms$pctnhw),]
@@ -26,7 +27,27 @@ ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='ide
 ```
 
 ## Analyze Where People Would Consider Moving
-Analyze four models for each of the 11 communities:
+Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
+
+```{r consider-any}
+consany_res <- MIcombine(with(dcassvy,
+                              svyglm(consider_any~dem.race, 
+                                     family=quasibinomial)))
+(consany_sum <- summary(consany_res))
+logits <- consany_sum[1,1] + c(0, consany_sum[2:4,1])
+probs <- round(exp(logits)/(1+exp(logits)), 2)*100
+names(probs) <- races
+probs
+huxreg(consany_res)
+
+consnum_res <- MIcombine(with(dcassvy,
+                              svyby(~consider_num, ~dem.race, svymean)))
+(consnum_sum <- coef(consnum_res))
+```
+
+Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
+
+To analyze the association of race with considering any one of the eleven communities, I constructed four models:
 
 1. **Constant-only model** will be used to plot the distance of each racial group from the overall mean consideration of the neighborhood.
 
@@ -63,36 +84,56 @@ cons_contonly <- lapply(comm_names, srch_reg, 'cons', sub('dem.race\\+','',m2))
 Report the regression coefficients from the race-only and race-with-controls models. (The output of the huxtable is not pretty -- that needs to be fixed).
 
 ```{r consider-report-analysis, warning=FALSE}
-srch_tbl <- function(base, controls) {
-
-    comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
-    base_tbl <- huxreg(base, statistics=c(''), error_format = '', borders = 0)
-    base_tbl[1,] <- c('', comm_titles)
-    base_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
-    base_tbl <- t(base_tbl[c(1,seq(2,8,2)),])
-    base_tbl
-
-    cont_tbl <- huxreg(controls,
-                       statistics=c(''), error_format='', borders=0,
-                       coefs=c('(Intercept)', 'dem.raceapi', 'dem.raceblack',
-                               'dem.racelatino'))
-    cont_tbl[seq(2,8,2),1] <- c('Intercept', 'Asian', 'Black', 'Latino')
-    cont_tbl <- cont_tbl[seq(2,8,2),]
-
-    for(i in 1:4) {
-        rownum <- i+4
-        base_tbl <- insert_column(base_tbl, as.character(cont_tbl[i, ]),
-                                  after=ncol(base_tbl))
-    }
-    insert_row(base_tbl, c('*** p < 0.001; ** p < 0.01; * p < 0.05',
-                           rep('',ncol(base_tbl)-1)),
-               after=nrow(base_tbl))
-    return(base_tbl)
+model_summary <- function(res) {
+    coef <- res$coefficients
+    s.err <- sqrt(diag(res$variance))
+    tvalue <- coef/s.err
+    pvalue <- 2*pnorm(-abs(tvalue))
+    stars <- sapply(pvalue, function(x){if(x<.001) '***' else if(x<.01) '**' else if (x<.05) '*' else ''})
+    return(cbind(coef, s.err, tvalue, pvalue))
 }
 
-cons_tbl <- srch_tbl(cons_raceonly, cons_racecont)
-tex <- gsub('\\{table\\}', '\\{sidewaystable\\}', to_latex(cons_tbl))
-cat(tex, file='tables/consider.tex')
+report_srch <- function(m_summs) {
+    race_coef <- lapply(m_summs, function(x){
+        x <- x[rownames(x) %in% c('(Intercept)', 'dem.raceapi', 
+                                  'dem.raceblack','dem.racelatino'),] 
+        stars <- sapply(x[,'pvalue'], function(x){if(x<.001) '***'
+            else if(x<.01) '**' else if (x<.05) '*' else ''})
+        matrix(mapply(c,sprintf('%5.3f',x[,'coef']),stars),nrow=1)
+        }) %>%
+    unlist() %>%
+    matrix(ncol=8, byrow=TRUE)
+    return(race_coef)
+}
+
+srch_tbl <- function(reports, fname, caption, label) {
+    add.to.row <- list()
+    add.to.row$pos <- list(0,0)
+    add.to.row$command <- c(paste0('& \\multicolumn{8}{c}{Race only} ',
+                                   '& \\multicolumn{8}{c}{With controls}\\\\\n'),
+                            paste0('& Intercept && Asian && Black && Latino&',
+                                   '& Intercept && Asian && Black && Latino&\\\\\n'))
+    comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
+    cons_summs <- lapply(reports, model_summary)
+    cons_tbl <- cbind(report_srch(cons_summs[1:11]), 
+                      report_srch(cons_summs[12:22]))
+    rownames(cons_tbl) <- comm_titles
+    print(xtable(as.table(cons_tbl),
+                 caption=caption,
+                 label=label,
+                 align='lrlrlrlrlrlrlrlrl'),
+          file=fname, 
+          add.to.row=add.to.row,
+          include.colnames=FALSE,
+          caption.placement='top',
+          floating.environment='sidewaystable',
+          booktabs=TRUE
+    )
+}
+srch_tbl(c(cons_raceonly, cons_racecont), 'tables/consider.tex',
+         'Estimated race coefficients for willingness to consider communities',
+         'tab:consider')
+
 ```
 
 Create a plot with the predicted probability for each racial group plotted for each community. Then draw a line from the predicted probability for a racial group to the overall predicted probability with controls.
@@ -101,13 +142,12 @@ First, analyze the data with all controls (but not race). The centered variables
 
 Next, compute predicted probabilities for each of the racial groups from the models with controls. Create a long dataset with probabilities by each race for each community. Merge the long dataframe with the overall dataset created above.
 
-```{r future-plot-functions, include=FALSE}
+```{r future-plot-functions}
 ypos <- c(0,2,8,10,12,16,18,24,28,30,32)
 counties <- list(name=c('Fairfax, VA', 'Arlington, VA', 'Montgomery, MD',
                         'Prince George\'s, MD', 'Washington, DC'),
                  x=c(30, 24, 17, 10, 1))
 dodge_width <- 1
-races <- c('white','asian','black','latino')
 
 srch_gather <- function(res, overall=FALSE) {
     sumres <- summary(res)
@@ -154,7 +194,6 @@ srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
                                                    ylims=c(0,.75))
     for(i in 1:2) {
         df <- prob_dfs[[i]]
-        print(levels(df$comm))
         plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
             geom_errorbar(aes(ymin=prob_overall,ymax=prob),
                           position=position_dodge(dodge_width), width=0) +

@@ -36,33 +36,32 @@ ggsave('images/satisfied_descriptive.png', plot=satisfied_plt,
 
 ```{r satisfied-analysis, warning=FALSE, results='hide'}
 m1_sat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('satisfied ~',m1)), family=binomial)
-))
+                         svyglm(as.formula(paste('satisfied ~',m1)), 
+                                family=binomial)))
 summary(m1_sat)
 m2_sat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('satisfied ~', m2)), family=quasibinomial)
-))
+                         svyglm(as.formula(paste('satisfied ~', m2)),
+                                family=quasibinomial)))
 summary(m2_sat)
 m3_sat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('satisfied ~', m3)), family=quasibinomial)
-))
+                         svyglm(as.formula(paste('satisfied ~', m3)), 
+                                family=quasibinomial)))
 summary(m3_sat)
 ```
 
 ```{r report-satisfaction-analysis}
 regression_labels <- c('Asian','Black','Latinx',
-'Age','Foreign Born','Male',
-'Children Present', 'Married',
-levels(dcas$dem.educ.attain)[c(1:3,5)],
-levels(dcas$dem.income.cat4)[c(1,3:4)],
-'Years in neighborhood',
-'1-9 blocks', '$>$50 blocks',
-'Quadrivial Neighborhood'
-)
+                       'Age','Foreign Born','Male',
+                       'Children Present', 'Married',
+                       levels(dcas$dem.educ.attain)[c(1:3,5)],
+                       levels(dcas$dem.income.cat4)[c(1,3:4)],
+                       'Years in neighborhood',
+                       '1-9 blocks', '$>$50 blocks',
+                       'Quadrivial Neighborhood')
 sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
-caption=paste0('Estimated coefficients predicting ',
-' neighborhood satisfaction'),
-label='tab:satisfaction')
+                         caption=paste0('Estimated coefficients predicting ',
+                                        ' neighborhood satisfaction'),
+                         label='tab:satisfaction')
 sat_tbl
 cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
@@ -73,14 +72,12 @@ Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(
 
 ```{r bivariate-extremely-satisfied}
 extreme_means <- MIcombine(with(dcassvy,
-svyby(~extremely_satisfied, ~dem.race, svymean)
-))
-extreme_diffs <- MIcombine(with(dcassvy,
-svyglm(extremely_satisfied ~ dem.race, family=quasibinomial)
-))
+                                svyby(~extremely_satisfied, ~dem.race, svymean)))
+extreme_diffs <- MIcombine(with(dcassvy, 
+                                svyglm(extremely_satisfied ~ dem.race,
+                                       family=quasibinomial)))
 extreme_prob_white <- exp(coef(extreme_diffs)[1])/(1+exp(coef(extreme_diffs)[1]))
 extreme_odds <- exp(coef(extreme_diffs))
-
 ```
 
 `r round(extreme_prob_white, 2)*100` percent of white residents reported being extremely satisfied with their neighborhoods. That value was
@@ -90,18 +87,16 @@ extreme_odds <- exp(coef(extreme_diffs))
 
 ```{r extremely-satisfied-analysis, results='hide'}
 m1_esat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('extremely_satisfied ~', m1)), family=binomial)
-))
+                          svyglm(as.formula(paste('extremely_satisfied ~', m1)),
+                                 family=binomial)))
 summary(m1_esat)
 m2_esat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('extremely_satisfied ~', m2)),
-family=quasibinomial)
-))
+                          svyglm(as.formula(paste('extremely_satisfied ~', m2)),
+                                 family=quasibinomial)))
 summary(m2_esat)
 m3_esat <- MIcombine(with(dcassvy,
-svyglm(as.formula(paste('extremely_satisfied ~', m3)),
-family=quasibinomial)
-))
+                          svyglm(as.formula(paste('extremely_satisfied ~', m3)),
+                                 family=quasibinomial)))
 summary(m3_esat)
 ```
 

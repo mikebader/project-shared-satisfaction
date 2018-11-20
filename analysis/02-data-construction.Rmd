@@ -8,10 +8,12 @@ vars <- c('satisfied', 'extremely_satisfied', 'better',  'much_better',
           'dem.race', 'agec', 'forbornc', 'manc', 'kidsc', 'marriedc',
           'educ1c', 'educ2c', 'educ3c', 'educ5c', 'inc1c',
           'inc3c', 'inc4c', 'nhdyrsc', 'nhdsize1c', 'nhdsize3c', 'quadc',
+          'consider_num', 'consider_any', 'notconsider_num', 'notconsider_any',
           unlist(new_search_names))
 idvars <- c('studycase','weight', 'sample_strata')
 dcassub <- dcas[!is.na(dcas$dem.race), c(vars, idvars)]
-nominals <- vars[!(vars %in% c('agec', 'nhdyrsc'))]
+nominals <- vars[!(vars %in% c('agec', 'nhdyrsc', 
+                               'consider_num', 'notconsider_num'))]
 dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , 
                  p2s = F, idvars=idvars)
 dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
@@ -31,7 +33,7 @@ m2 <- paste0(m1, '+ agec + forbornc + manc + kidsc + marriedc + ',
 'educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c')
 m3 <- paste0(m2, '+ nhdyrsc + nhdsize1c + nhdsize3c + quadc')
 source('broom_mi.R') ## Saves multiple imputation
-## objects for use with tidyverse
+                     ## objects for use with tidyverse
 source('report_models.R')
 ```
 

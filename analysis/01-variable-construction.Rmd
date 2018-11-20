@@ -37,6 +37,12 @@ new_search_names <- sapply(new_search_matches, function(x){
     paste(rev(x[2:3]), collapse='_')})
 names(dcas)[names(dcas)%in%search.vars] <- new_search_names
 N <- sum(is.na(dcas$dem.race))
+
+dcas$consider_num <- rowSums(dcas[grep('^cons_', names(dcas))])
+dcas$consider_any <- dcas$consider_num > 0
+dcas$notconsider_num <- rowSums(dcas[grep('^nc_', names(dcas))])
+dcas$notconsider_any <- dcas$notconsider_num >0
+
 ```
 ## Independent Variable
 The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r N`). 
