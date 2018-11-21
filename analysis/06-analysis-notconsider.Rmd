@@ -44,10 +44,11 @@ ncons_constant <- lapply(comm_names, srch_reg, 'nc', '1')
 ncons_raceonly <- lapply(comm_names, srch_reg, 'nc')
 
 ## Race with controls
-ncons_racecont <- lapply(comm_names, srch_reg, 'nc', m2)
+ncons_racecont <- lapply(comm_names, srch_reg, 'nc', m2, include.live=TRUE)
 
 ## Controls-only
-ncons_contonly <- lapply(comm_names, srch_reg, 'nc', sub('dem.race\\+','',m2))
+ncons_contonly <- lapply(comm_names, srch_reg, 
+                         'nc', sub('dem.race\\+','',m2), include.live=TRUE)
 
 srch_tbl(c(ncons_raceonly, ncons_racecont), 'tables/notconsider.tex',
          'Estimated race coefficients for not considering communities',

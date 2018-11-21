@@ -65,6 +65,8 @@ comms_tbl
 Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
 
 ```{r consider-any}
+consany_mean <- MIcombine(with(dcassvy, 
+                               svymean(~consider_any)))$coefficients[2]
 consany_res <- MIcombine(with(dcassvy,
                               svyglm(consider_any~dem.race, 
                                      family=quasibinomial)))
@@ -80,7 +82,7 @@ consnum_res <- MIcombine(with(dcassvy,
 (consnum_sum <- coef(consnum_res))
 ```
 
-Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
+Overall `r round(consany_mean*100)` people would consider living in one of the eleven communities named in the survey. Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
 
 To analyze the association of race with considering any one of the eleven communities, I constructed four models:
 
@@ -96,8 +98,10 @@ To do this, define the `srch_reg` function to run weighted regression with multi
 
 
 ```{r consider-analysis}
-srch_reg <- function(comm, dimension, indvars='dem.race') {
+srch_reg <- function(comm, dimension, indvars='dem.race',include.live=FALSE) {
     outvar <- paste(dimension, comm, sep='_')
+    indvars <- if(include.live==TRUE) 
+                    paste(indvars, sep='+',paste0('live_', comm)) else indvars
     fmla <- as.formula(paste(outvar, indvars, sep='~'))
     res <- MIcombine((with(dcassvy,
                            svyglm(fmla, family=quasibinomial))))
@@ -110,10 +114,11 @@ cons_constant <- lapply(comm_names, srch_reg, 'cons', '1')
 cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
 
 ## Race with controls
-cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2)
+cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2, include.live=TRUE)
 
 ## Controls-only
-cons_contonly <- lapply(comm_names, srch_reg, 'cons', sub('dem.race\\+','',m2))
+cons_contonly <- lapply(comm_names, srch_reg, 'cons', 
+                        sub('dem.race\\+','',m2), include.live=TRUE)
 ```
 
 Report the regression coefficients from the race-only and race-with-controls models. (The output of the huxtable is not pretty -- that needs to be fixed).
