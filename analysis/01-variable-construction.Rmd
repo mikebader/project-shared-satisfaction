@@ -174,6 +174,7 @@ print.xtable(xtable(descriptive_tbl,
              caption.placement='top',
              include.rownames=FALSE,
              file='tables/descriptives.tex',
-             sanitize.text.function = identity)
+             sanitize.text.function = identity,
+             timestamp='')
 ```
 
