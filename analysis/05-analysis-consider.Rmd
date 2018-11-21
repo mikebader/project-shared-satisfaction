@@ -17,13 +17,48 @@ comm_names <- c('columbia.heights', 'brightwood',
 races <- c('white','asian','black','latino')
 
 comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
+comms$commname <- ordered(comms$commname, levels=comm_names)
+comms <- comms[order(comms$commname),]
 # comms <- comms[order(comms$pctnhw),]
 # comm_order <- comms$commname
 comms_long <- gather(comms, commnum, values, pctnhw, pctnhb, pctlat, pctapi)
-comms_long$commname <- ordered(comms_long$commname, levels=comm_names)
+#comms_long$commname <- ordered(comms_long$commname, levels=comm_names)
 comms_long$commnum <- ordered(comms_long$commnum, levels=c('pctapi', 'pctnhb', 'pctlat', 'pctnhw'))
 
 ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='identity', position=position_stack()) + coord_flip()
+
+comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
+comms_tbl <- as_tibble(comms[,c('commname','pctnhw','pctnhb','pctlat','pctapi',
+                                'medinc','medval','pctpov')]) %>%
+    mutate(medval=sprintf('$%s',format(round(medval)*1000, big.mark=',', 
+                                       scientific=FALSE, digits=3))) %>%
+    mutate(medinc=sprintf('$%s', format(round(medinc)*1000, big.mark=',',
+                                        scientific=FALSE, digits=3))) %>%
+    mutate(commname=comm_titles)
+add.to.row <- list(pos=list(0,0))
+add.to.row$command <- c(paste0('&\\multicolumn{4}{c}{Racial Composition}&&&\\\\\n'),
+                        paste0('& White', '& Black', '& Latino', '& Asian',
+                               '& Med.\\ income', '& Med.\\ value', 
+                               '& Pct.\\ poor\\\\'))
+print(xtable(comms_tbl, 
+             digits=0, 
+             caption='Characteristics of selectable communities, 2016 DC Area Survey',
+             label='tab:communities',
+             align=c('l','p{1.25in}',rep('R{5em}',4),rep('R{8em}',2),'R{5em}')),
+      file='tables/communities.tex',
+      add.to.row=add.to.row, 
+      include.colnames=FALSE, include.rownames=FALSE,
+      caption.placement='top',
+      floating.environment='sidewaystable',
+      booktabs=TRUE)
+
+E <- function(cols) { ## Entropy value
+    p <- sapply(cols, function(x){x/100})
+    sum(sapply(p, function(x){x*log(1/x)}))
+}
+comms_tbl$E <- apply(comms_tbl[,c('pctnhw','pctnhb','pctlat','pctapi')],1,E)
+comms_tbl
+
 ```
 
 ## Analyze Where People Would Consider Moving
@@ -127,7 +162,8 @@ srch_tbl <- function(reports, fname, caption, label) {
           include.colnames=FALSE,
           caption.placement='top',
           floating.environment='sidewaystable',
-          booktabs=TRUE
+          booktabs=TRUE,
+          timestamp=''
     )
 }
 srch_tbl(c(cons_raceonly, cons_racecont), 'tables/consider.tex',
@@ -192,6 +228,7 @@ srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
                                               list(ypos=.73,
                                                    ybreaks=seq(0,.50,0.1),
                                                    ylims=c(0,.75))
+    plts <- list()
     for(i in 1:2) {
         df <- prob_dfs[[i]]
         plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
@@ -211,7 +248,9 @@ srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
                 panel.grid.minor = element_blank())
         ggsave(plt, file=fnames[i],
                units='in', width=8, height=4.5)
+        plts[[i]] <- plt
     }
+    return(plts)
 }
 ```
 
@@ -228,6 +267,8 @@ cons_racecont_probs <- make_prob_df(cons_racecont) %>%
 
 prob_dfs <- list(cons_raceonly_probs, cons_racecont_probs)
 fnames <- sprintf('images/%s.png', c('consider', 'consider_controls'))
-srch_plots(prob_dfs, fnames)
+plts <- srch_plots(prob_dfs, fnames)
+plts[[1]]
+plts[[2]]
 ```
 

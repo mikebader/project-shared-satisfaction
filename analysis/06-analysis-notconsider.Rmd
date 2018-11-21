@@ -65,5 +65,7 @@ ncons_racecont_probs <- make_prob_df(ncons_racecont) %>%
 
 prob_dfs <- list(ncons_raceonly_probs, ncons_racecont_probs)
 fnames <- sprintf('images/%s.png', c('notconsider', 'notconsider_controls'))
-srch_plots(prob_dfs, fnames, consider=FALSE)
+plts <- srch_plots(prob_dfs, fnames, consider=FALSE)
+plts[[1]]
+plts[[2]]
 ```
