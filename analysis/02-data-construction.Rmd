@@ -14,6 +14,7 @@ idvars <- c('studycase','weight', 'sample_strata')
 dcassub <- dcas[!is.na(dcas$dem.race), c(vars, idvars)]
 nominals <- vars[!(vars %in% c('agec', 'nhdyrsc', 
                                'consider_num', 'notconsider_num'))]
+set.seed(214318)
 dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , 
                  p2s = F, idvars=idvars)
 dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
