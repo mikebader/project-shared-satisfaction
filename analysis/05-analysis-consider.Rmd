@@ -82,7 +82,7 @@ consnum_res <- MIcombine(with(dcassvy,
 (consnum_sum <- coef(consnum_res))
 ```
 
-Overall `r round(consany_mean*100)` people would consider living in one of the eleven communities named in the survey. Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
+Overall `r round(consany_mean*100)`% of people would consider living in one of the eleven communities named in the survey. Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
 
 To analyze the association of race with considering any one of the eleven communities, I constructed four models:
 
@@ -121,7 +121,7 @@ cons_contonly <- lapply(comm_names, srch_reg, 'cons',
                         sub('dem.race\\+','',m2), include.live=TRUE)
 ```
 
-Report the regression coefficients from the race-only and race-with-controls models. (The output of the huxtable is not pretty -- that needs to be fixed).
+Report the regression coefficients from the race-only and race-with-controls models. The probabilities of considering neighborhoods conditional on all characteristics except race are reported below.
 
 ```{r consider-report-analysis, warning=FALSE}
 model_summary <- function(res) {
@@ -203,8 +203,8 @@ srch_gather <- function(res, overall=FALSE) {
     lci <- logits-ci
     uci <- logits+ci
     probs <- exp(logits)/(1+exp(logits))
-    uci <- exp(logits+ci)/(1+exp(logits+ci))
-    lci <- exp(logits-ci)/(1+exp(logits-ci))
+    lci <- exp(lci)/(1+exp(lci))
+    uci <- exp(uci)/(1+exp(uci))
     out <- matrix(c(probs,lci,uci), nrow=1)
 }
 make_prob_df <- function(regs, overall=FALSE) {
@@ -218,8 +218,8 @@ make_prob_df <- function(regs, overall=FALSE) {
     else {
         prob_df <- data.frame(
             prob=matrix(reg_matrix[,1:4], ncol=1),
-            lci=matrix(reg_matrix[5:8], ncol=1),
-            uci=matrix(reg_matrix[9:12], ncol=1),
+            lci=matrix(reg_matrix[,5:8], ncol=1),
+            uci=matrix(reg_matrix[,9:12], ncol=1),
             race=rep(races, each=11),
             comm=rep(comm_names, 4)
         )
@@ -275,5 +275,8 @@ fnames <- sprintf('images/%s.png', c('consider', 'consider_controls'))
 plts <- srch_plots(prob_dfs, fnames)
 plts[[1]]
 plts[[2]]
+
+## Probabilities for control-variables-only models reported first
+cons_racecont_probs
 ```
 
