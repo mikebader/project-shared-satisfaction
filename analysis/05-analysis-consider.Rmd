@@ -50,7 +50,8 @@ print(xtable(comms_tbl,
       include.colnames=FALSE, include.rownames=FALSE,
       caption.placement='top',
       floating.environment='sidewaystable',
-      booktabs=TRUE)
+      booktabs=TRUE,
+      timestamp='')
 
 E <- function(cols) { ## Entropy value
     p <- sapply(cols, function(x){x/100})
