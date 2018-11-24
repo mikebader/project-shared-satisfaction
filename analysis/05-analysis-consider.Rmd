@@ -278,6 +278,18 @@ plts[[1]]
 plts[[2]]
 
 ## Probabilities for control-variables-only models reported first
-cons_racecont_probs
+cons_overall_probs
 ```
 
+The following tables represent the racial probabilities, percentage point and percentage difference from overall levels of considering the neighborhood. 
+
+```{r consider-probs-by-race}
+cons_racecont_probs <- cons_racecont_probs %>%
+    mutate(diff=prob-prob_overall) %>%
+    mutate(pct_diff=diff/prob_overall)
+cons_race_diffs <- lapply(c('white','asian','black','latino'),
+    function(x){cons_racecont_probs[cons_racecont_probs$race==x,
+                                    c('comm','race','prob',
+                                      'prob_overall','diff','pct_diff')]})
+cons_race_diffs
+```
