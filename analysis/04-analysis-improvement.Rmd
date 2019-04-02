@@ -92,21 +92,17 @@ Whites are
 ```{r much-better-analysis, results='hide'}
 ## Outcome: Much Better
 m1_mbet <- MIcombine(with(dcassvy,
-                          svyglm(much_better ~ dem.race, family=binomial)
-))
+                          svyglm(as.formula(paste('much_better ~', m1)),
+                                 family=binomial)))
 summary(m1_bet)
 m2_mbet <- MIcombine(with(dcassvy,
-                          svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-                                     educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c,
-                                 family=quasibinomial)
-))
+                          svyglm(as.formula(paste('much_better ~', m2)),
+                                 family=quasibinomial)))
 summary(m2_bet)
 m3_mbet <- MIcombine(with(dcassvy,
-                          svyglm(much_better ~ dem.race + agec + forbornc + manc + kidsc + marriedc +
-                                     educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c +
-                                     nhdyrsc + nhdsize1c + nhdsize3c + quadc + extremely_satisfied,
-                                 family=quasibinomial)
-))
+                          svyglm(as.formula(paste('much_better ~', m3,'+
+                                                  extremely_satisfied')),
+                                 family=quasibinomial)))
 summary(m3_bet)
 (mbet_odds <- exp(coef(m3_mbet)[2:4]))
 ```

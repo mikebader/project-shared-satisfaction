@@ -1,0 +1,17 @@
+Schelling demonstrated that a small distaste for neighbors of a different race could cause a neighborhood to "tip." Schelling's model assumed that racial preferences motivated both moves into the neighborhood as well as moves out of the neighborhood. Subsequent research showed evidence of tipping points at {{TK: LEVELS}}. 
+
+The tipping point model provided a specific case of Speare's more general model that *neighborhood dissatisfaction* caused moves out of neighborhoods. {{TK:TRANSITION}} A household that is completely satisfied with their neighborhood (and unit) would have no incentive to search for a new home. A household that is not satisfied with the neighborhood, however, has an incentive to explore whether it could increase its utility by moving to another neighborhood. Yet, even dissatisfied households might choose to stay in the neighborhood given that the household would incur high transaction costs from moving. The propensity of a household to move would increase as it becomes more dissatisfied. We would expect a move when the expected increase in utility to be gained by moving to another neighborhood would offset the transaction costs incurred by moving. 
+
+A household that moved due to its dissatisfaction in its prior neighborhood would seek neighborhoods that {{had opposite characteristics from the neighborhood it left}}. Implication: a household will be more likely to be able to match their latent preferences for the attribute in their new neighborhood (provided sufficient supply) because they would not be paying extra in transaction costs once they have started the moving process. 
+
+Schelling demonstrated the neighborhood consequences of using a shared criteria to measure satisfaction, namely race. The racial composition of neighborhoods has long affected residents' satisfaction, especially among whites. {{TK: EXPLAINED WHITE FLIGHT}}
+
+
+
+
+
+
+
+
+
+  

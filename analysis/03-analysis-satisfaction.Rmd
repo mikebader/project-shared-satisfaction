@@ -6,13 +6,9 @@ Plot the mean value of satisfaction by each racial group using survey weights.
 ```{r dependent-descriptives}
 mean_satisfied <- MIcombine(with(dcassvy,
                                  svymean(~satisfied)))
-mean_satisfied_nhoodtype <- MIcombine(with(dcassvy,
-                                           svyby(~satisfied, ~quadc, svymean)))
-satisfied_nhoodtype <- MIcombine(with(dcassvy,
-                                      svyglm(satisfied ~ quadc, family=quasibinomial)))
-summary(satisfied_nhoodtype)
+summary(mean_satisfied)
 ```
-Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the sample were either very or extremely satisfied with their neighborhoods; `r round(coef(mean_satisfied_nhoodtype)[4], 2)*100` of residents in quadrivial neighborhoods and `r round(coef(mean_satisfied_nhoodtype)[3], 2)*100` of disproportionately Latino neighborhoods.
+Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the sample were either very or extremely satisfied with their neighborhoods.
 
 ```{r satisfaction-bivariate}
 satisfied_means <- MIcombine(with(dcassvy,
@@ -56,8 +52,7 @@ regression_labels <- c('Asian','Black','Latinx',
                        levels(dcas$dem.educ.attain)[c(1:3,5)],
                        levels(dcas$dem.income.cat4)[c(1,3:4)],
                        'Years in neighborhood',
-                       '1-9 blocks', '$>$50 blocks',
-                       'Quadrivial Neighborhood')
+                       '1-9 blocks', '$>$50 blocks')
 sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         ' neighborhood satisfaction'),
@@ -71,6 +66,7 @@ Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(
 **Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group.
 
 ```{r bivariate-extremely-satisfied}
+
 extreme_means <- MIcombine(with(dcassvy,
                                 svyby(~extremely_satisfied, ~dem.race, svymean)))
 extreme_diffs <- MIcombine(with(dcassvy, 

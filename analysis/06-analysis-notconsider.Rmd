@@ -5,34 +5,34 @@ Replicate the analysis of where people would consider moving for the question wh
 First, I examine how many people indicate that they would not consider at least one of the communities and the number of communities people would not consider by race. 
 
 ```{r not-consider-any}
-nconsany_res <- MIcombine(with(dcassvy,
-                              svyglm(notconsider_any~dem.race, 
-                                     family=quasibinomial)))
-huxreg(nconsany_res)
-(nconsany_sum <- summary(nconsany_res))
-logits <- nconsany_sum[1,1] + c(0, nconsany_sum[2:4,1])
-probs <- round(exp(logits)/(1+exp(logits)), 2)*100
-names(probs) <- races
-probs
-
-## Don't need multiple imputation because no missing on race or not consider:
-## race by construction of the data, not consider by design of survey (i.e., 
-## no answer means 'no')
-dcassvy_full <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=dcas)
-(nconsnum_mean <- svyby(~notconsider_num, ~dem.race, dcassvy_full, svymean) %>%
-    coef() %>%
-    round(1))
-
-svymedian <- function(race) {
-    svyquantile(~notconsider_num, subset(dcassvy_full, dem.race==race),
-                quantiles=c(.5))
-}
-(quantiles <- round(sapply(c('white','api','black','latino'), svymedian), 1))
+# nconsany_res <- MIcombine(with(dcassvy,
+#                               svyglm(notconsider_any~dem.race, 
+#                                      family=quasibinomial)))
+# huxreg(nconsany_res)
+# (nconsany_sum <- summary(nconsany_res))
+# logits <- nconsany_sum[1,1] + c(0, nconsany_sum[2:4,1])
+# probs <- round(exp(logits)/(1+exp(logits)), 2)*100
+# names(probs) <- races
+# probs
+# 
+# ## Don't need multiple imputation because no missing on race or not consider:
+# ## race by construction of the data, not consider by design of survey (i.e., 
+# ## no answer means 'no')
+# dcassvy_full <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=dcas)
+# (nconsnum_mean <- svyby(~notconsider_num, ~dem.race, dcassvy_full, svymean) %>%
+#     coef() %>%
+#     round(1))
+# 
+# svymedian <- function(race) {
+#     svyquantile(~notconsider_num, subset(dcassvy_full, dem.race==race),
+#                 quantiles=c(.5))
+# }
+# (quantiles <- round(sapply(c('white','api','black','latino'), svymedian), 1))
 ```
 
-`r probs[1]`% of whites indicated at least one community that they would not consider at least one of the eleven other multiethnic neighborhoods on the list; `r probs[2]`% of Asians, `r probs[3]`% of blacks, and `r probs[4]`% of Asians.
+<!-- `#r probs[1]`% of whites indicated at least one community that they would not consider at least one of the eleven other multiethnic neighborhoods on the list; `#r probs[2]`% of Asians, `#r probs[3]`% of blacks, and `#r probs[4]`% of Asians. -->
 
-The mean number of communities selected by whites was `r nconsnum_mean[1]`, by Asians was `r nconsnum_mean[2]`, by blacks was `r nconsnum_mean[3]`, and by Latinos was `r nconsnum_mean[4]`.
+<!-- The mean number of communities selected by whites was `#r nconsnum_mean[1]`, by Asians was `#r nconsnum_mean[2]`, by blacks was `#r nconsnum_mean[3]`, and by Latinos was `#r nconsnum_mean[4]`. -->
 
 Next, I conduct the multivariate analyses and report the results in tables and plots.
 

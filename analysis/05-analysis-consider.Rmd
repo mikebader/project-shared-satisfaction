@@ -66,24 +66,24 @@ comms_tbl
 Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
 
 ```{r consider-any}
-consany_mean <- MIcombine(with(dcassvy, 
-                               svymean(~consider_any)))$coefficients[2]
-consany_res <- MIcombine(with(dcassvy,
-                              svyglm(consider_any~dem.race, 
-                                     family=quasibinomial)))
-(consany_sum <- summary(consany_res))
-logits <- consany_sum[1,1] + c(0, consany_sum[2:4,1])
-probs <- round(exp(logits)/(1+exp(logits)), 2)*100
-names(probs) <- races
-probs
-huxreg(consany_res)
-
-consnum_res <- MIcombine(with(dcassvy,
-                              svyby(~consider_num, ~dem.race, svymean)))
-(consnum_sum <- coef(consnum_res))
+# consany_mean <- MIcombine(with(dcassvy, 
+#                                svymean(~consider_any)))$coefficients[2]
+# consany_res <- MIcombine(with(dcassvy,
+#                               svyglm(consider_any~dem.race, 
+#                                      family=quasibinomial)))
+# (consany_sum <- summary(consany_res))
+# logits <- consany_sum[1,1] + c(0, consany_sum[2:4,1])
+# probs <- round(exp(logits)/(1+exp(logits)), 2)*100
+# names(probs) <- races
+# probs
+# huxreg(consany_res)
+# 
+# consnum_res <- MIcombine(with(dcassvy,
+#                               svyby(~consider_num, ~dem.race, svymean)))
+# (consnum_sum <- coef(consnum_res))
 ```
 
-Overall `r round(consany_mean*100)`% of people would consider living in one of the eleven communities named in the survey. Among whites, `r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `r probs[2]`%, among blacks, `r probs[3]`%, and among Latinos `r probs[4]`%.
+Overall `#r round(consany_mean*100)`% of people would consider living in one of the eleven communities named in the survey. Among whites, `#r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `#r probs[2]`%, among blacks, `#r probs[3]`%, and among Latinos `#r probs[4]`%.
 
 To analyze the association of race with considering any one of the eleven communities, I constructed four models:
 

@@ -4,21 +4,40 @@
 Several variables have a substantial amount of missing data. I used the Amelia package to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design.
 
 ```{r weights}
-vars <- c('satisfied', 'extremely_satisfied', 'better',  'much_better',
-          'dem.race', 'agec', 'forbornc', 'manc', 'kidsc', 'marriedc',
-          'educ1c', 'educ2c', 'educ3c', 'educ5c', 'inc1c',
-          'inc3c', 'inc4c', 'nhdyrsc', 'nhdsize1c', 'nhdsize3c', 'quadc',
-          'consider_num', 'consider_any', 'notconsider_num', 'notconsider_any',
-          unlist(new_search_names))
+## Use uncentered values because they need to be re-centered for Quadrivial Nhood respondents
+vars <- c(
+          'satisfied', 'better'
+          , 'extremely_satisfied', 'much_better'
+          , 'dem.race'
+          , 'dem.age'
+          , 'dem.forborn'
+          , 'man'
+          , 'kids'
+          , 'married'
+          , 'educ1', 'educ2', 'educ3', 'educ5'
+          # , 'inc1', 'inc3', 'inc4'
+          , 'nhdyrs'
+          , 'nhdsize1', 'nhdsize3'
+          # , 'consider_num', 'consider_any', 'notconsider_num', 'notconsider_any'
+          # , unlist(grep('(?<!live_columbia.heights)$',new_search_names,
+          # value=TRUE, perl=TRUE))
+          # , unlist(grep('^cons_', new_search_names, value=TRUE, perl=TRUE))
+          # , unlist(
+          #     grep('(?<!huntington)$', new_search_names, value=TRUE, perl=TRUE)
+          # ))
+)
+dcas$studycase <- as.character(dcas$studycase)
 idvars <- c('studycase','weight', 'sample_strata')
-dcassub <- dcas[!is.na(dcas$dem.race), c(vars, idvars)]
-nominals <- vars[!(vars %in% c('agec', 'nhdyrsc', 
+dcassub <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE, c(vars, idvars)]
+nominals <- vars[!(vars %in% c('dem.age', 'nhdyrs', 
                                'consider_num', 'notconsider_num'))]
 set.seed(214518)
 dcasmi <- amelia(dcassub, m=5, noms=nominals, emburn = c (500 , 500) , 
                  p2s = F, idvars=idvars)
+dcasmi$imputations <- lapply(dcasmi$imputations, merge,
+                             dcas[,c('studycase',unlist(new_search_names))], 
+                             by='studycase')
 dcassvy <- svydesign(id=~1,strata=~sample_strata,weights=~weight,data=imputationList(dcasmi$imputations))
-
 save(vars, dcassvy, dcas, dataDIR, file = '../data/dcassvy.Rdata')
 ```
 
@@ -30,9 +49,9 @@ For each analysis, run three models. The first includes only race; the second ad
 rm(list=ls())
 load('../data/dcassvy.Rdata')
 m1 <- 'dem.race'
-m2 <- paste0(m1, '+ agec + forbornc + manc + kidsc + marriedc + ',
-'educ1c + educ2c + educ3c + educ5c + inc1c + inc3c + inc4c')
-m3 <- paste0(m2, '+ nhdyrsc + nhdsize1c + nhdsize3c + quadc')
+m2 <- paste0(m1, '+ dem.age + dem.forborn + man + kids + married + ',
+'educ1 + educ2 + educ3 + educ5 + inc1 + inc3 + inc4')
+m3 <- paste0(m2, '+ nhdyrs + nhdsize1 + nhdsize3')
 source('broom_mi.R') ## Saves multiple imputation
                      ## objects for use with tidyverse
 source('report_models.R')

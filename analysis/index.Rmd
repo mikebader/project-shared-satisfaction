@@ -1,7 +1,7 @@
 ---
 title: "Satisfaction and Stability in Multiethnic Neighborhoods"
 author: "Michael Bader"
-date: "11/19/2018"
+date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: bookdown::gitbook
 ---
