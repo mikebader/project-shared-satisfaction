@@ -1,3 +1,72 @@
+# Analysis
+## Analytical Approach
+For each analysis, run three models. The first includes only race; the second adds demographic characteristics; and the third adds the resident's experience with the neighborhood. Source `R` files used to report analysis to tables.
+
+```{r setup-analysis-environment}
+rm(list=ls())
+load('../data/dcassvy.Rdata')
+m1 <- 'dem.race'
+m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
+m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+source('broom_mi.R') ## Saves multiple imputation
+                     ## objects for use with tidyverse
+source('report_models.R')
+```
+
+## Descriptive Statistics of Independent & Control Variables
+```{r descriptives}
+desc <- function(x, d=descriptives) {
+    vals <- MIcombine(with(dcassvy, svymean(as.formula(paste0('~',x)))))
+    return(data.frame(mean=vals$coefficients, se=sqrt(diag(vals$variance))))
+}
+
+## Independent variable (race)
+d <- desc('dem.race')
+tbl.names <- c("\\emph{Race}&&\\\\White", "Asian", "Black", "Latinx")
+
+## Demographic variables
+d <- rbind(d, desc('age'))
+d <- rbind(d, desc('forborn')[2,])
+d <- rbind(d, desc('man')[2,])
+d <- rbind(d, desc('kids')[2,])
+d <- rbind(d, desc('married')[2,])
+
+tbl.names <- c(tbl.names, 
+               c('\\emph{Demographics}&&\\\\Age', 'Foreign Born', 'Man', 
+                 'Children present', 'Married'))
+
+## SES variables
+d <- rbind(d, desc('educ'))
+tbl.names <- c(tbl.names,
+               c('\\emph{Education}&&\\\\Less than H.S.','H.S. or G.E.D.',
+                 'Some college', 'Bachelor\'s degree', 'Professional degree'))
+
+## Neighborhood experience variables
+d <- rbind(d, desc('nhdyrs'))
+d <- rbind(d, desc('nhdsize'))
+
+tbl.names <- c(tbl.names, 
+               '\\emph{Neighborhood Experience}\\\\Years in Neighborhood', 
+               '1-9 blocks', '10-50 blocks', '>50 blocks')
+
+## Make table of descriptives
+continuous_vars <- grep('age|nhdyrs',rownames(d), perl=TRUE)
+d[-continuous_vars,'se'] <- NA
+d <- data.frame(tbl.names, d)
+descriptive_tbl <- as.table(as.matrix(d))
+colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
+
+print.xtable(xtable(descriptive_tbl,
+                    caption='Un-weighted means and standard deviations of independent and control variables',
+                    align=c('l','l','p{.5in}','p{.5in}'), label='tab:descriptives'),
+             booktabs=TRUE,
+             caption.placement='top',
+             include.rownames=FALSE,
+             file='tables/descriptives.tex',
+             sanitize.text.function = identity,
+             timestamp='')
+```
+
 ## Satisfaction in Multiethnic Neighborhoods
 
 ### Bivariate Analysis
