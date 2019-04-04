@@ -7,17 +7,47 @@ output: bookdown::gitbook
 ---
 
 # Motivation
-This file documents the analysis for the paper "Satisfaction and Stability in Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority) and *disproportionately Latino* (Latinos make up at least 25% of residents, and the neighborhood was not already classified as a quadrivial neighborhood). 
+This file documents the analysis for the paper "Satisfaction and Stability in Multiethnic Neighborhoods." The paper analyzes data from the 2016 DCAS to examine the level of satisfaction that residents who identify as different races have living in racially integrated neighborhoods. The sample represents people living in two types of neighborhoods: *quadrivial* (whites, blacks, Latinos, and Asians each make up 10% of the population and no group is a majority). 
 
-## Hypotheses
+
+
+# Introduction
+The number of multiethnic neighborhoods have expanded in number over the past three decades. Estimates show multiethnic neighborhoods having become the most common or among the most common types of neighborhoods over that time. These figures provide good news for creating a more racially integrated future in the United States. 
+
+The long-term durability of multiethnically integrated neighborhoods, however, depend on the satisfaction that residents of different races derive from living in those neighborhoods. Racial differences in satisfaction could lead to differential emigration from multiethnic neighborhoods. Similarly, multiethnic neighborhoods could attract potential residents of different races differentially. 
+
+Past history would suggest that whites would be the least likely to be satisfied living in multiethnic neighborhoods. Although violent and rapid white flight has become much less common than it was in the past, the same studies that show multiethnic neighborhoods increasing in number also show the number of single-race neighborhoods increasing, too. How whites' perceptions of their neighborhoods differs from their neighbors of color can portend whether the future of integrated neighborhoods looks bright. 
+
+This article argues that whites are similarly satisfied living in multiethnically integrated neighborhoods as blacks, Latinos, and Asians are in the same neighborhoods. It draws this conclusion based on the first representative sample of residents in multiethnically integrated neighborhoods across a metropolitan area. The data also show, however, that white residents of multiethnic neighborhoods are less likely to find extreme levels of satisfaction compared to their neighbors. The paper also provides some evidence that whites are more likely to reject moving to other multiethnic communities in the Washington D.C.-area. 
+
+# Background
+
+* **Growth of Multiethnic Neighborhoods** (where to put motivation for studying neighborhood satisfaction and previous research on the topic)
+    * Racial segregation has declined steadily across metropolitan areas in the United States, but the level of segregation remains high. The metropolitan trends result from two patterns of racial change in the neighborhoods that compose those metropolitan areas.
+        * Growing multiethnic integration.
+            * Starting in the 1990s, Asian, Latino, and black residents have moved to some all-white neighborhoods. 
+            * Process has been stable as whites have not left as residents of color moved in
+            * Logan & Zhang estimate **TK%** of neighborhoods are "global neighborhoods"
+            * Bader & Warkentien use the term "quadrivial neighborhoods" and estimate **TK%** of neighborhoods in four large metropolitan areas are multiethnically integrated
+            * These neighborhoods are found in places that did not necessarily actively court racial integration
+        * The high levels of racial segregation also show that whites are not moving *to* integrated neighborhoods
+            * Single-race non-white neighborhoods are second highest percentage of neighborhoods (cite: Friedman)
+            * Studies of individual preferences and behavior show that whites overwhelmingly consider and ultimately move to neighborhoods with larger proportions of whites
+            * Unlike decades past where violence and white flight marked racial transitions, the process occurs over many decades
+    * The process of transition in single-race neighborhoods leads to questions about the long-term stability of multiethnic integration. 
+        * The slow rate of transition indicates that whites seem satisfied living in neighborhoods that integrate around them
+        * But, when it comes time for whites to move, they are less likely than people of color to move to integrated neighborhoods
+        * Suggests that multiethnic neighborhoods would remain integrated as long as the whites living there when people of color move in, but will not be able to sustain that integration without new whites who move into the neighborhoods
+        * Yet, it's possible that residents of multiethnically integrated neighborhoods, having experienced multiethnic integration, might be awakened to a new preferences. We don't know because of three "shortcomings" of previous research
+            * Past studies have not examined satisfaction of residents across races in *multiethnically* integrated neighborhoods; this has stemmed in part from having insufficient samples of residents living in multiethnically integrated neighborhoods. (Even if they have become more common, they still only make up **TK**% of neighborhoods)
+            * Previous research has also focused on compositions of individual racial groups rather than multiethnic composition
+            * A similar problem has marked previous research on preferences for neighborhoods; they have not examined preferences for multiethnic neighborhoods
+* **Hypotheses**
 The paper examines three hypotheses: 
 
 1. Whites will be less likely to be satisfied living in integrated neighborhoods than other racial groups, and they will be much less likely to be extremely satisfied;
 2. Whites will be less likely to believe that their neighborhoods have improved compared to other racial groups; and
 3. Whites will be less likely to consider moving to other multiracial neighborhoods in the Washington, DC area. 
-
-The paper examines hypotheses among the overall sample as well as by neighborhood type. 
-
 
 # Setup
 
