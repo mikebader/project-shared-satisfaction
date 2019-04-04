@@ -1,4 +1,4 @@
-# Subset Data
+# Data
 ```{r subset-data}
 rm(list=ls())
 dataDIR <- '~/work/data/dcas/dcas2016/'
@@ -7,14 +7,25 @@ load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
 dcas$quad <- dcas$neighborhood=='Global Neighborhood'
 table(dcas[,c('neighborhood','quad')])
 dcas <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE,]
+N_quad <- length(dcas$studycase)
 N <- sum(!is.na(dcas$dem.race))
 ```
 
-Keep only respondents who live in quadrivial neighborhoods and who answered the question about race from the entire DCAS dataset (which also includes residents from disproportionately Latino neighborhoods in the DC area). 
-
-The resulting dataset includes `r N` respondents.
-
-# Variable Construction 
+* Data come from the 2016 DC Area Survey
+    * A mail survey using an address-based sample of households in the Washington, D.C. area that comprises the District of Columbia and the surrounding jurisdictions: Montgomery and Prince George's Counties in Maryland, Arlington and Fairfax Counties in Virginia (Fairfax County included the independent cities of Fairfax and Falls Church), and the city of Alexandria. 
+    * Households were sampled from two types of neighborhoods: 
+        * Quadrivial: neighborhoods where Asians, blacks, Latinos, and whites each made up at least 10% of the neighborhood and no group made up a majority
+            * Prefer the term 'quadrivial' based on Bader & Warkentien rather than 'global neighborhoods' because global can imply that residents of the neighborhoods are somehow un-American. While many residents of these neighborhoods were born abroad, most were born in the United States. 
+            * 114 of the 973 tracts in the DC area could be classified as quadrivial neighborhoods, with a population of 600,176. Almost half of the quadrivial neighborhoods (54) were in Montgomery County; none fell in the District of Columbia.
+            * **Insert Map of Quadrivial Neighborhoods in DC area**
+        * Disproportionately Latino: neighborhoods where at least 25% of the residents were Latinos that were not already classified as a quadrivial neighborhood
+    * This study uses only the `r N` respondents from quadrivial neighborhoods that also answered the race and ethnicity questions (`r N_quad - N` respondents provided insufficient data to determine their race).
+    * Sample details:
+        * The survey oversampled households with Asian and Hispanic surnames as well as neighborhoods that were disproportionately black that satisfied the criteria for being a quadrivial neighborhood
+        * Surveys were mailed to households with a $2 incentive enclosed and directions for the resident over 18 years of age with the most recent birthday to fill out the questionnaire; cover letter was printed in English and Spanish on reverse sides; booklet was in English with instructions on how to receive a booklet in Spanish in the Spanish-language cover letter
+        * A reminder was mailed out two weeks after the initial mailing
+        * The response rate (RR4, cite) was 12.8%; this is in line with mail surveys (CITE)
+    * Survey weights were calculated to allow for estimates represent the population of D.C.-area residents living in quadrivial (and disproportionately Latino) neighborhoods
 
 ## Dependent Variables
 ### Satisfaction Variable
@@ -37,7 +48,9 @@ dcas$much_better <- dcas$nhd.change=='Much better'
 table(dcas[, c('nhd.change','much_better')])
 ```
 
-## Preferences for Other Communities
+
+
+<!-- ## Preferences for Other Communities
 ```{r rename-commvars}
 ## Change names to have search dimension first and commname second
 ## Help on regex part: https://stackoverflow.com/questions/952275/regex-group-capture-in-r-with-multiple-capture-groups
@@ -53,6 +66,8 @@ names(dcas)[names(dcas)%in%search.vars] <- new_search_names
 # dcas$notconsider_num <- rowSums(dcas[grep('^nc_', names(dcas))])
 # dcas$notconsider_any <- dcas$notconsider_num >0
 ```
+-->
+
 ## Independent Variable
 The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r N`). 
 
@@ -61,8 +76,14 @@ table(dcas$dem.race, useNA='always')
 dcas$dem.race <- relevel(dcas$dem.race, ref='white')
 ```
 
+These data are ideal to answer the hypotheses because:
+    * They are representative of residents living in quadrivial neighborhoods
+    * They ask about satisfaction and neighborhood improvement using same questions that have been used in previous studies
+    * Have a sufficient sample of all four racial groups to compare results across racial groups
+
+
 ## Control Variables
-I included control variables in the models. All control variables were centered at their means. 
+In addition to racial variables, I also included variables to control for other demographic characteristics of residents. 
 
 **Demographic characteristics**
 
@@ -88,8 +109,9 @@ table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
 ```
 **Economic Status**
 
-* *Educational attainment*, five categories based on Question 59, "What is the highest level of school you have completed or the highest degree you have received?"
-* *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?"
+* *Educational attainment*, five categories based on Question 59, "What is the highest level of school you have completed or the highest degree you have received?" Used only educational attainment because it was highly correlated with income and would likely pick up stable features of status differences.
+
+<!-- * *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?" -->
 
 ```{r economic-variables}
 dcas$educ <- dcas$dem.educ.attain
@@ -114,10 +136,11 @@ for(i in 1:4) { ## Check recoding
 ```
 
 **Neighborhood Experience**
+In addition to demographic characteristics, I also included controls for the respondent's experience in the neighborhood. 
 
-* *Years in neighborhood*, based on Question 4: "How many years have you lived in your current neighborhood?"
+* *Years in neighborhood*, based on Question 4: "How many years have you lived in your current neighborhood?" (The length of time that respondents have lived in their neighborhoods could affect their perception of neighborhood quality and certainly neighborhood change)
 
-* *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?"
+* *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?" (The size of the area the respondent conjures as being part of their neighborhood could affect perceptions of neighborhood quality and change)
 
 ```{r nhood-variables}
 dcas$nhdyrs <- as.numeric(as.character(dcas$q4))
@@ -132,10 +155,11 @@ dcas$nhdsize <- ordered(dcas$nhdsize,
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
+<!--
 **Centered Variables**
 
 Create grand-mean centered variables.
-
+-->
 ```{r centering}
 center <- function(x) { ## Function to mean-center but not scale vars
     scale(as.numeric(dcas[[x]]), scale=FALSE)
