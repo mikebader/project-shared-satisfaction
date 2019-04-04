@@ -22,9 +22,18 @@ better_model <- MIcombine(with(dcassvy,
                                svyglm(better ~ dem.race, family=quasibinomial)))
 ```
 
+```{r report-bivariate-improvement-plot, echo=TRUE, include=TRUE}
+better_plt
+```
+
+(I plan to make this plot show the un-adjusted and adjusted results)
+
 The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable.
 
 ### Multivariate Analysis
+
+(Does it make sense to include being extremely satisfied as a regressor?)
+
 ```{r improvement-analysis, warning=FALSE, results='hide'}
 m3 <- paste(m3, "+ extremely_satisfied")
 m1_bet <- MIcombine(with(dcassvy,
@@ -41,7 +50,7 @@ m3_bet <- MIcombine(with(dcassvy,
 summary(m3_bet)
 ```
 
-```{r report-better-analysis}
+```{r report-better-analysis, echo=TRUE, include=TRUE}
 regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
 bet_tbl <- report_models(m1_bet, m2_bet, m3_bet,
                          reglabels=regression_labels_bet,
@@ -54,6 +63,9 @@ cat(to_latex(bet_tbl), file='tables/improvement.tex')
 
 
 **Extreme Improvement.**
+
+(Again, I think that I should add the these results to a "robustness checks" section)
+
 But, there is a difference for those who say that the neighborhood has gotten "much better" over the past five years. Whites, on this measure, were much less likely to indicate that their neighborhoods have gotten much better. I examine whether that might be due to the fact that whites are more likely to say that they are "extremely satisfied" in their neighborhoods relative to other racial groups.
 
 ```{r much-better-descriptives}
