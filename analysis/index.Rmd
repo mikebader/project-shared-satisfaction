@@ -52,7 +52,7 @@ The paper examines three hypotheses:
 # Setup
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
 ```
 
 ```{r libraries, message=FALSE}
@@ -62,6 +62,7 @@ library(Amelia)
 library(broom)
 library(ggplot2)
 library(huxtable)
+library(knitr)
 library(mitools)
 library(survey)
 library(tidyverse)

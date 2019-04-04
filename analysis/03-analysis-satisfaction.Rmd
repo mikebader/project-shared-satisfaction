@@ -68,7 +68,7 @@ descriptive_tbl <- as.table(as.matrix(d))
 colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
 ```
 
-```{r descriptive-output, echo=TRUE}
+```{r descriptive-output, echo=TRUE, include=TRUE}
 kable(xtable(descriptive_tbl), row.names=FALSE)
 
 print.xtable(xtable(descriptive_tbl,
@@ -128,14 +128,14 @@ m3_sat <- MIcombine(with(dcassvy,
 summary(m3_sat)
 ```
 
-```{r report-satisfaction-analysis}
+```{r report-satisfaction-analysis, echo=TRUE, include=TRUE}
 regression_labels <- c('Asian','Black','Latinx',
                        'Age','Foreign Born','Male',
                        'Children Present', 'Married',
-                       levels(dcas$dem.educ.attain)[c(1:3,5)],
+                       levels(dcas$dem.educ.attain)[c(1:4)],
                        # levels(dcas$dem.income.cat4)[c(1,3:4)],
                        'Years in neighborhood',
-                       '10-50 blocks', '$>$50 blocks')
+                       '1-9 blocks', '10-50 blocks')
 sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         ' neighborhood satisfaction'),
