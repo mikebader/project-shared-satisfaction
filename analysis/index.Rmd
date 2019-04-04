@@ -49,7 +49,7 @@ The paper examines three hypotheses:
 2. Whites will be less likely to believe that their neighborhoods have improved compared to other racial groups; and
 3. Whites will be less likely to consider moving to other multiracial neighborhoods in the Washington, DC area. 
 
-# Setup
+<!--# Setup-->
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
