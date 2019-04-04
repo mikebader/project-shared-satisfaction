@@ -81,6 +81,9 @@ print.xtable(xtable(descriptive_tbl,
              sanitize.text.function = identity,
              timestamp='')
 ```
+
+# Results 
+
 ## Satisfaction in Multiethnic Neighborhoods
 
 ### Bivariate Analysis
@@ -109,6 +112,12 @@ satisfied_plt
 ggsave('images/satisfied_descriptive.png', plot=satisfied_plt,
        height=3, width=4, units='in')
 ```
+
+```{r report-satisfied-bivariate-plot, echo=TRUE, include=TRUE}
+satisfied_plt
+```
+
+(I plan to make this plot show the un-adjusted and adjusted results)
 
 ### Multivariate Analysis
 **Satisfied.**
@@ -146,7 +155,7 @@ cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 
 Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks.
 
-**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group.
+**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. (I think that I should add these results to a "robustness checks" section)
 
 ```{r bivariate-extremely-satisfied}
 
@@ -177,5 +186,15 @@ m3_esat <- MIcombine(with(dcassvy,
                           svyglm(as.formula(paste('extremely_satisfied ~', m3)),
                                  family=quasibinomial)))
 summary(m3_esat)
+```
+
+```{r report-extreme-satisfaction, echo=TRUE, include=TRUE}
+esat_tbl <- report_models(m1_esat, m2_esat, m3_esat, 
+                          reglabels=regression_labels, 
+                          caption=paste0('Estimated coefficients predicting ',
+                                         ' extreme neighborhood satisfaction'),
+                          label='tab:satisfaction')
+esat_tbl
+cat(to_latex(esat_tbl), file='tables/extreme_satisfaction.tex')
 ```
 
