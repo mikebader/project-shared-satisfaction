@@ -2,7 +2,7 @@
 
 Replicate the analysis of where people would consider moving for the question where people would *not* consider moving by race. 
 
-First, I examine how many people indicate that they would not consider at least one of the communities and the number of communities people would not consider by race. 
+<!-- First, I examine how many people indicate that they would not consider at least one of the communities and the number of communities people would not consider by race. 
 
 ```{r not-consider-any}
 # nconsany_res <- MIcombine(with(dcassvy,
@@ -35,6 +35,7 @@ First, I examine how many people indicate that they would not consider at least 
 <!-- The mean number of communities selected by whites was `#r nconsnum_mean[1]`, by Asians was `#r nconsnum_mean[2]`, by blacks was `#r nconsnum_mean[3]`, and by Latinos was `#r nconsnum_mean[4]`. -->
 
 Next, I conduct the multivariate analyses and report the results in tables and plots.
+-->
 
 ```{r not-consider-analysis}
 ## Constant-only
@@ -67,6 +68,11 @@ ncons_racecont_probs <- make_prob_df(ncons_racecont) %>%
 prob_dfs <- list(ncons_raceonly_probs, ncons_racecont_probs)
 fnames <- sprintf('images/%s.png', c('notconsider', 'notconsider_controls'))
 plts <- srch_plots(prob_dfs, fnames, consider=FALSE)
+plts[[1]]
+plts[[2]]
+```
+
+```{r report-notconsider-plots, echo=TRUE, include=TRUE}
 plts[[1]]
 plts[[2]]
 ```

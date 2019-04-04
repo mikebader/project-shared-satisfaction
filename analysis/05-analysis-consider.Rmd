@@ -4,9 +4,9 @@ The long-term stability of multiethnic neighborhoods requires that residents of 
 
 The 2016 DCAS asked residents these questions of 11 neighborhoods in the DC area. Below is a plot of the racial composition of those neighborhoods. 
 
-For all of the results, the communities are grouped by county and, within county, ordered by closest to the District to the farthest away. This order is defined in the object `comm_names`. 
+For all of the results, the communities are grouped by county and, within county, ordered by closest to the District to the farthest away. This order is defined in the object `comm_names`.
 
-```{r plot-racial-composition}
+```{r plot-racial-composition, echo=20, include=TRUE}
 ## Ordered by state, county, distance from downtown
 load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 comm_names <- c('columbia.heights', 'brightwood',
@@ -63,7 +63,7 @@ comms_tbl
 ```
 
 ## Analyze Where People Would Consider Moving
-Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
+<!-- Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
 
 ```{r consider-any}
 # consany_mean <- MIcombine(with(dcassvy, 
@@ -96,7 +96,7 @@ To analyze the association of race with considering any one of the eleven commun
 4. **Model with controls only** will be used to plot the distance of each racial group from the overall conditional mean.
 
 To do this, define the `srch_reg` function to run weighted regression with multiple imputation. Use the `srch_reg` function to cycle through each of the eleven outcomes.
-
+-->
 
 ```{r consider-analysis}
 srch_reg <- function(comm, dimension, indvars='dem.race',include.live=FALSE) {
@@ -279,6 +279,11 @@ plts[[2]]
 
 ## Probabilities for control-variables-only models reported first
 cons_overall_probs
+```
+
+```{r report-consider-plots, echo=TRUE, include=TRUE}
+plts[[1]]
+plts[[2]]
 ```
 
 The following tables represent the racial probabilities, percentage point and percentage difference from overall levels of considering the neighborhood. 
