@@ -1,10 +1,6 @@
-# Data Construction
-
-**Multiple Imputation & Survey Weights**
-Several variables have a substantial amount of missing data. I used the Amelia package to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design.
+(set up data for survey weights & multiple imputation)
 
 ```{r weights}
-## Use uncentered values because they need to be re-centered for Quadrivial Nhood respondents
 vars <- c(
           'satisfied', 'better'
           , 'extremely_satisfied', 'much_better'

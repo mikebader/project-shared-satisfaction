@@ -1,6 +1,16 @@
 # Analysis
 ## Analytical Approach
-For each analysis, run three models. The first includes only race; the second adds demographic characteristics; and the third adds the resident's experience with the neighborhood. Source `R` files used to report analysis to tables.
+For each analysis, run three models. 
+
+1. Race-only model
+2. Race and demographic controls
+3. Race, demographic, and neighborhood context variables
+
+* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome)
+
+## Multiple Imputation & Survey Weights
+Several variables have a substantial amount of missing data. I used the Amelia package (cite) to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design.
+
 
 ```{r setup-analysis-environment}
 rm(list=ls())
@@ -50,11 +60,16 @@ tbl.names <- c(tbl.names,
                '1-9 blocks', '10-50 blocks', '>50 blocks')
 
 ## Make table of descriptives
+d <- round(d, 2)
 continuous_vars <- grep('age|nhdyrs',rownames(d), perl=TRUE)
-d[-continuous_vars,'se'] <- NA
+d[-continuous_vars,'se'] <- ''
 d <- data.frame(tbl.names, d)
 descriptive_tbl <- as.table(as.matrix(d))
 colnames(descriptive_tbl) <- c('Variable', 'Mean', 'S.D.')
+```
+
+```{r descriptive-output, echo=TRUE}
+kable(xtable(descriptive_tbl), row.names=FALSE)
 
 print.xtable(xtable(descriptive_tbl,
                     caption='Un-weighted means and standard deviations of independent and control variables',
@@ -66,7 +81,6 @@ print.xtable(xtable(descriptive_tbl,
              sanitize.text.function = identity,
              timestamp='')
 ```
-
 ## Satisfaction in Multiethnic Neighborhoods
 
 ### Bivariate Analysis
@@ -119,9 +133,9 @@ regression_labels <- c('Asian','Black','Latinx',
                        'Age','Foreign Born','Male',
                        'Children Present', 'Married',
                        levels(dcas$dem.educ.attain)[c(1:3,5)],
-                       levels(dcas$dem.income.cat4)[c(1,3:4)],
+                       # levels(dcas$dem.income.cat4)[c(1,3:4)],
                        'Years in neighborhood',
-                       '1-9 blocks', '$>$50 blocks')
+                       '10-50 blocks', '$>$50 blocks')
 sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         ' neighborhood satisfaction'),
