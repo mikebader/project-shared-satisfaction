@@ -155,6 +155,11 @@ dcas$nhdsize <- ordered(dcas$nhdsize,
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
+
+```{r create-fixed-effects}
+dcas$sample_tract <- relevel(dcas$sample_tract, ref='24031700309')
+```
+
 <!--
 **Centered Variables**
 

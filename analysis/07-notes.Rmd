@@ -4,3 +4,6 @@ Correlation of education and income:
 ```{r, echo=TRUE, include=TRUE}
 ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
 ```
+
+## Writing Group April 4, 2019
+
