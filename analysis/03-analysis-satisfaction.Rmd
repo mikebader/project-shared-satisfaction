@@ -15,7 +15,7 @@ Several variables have a substantial amount of missing data. I used the Amelia p
 ```{r setup-analysis-environment}
 rm(list=ls())
 load('../data/dcassvy.Rdata')
-m1 <- 'dem.race'
+m1 <- 'dem.race + sample_tract'
 m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
 m3 <- paste0(m2, '+ nhdyrs + nhdsize')
 source('broom_mi.R') ## Saves multiple imputation
