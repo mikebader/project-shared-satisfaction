@@ -7,6 +7,8 @@ load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
 dcas$quad <- dcas$neighborhood=='Global Neighborhood'
 table(dcas[,c('neighborhood','quad')])
 dcas <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE,]
+dcas$sample_tract <- droplevels(dcas$sample_tract)
+# dcas$sample_tract <- relevel(dcas$sample_tract, ref="51059452600")
 N_quad <- length(dcas$studycase)
 N <- sum(!is.na(dcas$dem.race))
 ```
@@ -36,15 +38,15 @@ The satisfaction with neighborhood change variable (`better`) comes from Questio
 
 ```{r dependent-variables}
 dcas$satisfied <- dcas$nhd.satisfaction %in% c(
-                       'Extremely satisfied','Very satisfied')
+                       'Extremely satisfied','Very satisfied')*1
 table(dcas[, c('nhd.satisfaction','satisfied')])
-dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')
+dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
 table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
 
 dcas$better <- dcas$nhd.change %in% c(
-                       'Much better', 'Somewhat better')
+                       'Much better', 'Somewhat better')*1
 table(dcas[, c('nhd.change','better')])
-dcas$much_better <- dcas$nhd.change=='Much better'
+dcas$much_better <- (dcas$nhd.change=='Much better')*1
 table(dcas[, c('nhd.change','much_better')])
 ```
 

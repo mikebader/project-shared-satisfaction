@@ -34,10 +34,22 @@ ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
 The correct test of the hypotheses compares the responses of white residents to those of blacks, Latinos, and Asians, *living in the same neighborhood*. As a result, I include fixed effects for each census tract in which respondents resided. Only one respondent lived in `r N_oneresp` tracts, and were therefore dropped from the analysis. Without these tracts, the number of respondents per tract ranged from 2 to `r tract_Ns_max`.
 
 ```{r define-models}
-m1 <- 'dem.race'
+m1 <- 'dem.race + sample_tract '
 m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
 m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+m4 <- sub('dem\\.race \\+ ','',m3)
 source('report_models.R')
+get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
+    aics <- sapply(d, function(x) x$aic)
+    return(list(mean=mean(aics), var=(1+(m^-1))*var(aics)))
+}
+
+MIcombine_aic <- function(m) { ## Combines imputations, including AIC
+    aic <- get_aic(m)
+    mi <- MIcombine(m)
+    mi$aic <- aic
+    return(mi)
+}
 ```
 
 ## Multiple Imputation & Survey Weights
@@ -126,8 +138,8 @@ satisfied_means <- MIcombine(with(dcassvy,
                                   svyby(~satisfied, ~dem.race, svymean)))
 satisfied_ci <- 1.96*sqrt(diag(satisfied_means$variance))
 satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
-                             satisfied=coef(satisfied_means)[5:8],
-                             ci=satisfied_ci[5:8])
+                             satisfied=coef(satisfied_means),
+                             ci=satisfied_ci)
 satisfied_plt <- ggplot(satisfied_vals, aes(x=dem.race, y=satisfied)) +
     geom_errorbar(aes(ymin=satisfied-ci, ymax=satisfied+ci), width=0.1) +
     geom_point() +
@@ -148,17 +160,25 @@ satisfied_plt
 **Satisfied.**
 
 ```{r satisfied-analysis, warning=FALSE, results='hide'}
-m1_sat <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('satisfied ~',m1)), 
-                                family=quasibinomial)))
-m2_sat <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('satisfied ~', m2)),
-                                family=quasibinomial)))
-summary(m2_sat)
-m3_sat <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('satisfied ~', m3)), 
-                                family=quasibinomial)))
-summary(m3_sat)
+m0_sat <- with(dcassvy,
+               svyglm(satisfied ~ sample_tract), family=binomial)
+m0_sat <- MIcombine_aic(m0_sat)
+
+m1_sat <- with(dcassvy,
+               svyglm(as.formula(paste('satisfied ~',m1)), family=binomial))
+m1_sat <- MIcombine_aic(m1_sat)
+
+m2_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m2)),
+                               family=binomial))
+m2_sat <- MIcombine_aic(m2_sat)
+
+m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)), 
+                               family=binomial))
+m3_sat <- MIcombine_aic(m3_sat)
+
+m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
+                               family=binomial))
+m4_sat <- MIcombine_aic(m4_sat)
 ```
 
 ```{r report-satisfaction-analysis, echo=TRUE, include=TRUE}
@@ -169,7 +189,7 @@ regression_labels <- c('Asian','Black','Latinx',
                        # levels(dcas$dem.income.cat4)[c(1,3:4)],
                        'Years in neighborhood',
                        '1-9 blocks', '10-50 blocks')
-sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, reglabels=regression_labels,
+sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, m4_sat, reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         ' neighborhood satisfaction'),
                          label='tab:satisfaction')
