@@ -1,26 +1,51 @@
 # Analysis
+```{r setup-analysis-environment}
+rm(list=ls())
+load('../data/dcassvy.Rdata')
+```
+
 ## Analytical Approach
-For each analysis, run three models. 
+For each analysis, ran three models. 
 
 1. Race-only model
 2. Race and demographic controls
-3. Race, demographic, and neighborhood context variables
+3. Race, demographic, and neighborhood perception variables
 
-* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome)
+* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome) [Create subsection at end of **Analysis** to address "proving the null"?]
+
+## Fixed Effects
+```{r tract-clustering}
+## Describe clustering of respondents within tracts
+tract_Ns <- sapply(unique(dcas$sample_tract), 
+                   function(x){nrow(dcas[dcas$sample_tract==x,])})
+num_quads <- length(tract_Ns)
+N_oneresp <- sum(tract_Ns==1)
+tract_Ns_max <- max(tract_Ns)
+tract_Nfreq <- as.data.frame(table(tract_Ns))
+tract_Ns_hist <- ggplot(tract_Nfreq, aes(x=Freq)) + 
+    geom_histogram(binwidth=1) +
+    scale_x_continuous(breaks=1:19, labels=1:19) +
+    labs(title="Distribution of respondents per tract",
+         subtitle="Respondents living in quadrivial tracts, 2016 DCAS")
+ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
+       height=3, width=4, units='in')
+```
+
+The correct test of the hypotheses compares the responses of white residents to those of blacks, Latinos, and Asians, *living in the same neighborhood*. As a result, I include fixed effects for each census tract in which respondents resided. Only one respondent lived in `r N_oneresp` tracts, and were therefore dropped from the analysis. Without these tracts, the number of respondents per tract ranged from 2 to `r tract_Ns_max`.
+
+```{r define-models}
+m1 <- 'dem.race'
+m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
+m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+source('report_models.R')
+```
 
 ## Multiple Imputation & Survey Weights
 Several variables have a substantial amount of missing data. I used the Amelia package (cite) to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design.
 
-
-```{r setup-analysis-environment}
-rm(list=ls())
-load('../data/dcassvy.Rdata')
-m1 <- 'dem.race + sample_tract'
-m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
-m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+```{r multiple-imputation-functions}
 source('broom_mi.R') ## Saves multiple imputation
                      ## objects for use with tidyverse
-source('report_models.R')
 ```
 
 ## Descriptive Statistics of Independent & Control Variables
@@ -125,8 +150,7 @@ satisfied_plt
 ```{r satisfied-analysis, warning=FALSE, results='hide'}
 m1_sat <- MIcombine(with(dcassvy,
                          svyglm(as.formula(paste('satisfied ~',m1)), 
-                                family=binomial)))
-summary(m1_sat)
+                                family=quasibinomial)))
 m2_sat <- MIcombine(with(dcassvy,
                          svyglm(as.formula(paste('satisfied ~', m2)),
                                 family=quasibinomial)))
