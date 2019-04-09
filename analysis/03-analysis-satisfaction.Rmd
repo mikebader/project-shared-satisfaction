@@ -202,7 +202,6 @@ Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(
 **Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. (I think that I should add these results to a "robustness checks" section)
 
 ```{r bivariate-extremely-satisfied}
-
 extreme_means <- MIcombine(with(dcassvy,
                                 svyby(~extremely_satisfied, ~dem.race, svymean)))
 extreme_diffs <- MIcombine(with(dcassvy, 
@@ -218,22 +217,33 @@ extreme_odds <- exp(coef(extreme_diffs))
 `r round(1/extreme_odds[['dem.racelatino']],2)` times than Latinx residents.
 
 ```{r extremely-satisfied-analysis, results='hide'}
-m1_esat <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('extremely_satisfied ~', m1)),
-                                 family=binomial)))
-summary(m1_esat)
-m2_esat <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('extremely_satisfied ~', m2)),
-                                 family=quasibinomial)))
-summary(m2_esat)
-m3_esat <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('extremely_satisfied ~', m3)),
-                                 family=quasibinomial)))
-summary(m3_esat)
+m0_esat <- with(dcassvy, 
+                svyglm(extremely_satisfied ~ sample_tract, family=binomial))
+m0_esat <- MIcombine_aic(m0_esat)
+
+m1_esat <- with(dcassvy,
+                svyglm(as.formula(paste('extremely_satisfied ~ ', m1)),
+                       family=binomial))
+m1_esat <- MIcombine_aic(m1_esat)
+
+m2_esat <- with(dcassvy,
+                svyglm(as.formula(paste('extremely_satisfied ~ ', m2)),
+                       family=binomial))
+m2_esat <- MIcombine_aic(m2_esat)
+
+m3_esat <- with(dcassvy,
+                svyglm(as.formula(paste('extremely_satisfied ~ ', m3)),
+                       family=binomial))
+m3_esat <- MIcombine_aic(m3_esat)
+
+m4_esat <- with(dcassvy,
+                svyglm(as.formula(paste('extremely_satisfied ~ ', m4)),
+                       family=binomial))
+m4_esat <- MIcombine_aic(m4_esat)
 ```
 
 ```{r report-extreme-satisfaction, echo=TRUE, include=TRUE}
-esat_tbl <- report_models(m1_esat, m2_esat, m3_esat, 
+esat_tbl <- report_models(m1_esat, m2_esat, m3_esat, m4_esat,
                           reglabels=regression_labels, 
                           caption=paste0('Estimated coefficients predicting ',
                                          ' extreme neighborhood satisfaction'),

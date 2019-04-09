@@ -7,11 +7,9 @@ report_models <- function(...,reglabels=c(), label='', caption='') {
     section_labels <- c('Race', 'Demographics', 'Socioeconomic', 'Neighborhood perceptions')
     models <- list(...)
     assign('models',models,envir=.GlobalEnv)
-    ht <- huxreg(..., statistics=c('aic'), align='.', borders=0)
+    ht <- huxreg(..., statistics='', align='.', borders=0)
     ht <- ht[-1*fe_rows(ht),]
     ht[seq(4,(length(reglabels)+1)*2,2), 1] <- reglabels
-    print(paste0('insert Race ', which(ht$names=="(Intercept)")+1))
-    print(paste0('insert Demographics ', which(ht$names=="Latinx")+2))
     ht <- ht %>%
         insert_row(c('Race','','','',''),
                      after=(which(ht$names=="(Intercept)")+1)) %>%
