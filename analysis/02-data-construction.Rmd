@@ -26,28 +26,25 @@ vars <- c(
 )
 dcas$studycase <- as.character(dcas$studycase)
 idvars <- c('studycase','weight', 'sample_strata', 'sample_tract')
-dcassub <- dcas[, c(vars, idvars)]
 nominals <- vars[!(vars %in% c('age', 'nhdyrs', 
                                'consider_num', 'notconsider_num'))]
-impute_weight_and_save <- function(){
+impute_weights <- function(dta){
     set.seed(214518)
-    assign('dcasmi', amelia(dcassub, m=5, noms=nominals, emburn=c (500 , 500),
+    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c (500 , 500),
                             p2s = F, idvars=idvars), envir=.GlobalEnv)
-    assign('dcassvy', svydesign(id=~1,strata=~sample_strata, weights=~weight,
+    assign('dcassvy', svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
                                 data=imputationList(dcasmi$imputations)), 
                                 envir=.GlobalEnv)
-    save(vars, dcassvy, dcas, dataDIR, file = '../data/dcassvy.Rdata')
     }
-impute_weight_and_save()
+impute_weights(dcas[, c(vars, idvars)])
 
 ## Find tract with approximately median value of tract-level satisfaction
 tract_means <- MIcombine(
     with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
-tract_means <- tract_means[grep('TRUE',names(tract_means))]
-names(tract_means) <- gsub(':.+$','',names(tract_means), perl=TRUE)
-median_tract <- median(tract_means)
-median_tract_id <- names(
-    tract_means[order(tract_means)][round(length(tract_means)/2)])
+tract_means <- sort(tract_means)
+median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
 dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
-impute_weight_and_save()
+impute_weights(dcas[, c(vars, idvars)])
+head(dcassvy$designs$imp1$variables$sample_tract)
+save(vars, dcassvy, dcas, dcasmi, dataDIR, file = '../data/dcassvy.Rdata')
 ```
