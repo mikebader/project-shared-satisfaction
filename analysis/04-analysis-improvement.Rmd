@@ -4,6 +4,12 @@
 Plot the mean value of respondents who indicated that they think that the neighborhood has gotten better in the past five years.
 
 ```{r improvement-descriptives}
+## Add whether respondent is satisfied with neighborhood to models,
+## only if not already added to model specifications
+sapply(paste0('m',1:4), function(x) {
+    if(!grepl('satisfied',get(x))) {
+    assign(x,paste('satisfied +',get(x)),envir=.GlobalEnv)
+}})
 better_means <- MIcombine(with(dcassvy,
                                svyby(~better, ~dem.race, svymean)))
 better_means <- summary(better_means)
@@ -31,28 +37,31 @@ better_plt
 The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable.
 
 ### Multivariate Analysis
-
-(Does it make sense to include being extremely satisfied as a regressor?)
-
 ```{r improvement-analysis, warning=FALSE, results='hide'}
-m3 <- paste(m3, "+ extremely_satisfied")
-m1_bet <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('better ~', m1)), family=binomial)
-))
-summary(m1_bet)
-m2_bet <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('better ~', m2)), family=binomial)
-))
-summary(m2_bet)
-m3_bet <- MIcombine(with(dcassvy,
-                         svyglm(as.formula(paste('better ~', m3)), family=binomial)
-))
-summary(m3_bet)
+m0_bet <- with(dcassvy,
+               svyglm(better ~ sample_tract), family=binomial)
+m0_bet <- MIcombine_aic(m0_bet)
+
+m1_bet <- with(dcassvy,
+               svyglm(as.formula(paste('better ~', m1)), family=binomial))
+m1_bet <- MIcombine_aic(m1_bet)
+
+m2_bet <- with(dcassvy,
+               svyglm(as.formula(paste('better ~', m2)), family=binomial))
+m2_bet <- MIcombine_aic(m2_bet)
+
+m3_bet <- with(dcassvy,
+               svyglm(as.formula(paste('better ~', m3)), family=binomial))
+m3_bet <- MIcombine_aic(m3_bet)
+
+m4_bet <- with(dcassvy,
+               svyglm(as.formula(paste('better ~ ', m4)), family=binomial))
+m4_bet <- MIcombine_aic(m4_bet)
 ```
 
 ```{r report-better-analysis, echo=TRUE, include=TRUE}
-regression_labels_bet <- c(regression_labels, 'Extremely satisfied')
-bet_tbl <- report_models(m1_bet, m2_bet, m3_bet,
+regression_labels_bet <- c('Satisfied', regression_labels)
+bet_tbl <- report_models(m1_bet, m2_bet, m3_bet, m4_bet,
                          reglabels=regression_labels_bet,
                          caption=paste0('Estimated coefficients predicting ',
                                         'neighborhood improvement'),
@@ -103,24 +112,29 @@ Whites are
 
 ```{r much-better-analysis, results='hide'}
 ## Outcome: Much Better
-m1_mbet <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('much_better ~', m1)),
-                                 family=binomial)))
-summary(m1_bet)
-m2_mbet <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('much_better ~', m2)),
-                                 family=quasibinomial)))
-summary(m2_bet)
-m3_mbet <- MIcombine(with(dcassvy,
-                          svyglm(as.formula(paste('much_better ~', m3,'+
-                                                  extremely_satisfied')),
-                                 family=quasibinomial)))
-summary(m3_bet)
-(mbet_odds <- exp(coef(m3_mbet)[2:4]))
+m0_mbet <- with(dcassvy,
+                svyglm(much_better ~ sample_tract), family=binomial)
+m0_mbet <- MIcombine_aic(m0_mbet)
+
+m1_mbet <- with(dcassvy,
+                svyglm(as.formula(paste('much_better ~', m1)), family=binomial))
+m1_mbet <- MIcombine_aic(m1_mbet)
+
+m2_mbet <- with(dcassvy,
+               svyglm(as.formula(paste('much_better ~', m2)), family=binomial))
+m2_mbet <- MIcombine_aic(m2_mbet)
+
+m3_mbet <- with(dcassvy,
+               svyglm(as.formula(paste('much_better ~', m3)), family=binomial))
+m3_mbet <- MIcombine_aic(m3_mbet)
+
+m4_mbet <- with(dcassvy,
+               svyglm(as.formula(paste('much_better ~ ', m4)), family=binomial))
+m4_mbet <- MIcombine_aic(m4_mbet)
 ```
 
 ```{r report-much-better-results}
-mbet_tbl <- report_models(m1_mbet, m2_mbet, m3_mbet,
+mbet_tbl <- report_models(m1_mbet, m2_mbet, m3_mbet, m4_mbet,
                           reglabels=regression_labels_bet,
                           caption=paste0('Estimated coefficients predicting ',
                                          'neighborhood has gotten ``much better\'\''),
