@@ -174,11 +174,16 @@ m2_sat <- MIcombine_aic(m2_sat)
 
 m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)), 
                                family=binomial))
+m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
 m3_sat <- MIcombine_aic(m3_sat)
 
 m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
                                family=binomial))
 m4_sat <- MIcombine_aic(m4_sat)
+
+sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
+sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
+
 ```
 
 ```{r report-satisfaction-analysis, echo=TRUE, include=TRUE}

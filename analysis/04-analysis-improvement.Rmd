@@ -52,11 +52,15 @@ m2_bet <- MIcombine_aic(m2_bet)
 
 m3_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~', m3)), family=binomial))
+m3_bet_racewald <- lapply(m3_bet, regTermTest, test.terms=~dem.race, df=NULL)
 m3_bet <- MIcombine_aic(m3_bet)
 
 m4_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~ ', m4)), family=binomial))
 m4_bet <- MIcombine_aic(m4_bet)
+
+bet_wald_F <- summary(sapply(m3_bet_racewald, function(x) x$Ftest))
+bet_wald_p <- summary(sapply(m3_bet_racewald, function(x) x$p))
 ```
 
 ```{r report-better-analysis, echo=TRUE, include=TRUE}
