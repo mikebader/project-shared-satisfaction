@@ -116,7 +116,8 @@ table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
 <!-- * *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?" -->
 
 ```{r economic-variables}
-dcas$educ <- dcas$dem.educ.attain
+dcas$educ <- factor(dcas$dem.educ.attain, order=FALSE) %>% 
+                relevel(ref='H.S.')
 educ_dummies <- paste0('educ',1:5)
 dcas[,educ_dummies] <- lapply(1:5,
         function(i) {unclass(dcas$dem.educ.attain)==i})
@@ -152,8 +153,9 @@ qplot(dcas$nhdyrsc)
 dcas$nhdsize[unclass(dcas$nhd.size)%in%c(1,2)] <- '1-9 blocks'
 dcas$nhdsize[unclass(dcas$nhd.size)%in%c(3,4)] <- '10-50 blocks'
 dcas$nhdsize[unclass(dcas$nhd.size)==5] <- '>50 blocks'
-dcas$nhdsize <- ordered(dcas$nhdsize, 
+dcas$nhdsize <- factor(dcas$nhdsize, 
                         levels=c('1-9 blocks', '10-50 blocks', '>50 blocks'))
+dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 

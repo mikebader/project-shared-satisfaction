@@ -83,7 +83,7 @@ tbl.names <- c(tbl.names,
                  'Children present', 'Married'))
 
 ## SES variables
-d <- rbind(d, desc('educ'))
+d <- rbind(d, desc('educ')[c(2,1,3:5),])
 tbl.names <- c(tbl.names,
                c('\\emph{Education}&&\\\\Less than H.S.','H.S. or G.E.D.',
                  'Some college', 'Bachelor\'s degree', 'Professional degree'))
@@ -185,10 +185,10 @@ m4_sat <- MIcombine_aic(m4_sat)
 regression_labels <- c('Asian','Black','Latinx',
                        'Age','Foreign Born','Male',
                        'Children Present', 'Married',
-                       levels(dcas$dem.educ.attain)[c(1:4)],
+                       levels(dcas$dem.educ.attain)[c(1,3:5)],
                        # levels(dcas$dem.income.cat4)[c(1,3:4)],
                        'Years in neighborhood',
-                       '1-9 blocks', '10-50 blocks')
+                       '10-50 blocks', '>50 blocks')
 sat_tbl <- report_models(m1_sat, m2_sat, m3_sat, m4_sat, reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         ' neighborhood satisfaction'),
