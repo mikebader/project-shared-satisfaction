@@ -35,7 +35,8 @@ The correct test of the hypotheses compares the responses of white residents to 
 
 ```{r define-models}
 m1 <- 'dem.race + sample_tract '
-m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
+m2 <- paste0(m1, '+ age + I(forborn*1) + I(man*1) + I(kids*1) + I(married*1) +
+                 educ')
 m3 <- paste0(m2, '+ nhdyrs + nhdsize')
 m4 <- sub('dem\\.race \\+ ','',m3)
 source('report_models.R')
