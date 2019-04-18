@@ -2,6 +2,22 @@
 ```{r setup-analysis-environment}
 rm(list=ls())
 load('../data/dcassvy.Rdata')
+
+## Functions for gathering & reporting results
+source('report_models.R')
+source('make_projections.R')
+get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
+    aics <- sapply(d, function(x) x$aic)
+    return(list(mean=mean(aics), var=var(aics)))
+}
+
+MIcombine_aic <- function(m) { ## Combines imputations, including AIC
+    aic <- get_aic(m)
+    mi <- MIcombine(m)
+    mi$aic <- aic
+    return(mi)
+}
+
 ```
 
 ## Analytical Approach
@@ -39,18 +55,6 @@ m2 <- paste0(m1, '+ age + I(forborn*1) + I(man*1) + I(kids*1) + I(married*1) +
                  educ')
 m3 <- paste0(m2, '+ nhdyrs + nhdsize')
 m4 <- sub('dem\\.race \\+ ','',m3)
-source('report_models.R')
-get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
-    aics <- sapply(d, function(x) x$aic)
-    return(list(mean=mean(aics), var=(1+(m^-1))*var(aics)))
-}
-
-MIcombine_aic <- function(m) { ## Combines imputations, including AIC
-    aic <- get_aic(m)
-    mi <- MIcombine(m)
-    mi$aic <- aic
-    return(mi)
-}
 ```
 
 ## Multiple Imputation & Survey Weights
