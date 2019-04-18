@@ -159,6 +159,15 @@ dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
+**Residence variables**
+
+* *State of residence*, factor variable indicating the state in which the respondent lives.  
+```{r residence-variables}
+dcas$state <- sapply(dcas$sample_tract, substr, start=1, stop=2)
+dcas$state[dcas$state=='24'] <- 'Maryland'
+dcas$state[dcas$state=='51'] <- 'Virginia'
+dcas$state <- factor(dcas$state)
+```
 <!--
 **Centered Variables**
 
