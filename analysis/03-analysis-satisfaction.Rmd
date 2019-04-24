@@ -78,6 +78,7 @@ tbl.names <- c("\\emph{Race}&&\\\\White", "Asian", "Black", "Latinx")
 
 ## Demographic variables
 d <- rbind(d, desc('age'))
+d['age','mean'] <- d['age','mean'] + 50
 d <- rbind(d, desc('forborn')[2,])
 d <- rbind(d, desc('man')[2,])
 d <- rbind(d, desc('kids')[2,])
@@ -95,6 +96,7 @@ tbl.names <- c(tbl.names,
 
 ## Neighborhood experience variables
 d <- rbind(d, desc('nhdyrs'))
+d['nhdyrs','mean'] <- d['nhdyrs','mean'] + 10 
 d <- rbind(d, desc('nhdsize'))
 
 tbl.names <- c(tbl.names, 

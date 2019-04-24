@@ -101,7 +101,7 @@ In addition to racial variables, I also included variables to control for other 
 
 ```{r demographic-variables}
 
-dcas$age <- dcas$dem.age
+dcas$age <- dcas$dem.age - 50 ## Center at age 50
 dcas$forborn <- dcas$dem.forborn
 dcas$man <- dcas$dem.gender.mf=='Male'
 dcas$kids <- as.numeric(as.character(dcas$q2)) > 0
@@ -146,7 +146,7 @@ In addition to demographic characteristics, I also included controls for the res
 * *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?" (The size of the area the respondent conjures as being part of their neighborhood could affect perceptions of neighborhood quality and change)
 
 ```{r nhood-variables}
-dcas$nhdyrs <- as.numeric(as.character(dcas$q4))
+dcas$nhdyrs <- as.numeric(as.character(dcas$q4)) - 10 ## Center at 10 years
 dcas$nhdyrsc <- scale(dcas$nhdyrs, scale=FALSE)
 qplot(dcas$nhdyrsc)
 
