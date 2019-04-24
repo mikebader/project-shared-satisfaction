@@ -3,33 +3,6 @@
 ### Bivariate Analysis
 Plot the mean value of respondents who indicated that they think that the neighborhood has gotten better in the past five years.
 
-```{r improvement-descriptives}
-## Add whether respondent is satisfied with neighborhood to models,
-## only if not already added to model specifications
-better_means <- MIcombine(with(dcassvy,
-                               svyby(~better, ~dem.race, svymean)))
-better_means <- summary(better_means)
-better_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
-                          better=better_means[5:8,1],
-                          ci=better_means[5:8,2])
-better_plt <- ggplot(better_vals, aes(x=dem.race, y=better)) +
-    geom_errorbar(aes(ymin=better-ci, ymax=better+ci), width=0.1) +
-    geom_point() +
-    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
-    labs(y='Proportion', x='Race')
-better_plt
-ggsave('images/better_descriptive.png', plot=better_plt,
-       height=3, width=4, units='in')
-better_model <- MIcombine(with(dcassvy,
-                               svyglm(better ~ dem.race, family=quasibinomial)))
-```
-
-```{r report-bivariate-improvement-plot, echo=TRUE, include=TRUE}
-better_plt
-```
-
-(I plan to make this plot show the un-adjusted and adjusted results)
-
 The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable.
 
 ### Multivariate Analysis
@@ -41,6 +14,10 @@ m0_bet <- MIcombine_aic(m0_bet)
 m1_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~', m1, '+ satisfied')), 
                       family=binomial))
+bet_pred_m1 <- MIpredict(m1_bet)
+bet_pred_m1$race <- levels(dcas$dem.race)
+bet_pred_m1$model <- 'Race only'
+
 m1_bet <- MIcombine_aic(m1_bet)
 
 m2_bet <- with(dcassvy,
@@ -54,6 +31,9 @@ m3_bet <- with(dcassvy,
 m3_bet_racewald <- lapply(m3_bet, regTermTest, test.terms=~dem.race, df=NULL)
 bet_wald_F <- summary(sapply(m3_bet_racewald, function(x) x$Ftest))
 bet_wald_p <- summary(sapply(m3_bet_racewald, function(x) x$p))
+bet_pred_m3 <- MIpredict(m3_bet)
+bet_pred_m3$race <- levels(dcas$dem.race)
+bet_pred_m3$model <- 'Race + controls'
 m3_bet <- MIcombine_aic(m3_bet)
 
 m4_bet <- with(dcassvy,
@@ -71,4 +51,27 @@ bet_tbl <- report_models(m1_bet, m2_bet, m3_bet, m4_bet,
                          label='tab:improvement')
 bet_tbl
 cat(to_latex(bet_tbl), file='tables/improvement.tex')
+```
+
+```{r plot-improvement}
+bet_pred <- rbind(bet_pred_m1, bet_pred_m3)
+bet_pred$model <- relevel(factor(bet_pred$model), ref='Race only')
+bet_pred$x <- c(seq(2,4.25,.75), seq(7,9.25,.75))
+bet_pred$x <- rep(1:4,2)
+bet_plt <- ggplot(bet_pred, aes(x=x, y=P)) + 
+    geom_point() +
+    geom_errorbar(aes(ymin=lci, ymax=uci), width=0.25) +
+    # annotate(geom='text', x=c(3.125,8.125), y=1.05, 
+    #          label=c('Race only', 'Race + controls'), size=4) +
+    facet_grid(.~model) +
+    scale_x_continuous(breaks=sat_pred$x, label=sat_pred$race) +
+    # scale_x_continuous(limits=c(.5,11), breaks=sat_pred$x, label=sat_pred$race,
+    #                    minor_breaks = c()) +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.2)) +
+    # theme_bw() +
+    labs(y='Proportion', x='Race') +
+    theme(panel.spacing.x = unit(2.5,'lines'))
+bet_plt
+ggsave('images/improvement.png', plot=bet_plt, 
+       height=3, width=4, units='in')
 ```
