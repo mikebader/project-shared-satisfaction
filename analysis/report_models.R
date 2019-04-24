@@ -19,7 +19,7 @@ report_models <- function(...,reglabels=c(), label='', caption='') {
         insert_row(c('Socioeconomic','','','',''),
                    after=(which(ht$names=="Married")+3)) %>%
         insert_row(c('Neighborhood perceptions','','','',''),
-                   after=which(ht$names=="B.A.")+4) %>%
+                   after=which(ht$names=="B.A.")+6) %>%
         insert_row(c('AIC', sapply(models, function(x) round(x$aic$mean, 3))),
                    after=nrow(ht)+3) %>%
         set_bottom_border(row=c(1,length(ht$names)+4, length(ht$names)+3), col=everywhere, value=1) %>%

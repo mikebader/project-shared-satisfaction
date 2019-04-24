@@ -10,20 +10,10 @@ vars <- c(
           , 'man'
           , 'kids'
           , 'married'
-          # , 'educ1', 'educ2', 'educ3', 'educ5'
           , 'educ'
-          # # , 'inc1', 'inc3', 'inc4'
           , 'nhdyrs'
-          # , 'nhdsize1', 'nhdsize3'
           , 'nhdsize'
           , 'state'
-          # , 'consider_num', 'consider_any', 'notconsider_num', 'notconsider_any'
-          # , unlist(grep('(?<!live_columbia.heights)$',new_search_names,
-          # value=TRUE, perl=TRUE))
-          # , unlist(grep('^cons_', new_search_names, value=TRUE, perl=TRUE))
-          # , unlist(
-          #     grep('(?<!huntington)$', new_search_names, value=TRUE, perl=TRUE)
-          # ))
 )
 load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 racecomp <- paste0('pct', c('nhw','api','nhb','lat'))
@@ -51,7 +41,6 @@ impute_weights <- function(dta){
                                 data=imputationList(dcasmi$imputations)),
                                 envir=.GlobalEnv)
 }
-# cat(names(test), 'dtanames.txt')
 impute_weights(dcas[,c(vars, idvars, commvars)])
 
 ## Find tract with approximately median value of tract-level satisfaction
@@ -61,6 +50,5 @@ tract_means <- sort(tract_means)
 median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
 dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
 impute_weights(dcas[, c(idvars, vars, commvars)])
-head(dcassvy$designs$imp1$variables$sample_tract)
 save(vars, dcassvy, dcas, dcasmi, dataDIR, file = '../data/dcassvy.Rdata')
 ```
