@@ -25,7 +25,6 @@ vars <- c(
           #     grep('(?<!huntington)$', new_search_names, value=TRUE, perl=TRUE)
           # ))
 )
-
 load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 racecomp <- paste0('pct', c('nhw','api','nhb','lat'))
 comms <- dcas_prefs[!duplicated(dcas_prefs$commname),
@@ -39,19 +38,21 @@ commvars <- c(paste0('nhd.srch.',quadcomms,'.dk'),
               paste0('nhd.srch.',quadcomms,'.cons'),
               paste0('nhd.srch.',quadcomms,'.nc'),
               paste0('nhd.srch.',quadcomms,'.live'))
+
 dcas$studycase <- as.character(dcas$studycase)
 idvars <- c('studycase','weight', 'sample_strata', 'sample_tract')
 nominals <- vars[!(vars %in% c('age', 'nhdyrs', 
                                'consider_num', 'notconsider_num'))]
 impute_weights <- function(dta){
     set.seed(214518)
-    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c (500 , 500),
+    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
                             p2s = F, idvars=idvars), envir=.GlobalEnv)
     assign('dcassvy', svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
-                                data=imputationList(dcasmi$imputations)), 
+                                data=imputationList(dcasmi$imputations)),
                                 envir=.GlobalEnv)
-    }
-impute_weights(dcas[, c(idvars, vars, commvars)])
+}
+# cat(names(test), 'dtanames.txt')
+impute_weights(dcas[,c(vars, idvars, commvars)])
 
 ## Find tract with approximately median value of tract-level satisfaction
 tract_means <- MIcombine(
