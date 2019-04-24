@@ -2,8 +2,17 @@
 ```{r setup-analysis-environment}
 rm(list=ls())
 load('../data/dcassvy.Rdata')
+```
+## Analytical Approach
+For each analysis, ran three models. 
 
-## Functions for gathering & reporting results
+1. Race-only model
+2. Race and demographic controls
+3. Race, demographic, and neighborhood perception variables
+
+* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome) [Create subsection at end of **Analysis** to address "proving the null"?]
+
+```{r reporting-functions}
 source('report_models.R')
 source('make_projections.R')
 get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
@@ -19,15 +28,6 @@ MIcombine_aic <- function(m) { ## Combines imputations, including AIC
 }
 
 ```
-
-## Analytical Approach
-For each analysis, ran three models. 
-
-1. Race-only model
-2. Race and demographic controls
-3. Race, demographic, and neighborhood perception variables
-
-* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome) [Create subsection at end of **Analysis** to address "proving the null"?]
 
 ## Fixed Effects
 ```{r tract-clustering}
@@ -180,15 +180,13 @@ m2_sat <- MIcombine_aic(m2_sat)
 m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)), 
                                family=binomial))
 m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
+sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
+sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
 m3_sat <- MIcombine_aic(m3_sat)
 
 m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
                                family=binomial))
 m4_sat <- MIcombine_aic(m4_sat)
-
-sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
-sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
-
 ```
 
 ```{r report-satisfaction-analysis, echo=TRUE, include=TRUE}
@@ -208,57 +206,3 @@ cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
 
 Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks.
-
-**Extremely Satisfied.** Calculate the proportion of respondents who are *extremely* satisfied by each racial group. (I think that I should add these results to a "robustness checks" section)
-
-```{r bivariate-extremely-satisfied}
-extreme_means <- MIcombine(with(dcassvy,
-                                svyby(~extremely_satisfied, ~dem.race, svymean)))
-extreme_diffs <- MIcombine(with(dcassvy, 
-                                svyglm(extremely_satisfied ~ dem.race,
-                                       family=quasibinomial)))
-extreme_prob_white <- exp(coef(extreme_diffs)[1])/(1+exp(coef(extreme_diffs)[1]))
-extreme_odds <- exp(coef(extreme_diffs))
-```
-
-`r round(extreme_prob_white, 2)*100` percent of white residents reported being extremely satisfied with their neighborhoods. That value was
-`r round(1/extreme_odds[['dem.raceapi']],2)` times higher than Asians,
-`r round(1/extreme_odds[['dem.raceblack']],2)` times higher than blacks, and
-`r round(1/extreme_odds[['dem.racelatino']],2)` times than Latinx residents.
-
-```{r extremely-satisfied-analysis, results='hide'}
-m0_esat <- with(dcassvy, 
-                svyglm(extremely_satisfied ~ sample_tract, family=binomial))
-m0_esat <- MIcombine_aic(m0_esat)
-
-m1_esat <- with(dcassvy,
-                svyglm(as.formula(paste('extremely_satisfied ~ ', m1)),
-                       family=binomial))
-m1_esat <- MIcombine_aic(m1_esat)
-
-m2_esat <- with(dcassvy,
-                svyglm(as.formula(paste('extremely_satisfied ~ ', m2)),
-                       family=binomial))
-m2_esat <- MIcombine_aic(m2_esat)
-
-m3_esat <- with(dcassvy,
-                svyglm(as.formula(paste('extremely_satisfied ~ ', m3)),
-                       family=binomial))
-m3_esat <- MIcombine_aic(m3_esat)
-
-m4_esat <- with(dcassvy,
-                svyglm(as.formula(paste('extremely_satisfied ~ ', m4)),
-                       family=binomial))
-m4_esat <- MIcombine_aic(m4_esat)
-```
-
-```{r report-extreme-satisfaction, echo=TRUE, include=TRUE}
-esat_tbl <- report_models(m1_esat, m2_esat, m3_esat, m4_esat,
-                          reglabels=regression_labels, 
-                          caption=paste0('Estimated coefficients predicting ',
-                                         ' extreme neighborhood satisfaction'),
-                          label='tab:satisfaction')
-esat_tbl
-cat(to_latex(esat_tbl), file='tables/extreme_satisfaction.tex')
-```
-

@@ -1,62 +1,6 @@
-# Knowledge and Preceptions of Other Multiethnic Places
+# Familiarity with and Preferences for Other Multiethnic Places
 
 The long-term stability of multiethnic neighborhoods requires that residents of all races consider moving to existing multiethnic neighborhoods. The subsequent analyses assess how likely residents are to consider neighborhoods and how likely they are to actively not consider multiethnic neighborhoods. 
-
-```{r plot-racial-composition, echo=20, include=TRUE}
-# ## Ordered by state, county, distance from downtown
-# load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
-# comm_names <- c('columbia.heights', 'brightwood',
-#                 'langley.park', 'hyattsville', 'greenbelt',
-#                 'wheaton', 'germantown',
-#                 'arlington',
-#                 'annandale', 'huntington', 'herndon')
-# races <- c('white','asian','black','latino')
-# 
-# comms <- dcas_prefs[!duplicated(dcas_prefs$commname),]
-# comms$commname <- ordered(comms$commname, levels=comm_names)
-# comms <- comms[order(comms$commname),]
-# # comms <- comms[order(comms$pctnhw),]
-# # comm_order <- comms$commname
-# comms_long <- gather(comms, commnum, values, pctnhw, pctnhb, pctlat, pctapi)
-# #comms_long$commname <- ordered(comms_long$commname, levels=comm_names)
-# comms_long$commnum <- ordered(comms_long$commnum, levels=c('pctapi', 'pctnhb', 'pctlat', 'pctnhw'))
-# 
-# ggplot(comms_long, aes(x=commname, y=values, fill=commnum)) + geom_bar(stat='identity', position=position_stack()) + coord_flip()
-# 
-# comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
-# comms_tbl <- as_tibble(comms[,c('commname','pctnhw','pctnhb','pctlat','pctapi',
-#                                 'medinc','medval','pctpov')]) %>%
-#     mutate(medval=sprintf('$%s',format(round(medval)*1000, big.mark=',', 
-#                                        scientific=FALSE, digits=3))) %>%
-#     mutate(medinc=sprintf('$%s', format(round(medinc)*1000, big.mark=',',
-#                                         scientific=FALSE, digits=3))) %>%
-#     mutate(commname=comm_titles)
-# add.to.row <- list(pos=list(0,0))
-# add.to.row$command <- c(paste0('&\\multicolumn{4}{c}{Racial Composition}&&&\\\\\n'),
-#                         paste0('& White', '& Black', '& Latino', '& Asian',
-#                                '& Med.\\ income', '& Med.\\ value', 
-#                                '& Pct.\\ poor\\\\'))
-# print(xtable(comms_tbl, 
-#              digits=0, 
-#              caption='Characteristics of selectable communities, 2016 DC Area Survey',
-#              label='tab:communities',
-#              align=c('l','p{1.25in}',rep('R{5em}',4),rep('R{8em}',2),'R{5em}')),
-#       file='tables/communities.tex',
-#       add.to.row=add.to.row, 
-#       include.colnames=FALSE, include.rownames=FALSE,
-#       caption.placement='top',
-#       floating.environment='sidewaystable',
-#       booktabs=TRUE,
-#       timestamp='')
-# 
-# E <- function(cols) { ## Entropy value
-#     p <- sapply(cols, function(x){x/100})
-#     sum(sapply(p, function(x){x*log(1/x)}))
-# }
-# comms_tbl$E <- apply(comms_tbl[,c('pctnhw','pctnhb','pctlat','pctapi')],1,E)
-# comms_tbl
-```
-
 
 ## Familiarity with Multiethnic Places
 
@@ -68,30 +12,30 @@ Two measures of familiarity with other multiethnic places in the Washington, D.C
 Uses the same analytical strategy, except that we add two covariates to each model: 
 
 1. Whether the respondent reports living in the place
-2. Whether the respondent lives in Maryland or Virginia given separate housing markets
 
-```{r model, echo=TRUE, include=TRUE}
-m1 <- sub('satisfied \\+', '', m1)
-m2 <- sub('satisfied \\+', '', m2)
-m3 <- sub('satisfied \\+', '', m3)
-m3 <- sub('\\+ nhdyrs.+$', '', m3) # Eliminate nhood perceptions variables
-m4 <- sub('dem.race \\+', '', m3)
+```{r familiarity}
+m3_srch <- sub('\\+ nhdyrs.+$', '', m3) # Eliminate nhood perceptions variables
 
 nhd.model <- function(nhd, dim, model) {
     nhdvar <- paste0('nhd.srch.', nhd, '.', dim)
-    f <- as.formula(paste(nhdvar, '~', model))
+    f <- as.formula(paste0(nhdvar, ' ~ ', model, ' + nhd.srch.', nhd, '.live'))
     return(with(dcassvy, svyglm(f, family=binomial())))
 }
 
 quad.nhoods <- c('herndon', 'germantown', 'wheaton')
 
 ## Don't Know
+m0_dk <- lapply(quad.nhoods, nhd.model, 'dk', 'dem.race')
+names(m0_dk) <- quad.nhoods
+m0_dk_pred <- lapply(m0_dk, MIpredict)
+m0_dk <- lapply(m0_dk, MIcombine_aic)
+
 m1_dk <- lapply(quad.nhoods, nhd.model, 'dk', m1)
 names(m1_dk) <- quad.nhoods
 m1_dk_pred <- lapply(m1_dk, MIpredict)
 m1_dk <- lapply(m1_dk, MIcombine_aic)
 
-m3_dk <- lapply(quad.nhoods, nhd.model, 'dk', m3)
+m3_dk <- lapply(quad.nhoods, nhd.model, 'dk', m3_srch)
 names(m3_dk) <- quad.nhoods
 m3_dk_pred <- lapply(m3_dk, MIpredict)
 m3_dk <- lapply(m3_dk, MIcombine_aic)
@@ -107,11 +51,13 @@ names(m1_ff) <- quad.nhoods
 m1_ff_pred <- lapply(m1_ff, MIpredict)
 m1_ff <- lapply(m1_ff, MIcombine_aic)
 
-m3_ff <- lapply(quad.nhoods, nhd.model, 'ff', m3)
+m3_ff <- lapply(quad.nhoods, nhd.model, 'ff', m3_srch)
 names(m3_ff) <- quad.nhoods
 m3_ff_pred <- lapply(m3_ff, MIpredict)
 m3_ff <- lapply(m3_ff, MIcombine_aic)
+```
 
+```{r report-familiarity-results, echo=TRUE, include=TRUE}
 know_tbl <- huxreg(append(m3_dk, m3_ff))
 know_tbl[seq(4,9,2),1] <- regression_labels[1:3]
 know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
@@ -121,250 +67,13 @@ know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
                  'Friends and family','',''),after=0) %>%
     merge_cells(c(1:1),c(2:4)) %>% merge_cells(c(1:1),c(6:8)) %>%
     set_align(1, everywhere, 'center') %>%
-    set_bottom_border(row=where(know_tbl$names=='Latinx')+1, 
+    set_bottom_border(row=where(know_tbl$names=='Latinx')+2, 
                       col=everywhere, value=1)
 know_tbl
 cat(to_latex(know_tbl), file='tables/knowledge.tex')
-    
 ```
 
-## Analyze Where People Would Consider Moving
-<!-- Determine how many people would consider at least one other multiracial neighborhood on the list, by race. 
+## Where People Would Consider Moving
 
-```{r consider-any}
-# consany_mean <- MIcombine(with(dcassvy, 
-#                                svymean(~consider_any)))$coefficients[2]
-# consany_res <- MIcombine(with(dcassvy,
-#                               svyglm(consider_any~dem.race, 
-#                                      family=quasibinomial)))
-# (consany_sum <- summary(consany_res))
-# logits <- consany_sum[1,1] + c(0, consany_sum[2:4,1])
-# probs <- round(exp(logits)/(1+exp(logits)), 2)*100
-# names(probs) <- races
-# probs
-# huxreg(consany_res)
-# 
-# consnum_res <- MIcombine(with(dcassvy,
-#                               svyby(~consider_num, ~dem.race, svymean)))
-# (consnum_sum <- coef(consnum_res))
-```
 
-Overall `#r round(consany_mean*100)`% of people would consider living in one of the eleven communities named in the survey. Among whites, `#r probs[1]`% would consider at least one of the eleven other multiethnic neighborhoods on the list; among Asians `#r probs[2]`%, among blacks, `#r probs[3]`%, and among Latinos `#r probs[4]`%.
-
-To analyze the association of race with considering any one of the eleven communities, I constructed four models:
-
-1. **Constant-only model** will be used to plot the distance of each racial group from the overall mean consideration of the neighborhood.
-
-2. **Race-only model** will be used to analyze the influence of race accounting for no other demographic characteristics.
-
-3. **Model with controls** will be used to analyze the influence of race accounting for other demographic characteristics.
-
-4. **Model with controls only** will be used to plot the distance of each racial group from the overall conditional mean.
-
-To do this, define the `srch_reg` function to run weighted regression with multiple imputation. Use the `srch_reg` function to cycle through each of the eleven outcomes.
--->
-
-```{r consider-analysis}
-# srch_reg <- function(comm, dimension, indvars='dem.race',include.live=FALSE) {
-#     outvar <- paste(dimension, comm, sep='_')
-#     indvars <- if(include.live==TRUE) 
-#                     paste(indvars, sep='+',paste0('live_', comm)) else indvars
-#     fmla <- as.formula(paste(outvar, indvars, sep='~'))
-#     res <- MIcombine((with(dcassvy,
-#                            svyglm(fmla, family=quasibinomial))))
-# }
-# 
-# ## Constant-only
-# cons_constant <- lapply(comm_names, srch_reg, 'cons', '1')
-# 
-# ## Race-only
-# cons_raceonly <- lapply(comm_names, srch_reg, 'cons')
-# 
-# ## Race with controls
-# cons_racecont <- lapply(comm_names, srch_reg, 'cons', m2, include.live=TRUE)
-# 
-# ## Controls-only
-# cons_contonly <- lapply(comm_names, srch_reg, 'cons', 
-#                         sub('dem.race\\+','',m2), include.live=TRUE)
-
-```
-
-Report the regression coefficients from the race-only and race-with-controls models. The probabilities of considering neighborhoods conditional on all characteristics except race are reported below.
-
-```{r consider-report-analysis, warning=FALSE}
-# model_summary <- function(res) {
-#     coef <- res$coefficients
-#     s.err <- sqrt(diag(res$variance))
-#     tvalue <- coef/s.err
-#     pvalue <- 2*pnorm(-abs(tvalue))
-#     stars <- sapply(pvalue, function(x){if(x<.001) '***' else if(x<.01) '**' else if (x<.05) '*' else ''})
-#     return(cbind(coef, s.err, tvalue, pvalue))
-# }
-# 
-# report_srch <- function(m_summs) {
-#     race_coef <- lapply(m_summs, function(x){
-#         x <- x[rownames(x) %in% c('(Intercept)', 'dem.raceapi', 
-#                                   'dem.raceblack','dem.racelatino'),] 
-#         stars <- sapply(x[,'pvalue'], function(x){if(x<.001) '***'
-#             else if(x<.01) '**' else if (x<.05) '*' else ''})
-#         matrix(mapply(c,sprintf('%5.3f',x[,'coef']),stars),nrow=1)
-#         }) %>%
-#     unlist() %>%
-#     matrix(ncol=8, byrow=TRUE)
-#     return(race_coef)
-# }
-# 
-# srch_tbl <- function(reports, fname, caption, label) {
-#     add.to.row <- list()
-#     add.to.row$pos <- list(0,0)
-#     add.to.row$command <- c(paste0('& \\multicolumn{8}{c}{Race only} ',
-#                                    '& \\multicolumn{8}{c}{With controls}\\\\\n'),
-#                             paste0('& Intercept && Asian && Black && Latino&',
-#                                    '& Intercept && Asian && Black && Latino&\\\\\n'))
-#     comm_titles <- str_to_title(gsub('\\.', ' ', comm_names))
-#     cons_summs <- lapply(reports, model_summary)
-#     cons_tbl <- cbind(report_srch(cons_summs[1:11]), 
-#                       report_srch(cons_summs[12:22]))
-#     rownames(cons_tbl) <- comm_titles
-#     print(xtable(as.table(cons_tbl),
-#                  caption=caption,
-#                  label=label,
-#                  align='lrlrlrlrlrlrlrlrl'),
-#           file=fname, 
-#           add.to.row=add.to.row,
-#           include.colnames=FALSE,
-#           caption.placement='top',
-#           floating.environment='sidewaystable',
-#           booktabs=TRUE,
-#           timestamp=''
-#     )
-# }
-# srch_tbl(c(cons_raceonly, cons_racecont), 'tables/consider.tex',
-#          'Estimated race coefficients for willingness to consider communities',
-#          'tab:consider')
-
-```
-
-Create a plot with the predicted probability for each racial group plotted for each community. Then draw a line from the predicted probability for a racial group to the overall predicted probability with controls.
-
-First, analyze the data with all controls (but not race). The centered variables make the intercept the grand mean unconditional on race. Save those values into a data frame called `cons_overall`.
-
-Next, compute predicted probabilities for each of the racial groups from the models with controls. Create a long dataset with probabilities by each race for each community. Merge the long dataframe with the overall dataset created above.
-
-```{r future-plot-functions}
-# ypos <- c(0,2,8,10,12,16,18,24,28,30,32)
-# counties <- list(name=c('Fairfax, VA', 'Arlington, VA', 'Montgomery, MD',
-#                         'Prince George\'s, MD', 'Washington, DC'),
-#                  x=c(30, 24, 17, 10, 1))
-# dodge_width <- 1
-# 
-# srch_gather <- function(res, overall=FALSE) {
-#     sumres <- summary(res)
-#     if(overall==FALSE) {
-#         logits <- sumres[1,1] + c(0, sumres[2:4,1])
-#         ci <- 1.96*sumres[1:4,2]
-#     }
-#     else {
-#         logits <- sumres[1,1]
-#         ci <- 1.96*sumres[1,2]
-#     }
-#     lci <- logits-ci
-#     uci <- logits+ci
-#     probs <- exp(logits)/(1+exp(logits))
-#     lci <- exp(lci)/(1+exp(lci))
-#     uci <- exp(uci)/(1+exp(uci))
-#     out <- matrix(c(probs,lci,uci), nrow=1)
-# }
-# make_prob_df <- function(regs, overall=FALSE) {
-#     reg_matrix <- t(sapply(regs, srch_gather, overall))
-#     if(overall==TRUE) {
-#         prob_df <- reg_matrix %>%
-#             as_data_frame() %>%
-#             mutate(comm=comm_names, pos=ypos)
-#         names(prob_df)[1:3] <- c('prob', 'lci', 'uci')
-#     }
-#     else {
-#         prob_df <- data.frame(
-#             prob=matrix(reg_matrix[,1:4], ncol=1),
-#             lci=matrix(reg_matrix[,5:8], ncol=1),
-#             uci=matrix(reg_matrix[,9:12], ncol=1),
-#             race=rep(races, each=11),
-#             comm=rep(comm_names, 4)
-#         )
-#     }
-#     return(prob_df)
-# }
-# srch_plots <- function(prob_dfs, fnames, consider=TRUE) {
-#     plt_params <- if(consider==TRUE) list(ypos=.33,
-#                                           ybreaks=seq(0,.25,0.05),
-#                                           ylims=c(0,.35)) else
-#                                               list(ypos=.73,
-#                                                    ybreaks=seq(0,.50,0.1),
-#                                                    ylims=c(0,.75))
-#     plts <- list()
-#     for(i in 1:2) {
-#         df <- prob_dfs[[i]]
-#         plt <- ggplot(df, aes(x=pos, y=prob, shape=race)) +
-#             geom_errorbar(aes(ymin=prob_overall,ymax=prob),
-#                           position=position_dodge(dodge_width), width=0) +
-#             geom_point(size=2, position=position_dodge(dodge_width), fill='white') +
-#             annotate("text", x=counties$x, y=plt_params$ypos,
-#                      label=counties$name, size=3, hjust=1) +
-#             scale_x_continuous(breaks=ypos,
-#                                labels=comm_names) +
-#             scale_y_continuous(breaks=plt_params$ybreaks,
-#                                limits=plt_params$ylims) +
-#             labs(x='Community', y='Proportion') +
-#             coord_flip() +
-#             scale_shape_manual(values=c(21,22,23,24)) +
-#             theme_bw() + theme(
-#                 panel.grid.minor = element_blank())
-#         ggsave(plt, file=fnames[i],
-#                units='in', width=8, height=4.5)
-#         plts[[i]] <- plt
-#     }
-#     return(plts)
-# }
-```
-
-```{r consider-plot-results}
-## Relies on convenience functions in .Rmd that are not included in workbook
-# cons_constant_probs <- make_prob_df(cons_constant, overall=TRUE)
-# cons_overall_probs  <- make_prob_df(cons_contonly, overall=TRUE)
-# cons_raceonly_probs <- make_prob_df(cons_raceonly) %>%
-#     left_join(cons_constant_probs, by='comm', suffix=c('','_overall')) %>%
-#     as_tibble()
-# cons_racecont_probs <- make_prob_df(cons_racecont) %>%
-#     left_join(cons_overall_probs, by='comm', suffix=c('', '_overall')) %>%
-#     as_tibble()
-# 
-# prob_dfs <- list(cons_raceonly_probs, cons_racecont_probs)
-# fnames <- sprintf('images/%s.png', c('consider', 'consider_controls'))
-# plts <- srch_plots(prob_dfs, fnames)
-# plts[[1]]
-# plts[[2]]
-# 
-# ## Probabilities for control-variables-only models reported first
-# cons_overall_probs
-
-```
-
-```{r report-consider-plots, echo=TRUE, include=TRUE}
-# plts[[1]]
-# plts[[2]]
-
-```
-
-The following tables represent the racial probabilities, percentage point and percentage difference from overall levels of considering the neighborhood. 
-
-```{r consider-probs-by-race}
-# cons_racecont_probs <- cons_racecont_probs %>%
-#     mutate(diff=prob-prob_overall) %>%
-#     mutate(pct_diff=diff/prob_overall)
-# cons_race_diffs <- lapply(c('white','asian','black','latino'),
-#     function(x){cons_racecont_probs[cons_racecont_probs$race==x,
-#                                     c('comm','race','prob',
-#                                       'prob_overall','diff','pct_diff')]})
-# cons_race_diffs
-```
-
+## Where Would People Never Consider Moving
