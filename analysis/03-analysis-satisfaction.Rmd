@@ -140,28 +140,6 @@ summary(mean_satisfied)
 ```
 Overall, `r round(coef(mean_satisfied)[2], 2)*100` percent of residents in the sample were either very or extremely satisfied with their neighborhoods.
 
-```{r satisfaction-bivariate}
-satisfied_means <- MIcombine(with(dcassvy,
-                                  svyby(~satisfied, ~dem.race, svymean)))
-satisfied_ci <- 1.96*sqrt(diag(satisfied_means$variance))
-satisfied_vals <- data.frame(dem.race=c('White','Asian','Black','Latinx'),
-                             satisfied=coef(satisfied_means),
-                             ci=satisfied_ci)
-satisfied_plt <- ggplot(satisfied_vals, aes(x=dem.race, y=satisfied)) +
-    geom_errorbar(aes(ymin=satisfied-ci, ymax=satisfied+ci), width=0.1) +
-    geom_point() +
-    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.20)) +
-    labs(y='Proportion', x='Race')
-satisfied_plt
-ggsave('images/satisfied_descriptive.png', plot=satisfied_plt,
-       height=3, width=4, units='in')
-```
-
-```{r report-satisfied-bivariate-plot, echo=TRUE, include=TRUE}
-satisfied_plt
-```
-
-(I plan to make this plot show the un-adjusted and adjusted results)
 
 ### Multivariate Analysis
 **Satisfied.**
@@ -173,6 +151,9 @@ m0_sat <- MIcombine_aic(m0_sat)
 
 m1_sat <- with(dcassvy,
                svyglm(as.formula(paste('satisfied ~',m1)), family=binomial))
+sat_pred_m1 <- MIpredict(m1_sat)
+sat_pred_m1$race <- levels(dcas$dem.race)
+sat_pred_m1$model <- 'Race only'
 m1_sat <- MIcombine_aic(m1_sat)
 
 m2_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m2)),
@@ -184,6 +165,9 @@ m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)),
 m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
 sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
 sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
+sat_pred_m3 <- MIpredict(m3_sat)
+sat_pred_m3$race <- levels(dcas$dem.race)
+sat_pred_m3$model <- 'Race + controls'
 m3_sat <- MIcombine_aic(m3_sat)
 
 m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
@@ -208,3 +192,26 @@ cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
 
 Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks.
+
+```{r plot-satisfaction}
+sat_pred <- rbind(sat_pred_m1, sat_pred_m3)
+sat_pred$model <- relevel(factor(sat_pred$model), ref='Race only')
+sat_pred$x <- c(seq(2,4.25,.75), seq(7,9.25,.75))
+sat_pred$x <- rep(1:4,2)
+sat_plt <- ggplot(sat_pred, aes(x=x, y=P)) + 
+    geom_point() +
+    geom_errorbar(aes(ymin=lci, ymax=uci), width=0.25) +
+    # annotate(geom='text', x=c(3.125,8.125), y=1.05, 
+    #          label=c('Race only', 'Race + controls'), size=4) +
+    facet_grid(.~model) +
+    scale_x_continuous(breaks=sat_pred$x, label=sat_pred$race) +
+    # scale_x_continuous(limits=c(.5,11), breaks=sat_pred$x, label=sat_pred$race,
+    #                    minor_breaks = c()) +
+    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.2)) +
+    # theme_bw() +
+    labs(y='Proportion satisfied in neighborhood', x='Race') +
+    theme(panel.spacing.x = unit(2.5,'lines'))
+sat_plt
+ggsave('images/satisfied.png', plot=sat_plt, 
+       height=3, width=4, units='in')
+```

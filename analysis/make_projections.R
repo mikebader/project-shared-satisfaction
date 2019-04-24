@@ -4,7 +4,7 @@
 MIpredict <- function(mlist) {
     newdata <- data.frame(dem.race=c('white','api','black','latino'),
                           sample_tract="51059452600",
-                          educ='B.A.', nhdsize='1-9 blocks',
+                          educ='H.S.', nhdsize='1-9 blocks',
                           age=0, nhdyrs=0,
                           forborn=FALSE, man=FALSE,
                           kids=FALSE, married=FALSE,
