@@ -1,0 +1,34 @@
+# Supplement
+
+## Full Analytic Model, Don't Know About Communities
+The following reports the full analytic model minus the coefficients and standard errors for neighborhood fixed effects (second and third models) predicting whether respondent doesn't know anything about the community. 
+
+```{r dont-know-supplement}
+dk_out <- function(nhd) {
+    dk_tbl <- huxreg(m0_dk[[nhd]], m1_dk[[nhd]], m3_dk[[nhd]])
+    dk_tbl <- dk_tbl[c(-1*grep('^sample_tract', dk_tbl$names, perl=TRUE),
+                       -1*(grep('^sample_tract', dk_tbl$names, perl=TRUE)+1)),
+                     ] %>%
+        set_caption(paste('Log-odds associated with not knowing anything about',
+                          tools::toTitleCase(nhd))) %>%
+        set_label(paste0('tbl:dk_',nhd))
+}
+dk_sup <- lapply(quad.nhoods, dk_out)
+```
+
+## Full Analytic Model, Knowing Friends or Family
+The following reports the full analytic model minus the coefficients and standard errors for neighborhood fixed effects (second and third models) predicting whether respondent knew friends or family who lived in the neighborhood.
+
+```{r friends-family-supplement}
+ff_out <- function(nhd) {
+    ff_tbl <- huxreg(m0_ff[[nhd]], m1_ff[[nhd]], m3_ff[[nhd]])
+    ff_tbl <- ff_tbl[c(-1*grep('^sample_tract', ff_tbl$names, perl=TRUE),
+                       -1*(grep('^sample_tract', ff_tbl$names, perl=TRUE)+1)),
+                     ] %>%
+        set_caption(paste('Log-odds associated with having friends or family in',
+                          tools::toTitleCase(nhd))) %>%
+        set_label(paste0('tbl:ff_',nhd))
+    cat(to_latex(ff_tbl), file=paste0('tables/friends-family-',nhd,'.tex'))
+}
+ff_sup <- lapply(quad.nhoods, ff_out)
+```
