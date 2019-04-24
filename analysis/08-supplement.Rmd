@@ -12,6 +12,8 @@ dk_out <- function(nhd) {
         set_caption(paste('Log-odds associated with not knowing anything about',
                           tools::toTitleCase(nhd))) %>%
         set_label(paste0('tbl:dk_',nhd))
+    cat(to_latex(dk_tbl), file=paste0('tables/supplement/dont-know-',
+                                      nhd,'.tex'))
 }
 dk_sup <- lapply(quad.nhoods, dk_out)
 ```
@@ -28,7 +30,8 @@ ff_out <- function(nhd) {
         set_caption(paste('Log-odds associated with having friends or family in',
                           tools::toTitleCase(nhd))) %>%
         set_label(paste0('tbl:ff_',nhd))
-    cat(to_latex(ff_tbl), file=paste0('tables/friends-family-',nhd,'.tex'))
+    cat(to_latex(ff_tbl), file=paste0('tables/supplement/friends-family-',
+                                      nhd,'.tex'))
 }
 ff_sup <- lapply(quad.nhoods, ff_out)
 ```
