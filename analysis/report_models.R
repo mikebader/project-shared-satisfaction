@@ -11,14 +11,15 @@ report_models <- function(...,reglabels=c(), label='', caption='') {
     ht <- ht[-1*fe_rows(ht),]
     ht[seq(4,(length(reglabels)+1)*2,2), 1] <- reglabels
     last.row <- nrow(ht)
+    ncols <- ncol(ht)
     ht <- ht %>%
-        insert_row(c('Race','','','',''),
+        insert_row(c('Race',rep('', ncols-1)),
                      after=(which(ht$names=="Asian")-1)) %>%
-        insert_row(c('Demographics','','','',''),
+        insert_row(c('Demographics',rep('', ncols-1)),
                    after=(which(ht$names=="Latinx")+2)) %>%
-        insert_row(c('Socioeconomic','','','',''),
+        insert_row(c('Socioeconomic',rep('', ncols-1)),
                    after=(which(ht$names=="Married")+3)) %>%
-        insert_row(c('Neighborhood perceptions','','','',''),
+        insert_row(c('Neighborhood perceptions',rep('', ncols-1)),
                    after=which(ht$names=="B.A.")+6) %>%
         insert_row(c('AIC', sapply(models, function(x) round(x$aic$mean, 3))),
                    after=nrow(ht)+3) %>%

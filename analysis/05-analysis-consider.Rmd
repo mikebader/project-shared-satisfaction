@@ -13,7 +13,7 @@ Uses the same analytical strategy, except that we add two covariates to each mod
 
 1. Whether the respondent reports living in the place
 
-```{r familiarity}
+```{r familiarity-analysis}
 m3_srch <- sub('\\+ nhdyrs.+$', '', m3) # Eliminate nhood perceptions variables
 
 nhd.model <- function(nhd, dim, model) {
@@ -74,6 +74,45 @@ cat(to_latex(know_tbl), file='tables/knowledge.tex')
 ```
 
 ## Where People Would Consider Moving
+```{r consider-analysis}
+m0_con <- lapply(quad.nhoods, nhd.model, 'cons', 'dem.race')
+names(m0_con) <- quad.nhoods
+m0_con_pred <- lapply(m0_con, MIpredict)
+m0_con <- lapply(m0_con, MIcombine_aic)
 
+m1_con <- lapply(quad.nhoods, nhd.model, 'cons', m1)
+names(m1_con) <- quad.nhoods
+m1_con_pred <- lapply(m1_con, MIpredict)
+m1_con <- lapply(m1_con, MIcombine_aic)
+
+m3_con <- lapply(quad.nhoods, nhd.model, 'cons', m3_srch)
+names(m3_con) <- quad.nhoods
+m3_con_pred <- lapply(m3_con, MIpredict)
+m3_con <- lapply(m3_con, MIcombine_aic)
+```
+
+```{r report-consider-results}
+## Label lives in community variable to be the same across models
+varlabel <- 'Lives in community'
+varnames <- sub('.+liveTRUE$', varlabel, names(m3_con$herndon$coefficients))
+for (nhd in quad.nhoods) {
+    names(m3_con[[nhd]]$coefficients) <- varnames
+    colnames(m$variance) <- varnames
+    rownames(m$variance) <- varnames
+}
+
+cons_labels <- c(regression_labels[1:(length(regression_labels)-3)], 
+                 'Lives in community')
+cons_tbl <- report_models(Herndon=m3_con$herndon, Germantown=m3_con$germantown,
+                          Wheaton=m3_con$wheaton, reglabels=cons_labels,
+                          caption=paste0("Estimated coefficients predicting ",
+                                         "whether person would consider moving ",
+                                         "to the community"),
+                          label='tab:consider')
+cons_tbl <- cons_tbl[
+    -1*grep('Neighborhood perceptions|AIC', cons_tbl$names)] 
+cons_tbl
+cat(to_latex(cons_tbl), file='tables/consider.tex')
+```
 
 ## Where Would People Never Consider Moving
