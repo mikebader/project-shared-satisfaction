@@ -3,7 +3,12 @@ title: "Satisfaction and Stability in Multiethnic Neighborhoods"
 author: "Michael Bader"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
-output: bookdown::gitbook
+output: 
+    bookdown::html_book:
+        toc: yes
+    bookdown::pdf_book:
+        keep_tex: yes
+
 ---
 
 # Motivation
