@@ -24,8 +24,8 @@ MIpredict <- function(mlist) {
         as.data.frame()
     betas <- apply(preds[seq(1,9,2)], 1, mean)
     v.in <- apply(preds[seq(2,10,2)]^2,1,mean)
-    v.bn <- apply((preds[seq(1,9,2)]-betas)^2, 1, sum)/4
-    Vs <- v.in + v.bn*(1+1/5)
+    v.bn <- apply((preds[seq(1,9,2)]-betas)^2, 1, sum)/(length(mlist)-1)
+    Vs <- v.in + v.bn*(1+1/length(mlist))
     mi <- data.frame(beta=betas, se=sqrt(Vs))
     mi$P <- plogis(mi$beta)
     mi$lci <- plogis(mi$beta - (1.96*mi$se))

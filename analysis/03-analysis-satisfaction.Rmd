@@ -14,7 +14,7 @@ For each analysis, ran three models.
 
 ```{r reporting-functions}
 source('report_models.R')
-source('make_projections.R')
+source('make_predictions.R')
 get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
     aics <- sapply(d, function(x) x$aic)
     return(list(mean=mean(aics), var=var(aics)))
