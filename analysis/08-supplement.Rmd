@@ -1,5 +1,33 @@
 # Supplement
 
+## Model of Neighborhood Improvement without Including Neighborhood Satisfaction as a Variable
+
+The following reports an analysis of neighborhood improvement that does not include neighborhood satisfaction as a covariate in the model. 
+
+```{r improvement-analysis-no-satisfaction}
+m1_bet_alt <- with(dcassvy,
+               svyglm(as.formula(paste('better ~', m1)), 
+                      family=binomial))
+m1_bet_alt <- MIcombine_aic(m1_bet_alt)
+
+m3_bet_alt <- with(dcassvy,
+               svyglm(as.formula(paste('better ~', m3)),
+                      family=binomial))
+m3_bet_alt <- MIcombine_aic(m3_bet_alt)
+
+m4_bet_alt <- with(dcassvy,
+               svyglm(as.formula(paste('better ~ ', m4)),
+                      family=binomial))
+m4_bet_alt <- MIcombine_aic(m4_bet_alt)
+
+bet_tbl_alt <- report_models(m1_bet_alt, m3_bet_alt, m4_bet_alt,
+                         reglabels=regression_labels,
+                         caption=paste0('Estimated coefficients predicting ',
+                                        'neighborhood improvement without satisfaction'),
+                         label='tab:improvement-nosatisfaction')
+bet_tbl_alt
+cat(to_latex(bet_tbl_alt), file='tables/improvement-nosatisfaction.tex')
+```
 ## Full Analytic Model, Don't Know About Communities
 The following reports the full analytic model minus the coefficients and standard errors for neighborhood fixed effects (second and third models) predicting whether respondent doesn't know anything about the community. 
 

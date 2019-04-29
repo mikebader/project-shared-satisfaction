@@ -1,11 +1,14 @@
-## Neighborhood Improvement
+## Views on Neighborhood Improvement
 
-### Bivariate Analysis
-Plot the mean value of respondents who indicated that they think that the neighborhood has gotten better in the past five years.
+```{r improvement-mean}
+mean_improved <- MIcombine(with(dcassvy, svymean(~better)))
+improved_byrace <- MIcombine(
+    with(dcassvy, svyby(~better, ~I(dem.race), svymean))) %>%
+    coef() %>% round(2)*100
+```
 
-The graph above shows that Latinos and Asians were more likely to say that the neighborhood has improved while blacks and whites are less likely to say that their neighborhoods have improved. The differences, however, are not statistically distinguishable.
+While seven in ten residents of multiethnic neighborhoods were satisfied, half that proportion (`r round(coef(mean_improved), 2)*100`%) thought that their neighborhood had become a "much better" or "somewhat better" place to live over the past five years. Also unlike satisfaction, the probability that residents perceived improvements varied by race. Thirty-eight percent of Asian and Latinx residents, and 35 percent of black residents, felt that their neighborhoods had improved, while only 27 percent of whites felt that way. 
 
-### Multivariate Analysis
 ```{r improvement-analysis, warning=FALSE, results='hide'}
 m0_bet <- with(dcassvy,
                svyglm(better ~ sample_tract), family=binomial)
@@ -17,7 +20,6 @@ m1_bet <- with(dcassvy,
 bet_pred_m1 <- MIpredict(m1_bet)
 bet_pred_m1$race <- levels(dcas$dem.race)
 bet_pred_m1$model <- 'Race only'
-
 m1_bet <- MIcombine_aic(m1_bet)
 
 m2_bet <- with(dcassvy,
@@ -43,8 +45,9 @@ m4_bet <- MIcombine_aic(m4_bet)
 ```
 
 ```{r report-better-analysis, echo=TRUE, include=TRUE}
-regression_labels_bet <- c(regression_labels, 'Satisfied')
-bet_tbl <- report_models(m1_bet, m2_bet, m3_bet, m4_bet,
+regression_labels_bet <- c(regression_labels[1:3], 'Satisfied',
+                           regression_labels[-1:-3])
+bet_tbl <- report_models(m1_bet, m3_bet, m4_bet,
                          reglabels=regression_labels_bet,
                          caption=paste0('Estimated coefficients predicting ',
                                         'neighborhood improvement'),
@@ -52,6 +55,20 @@ bet_tbl <- report_models(m1_bet, m2_bet, m3_bet, m4_bet,
 bet_tbl
 cat(to_latex(bet_tbl), file='tables/improvement.tex')
 ```
+
+The first column of Table \@ref(tab:improvement) shows that the racial differences were unlikely due to the randomness of the sample. The column reports the coefficients estimated for racial groups in a neighborhood fixed-effect model that also controls for respondents' satisfaction. The results show a strong association between perceived improvement and race: whites were much less likely than Asian, black, or Latinx residents to believe that their neighborhoods had improved. The left panel of Figure \@ref(fig:improvement) shows the lower probability at which whites were predicted to report improvement in multiethnic neighborhoods than the probabilities at which people of color were predicted to report improvement. **[Look into replacing this estimate with the AME]** 
+
+The lower propensity of whites to report improvement in multiethnic neighborhoods persisted after including controls. The second column of Table \@ref(tab:improvement) shows positive associations for all three non-white racial groups. Asians were `r round(exp(coef(m3_bet)['dem.raceapi']),2)` times more likely to report improvement in their neighborhood, blacks were `r round(exp(coef(m3_bet)['dem.raceblack']),2)` times more likely, and Latinos were `r round(exp(coef(m3_bet)['dem.racelatino']),2)` times more likely. The latter two differences were large enough to be confident that the difference was not due to sampling variation at the p=0.05 level. The right panel of figure \2ref(fig:improvement) shows the predicted probabilities of reporting neighborhood improvement across racial groups. **[Look into replacing this estimate with the AME]** 
+
+In addition to the differences between whites and people of color in the outcome, the model that included race fit the data better than the model that did not. The third column of Table \@ref(tab:improvement) reports coefficient estimates and standard errors of the model without race and shows that the AIC value increases (fits less well) between the full model and the model without race. Wald F-tests of including race versus not provided evidence in the same direction: the mean value of the tests across imputed data sets was `r round(bet_wald_F['Mean'], 2)` and the mean p-value was `r round(bet_wald_p['Mean'], 2)`. 
+
+In summary, a lower proportion of whites perceived improvement in multiethnic neighborhoods than their neighbors of color. Whites, therefore, might be satisfied living in their multiethnic neighborhood, but not inclined to see their neighborhood being a better place to live in the future. Neighborhood racial diversity would have been growing in the time period whites perceived less improvement than their neighbors. The present study provides insufficient evidence to conclude that increasing diversity *caused* whites to perceive less improvement than their neighbors, but it does indicate**[w.ch]** a temporal correlation between growing diversity and a lower white endorsement of neighborhood change. 
+
+Projecting forward, too, the less positive trajectory whites perceive could portend a future in which whites might be more inclined, on the margin, to move out of the neighborhood than their non-white neighbors. Such marginal differences combined with the high rates of satisfaction among whites would be unlikely to instigate white flight, but the higher probability of losing white households could increase the chances of long-term racial turnover. The chances of long-term turnover would increase further if multiethnic neighborhoods attracted people of color at higher rates than whites. 
+
+
+**Where does this go?** The model also included whether respondents reported feeling satisfied living in their neighborhoods as a means to adjust for the levels off of which a respondent would evaluate change (satisfied residents might be less likely to perceive improvement, for example, since they are already satisfied with the neighborhood).**fix wording**
+
 
 ```{r plot-improvement}
 bet_pred <- rbind(bet_pred_m1, bet_pred_m3)
@@ -61,14 +78,9 @@ bet_pred$x <- rep(1:4,2)
 bet_plt <- ggplot(bet_pred, aes(x=x, y=P)) + 
     geom_point() +
     geom_errorbar(aes(ymin=lci, ymax=uci), width=0.25) +
-    # annotate(geom='text', x=c(3.125,8.125), y=1.05, 
-    #          label=c('Race only', 'Race + controls'), size=4) +
     facet_grid(.~model) +
     scale_x_continuous(breaks=sat_pred$x, label=sat_pred$race) +
-    # scale_x_continuous(limits=c(.5,11), breaks=sat_pred$x, label=sat_pred$race,
-    #                    minor_breaks = c()) +
     scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.2)) +
-    # theme_bw() +
     labs(y='Proportion', x='Race') +
     theme(panel.spacing.x = unit(2.5,'lines'))
 bet_plt

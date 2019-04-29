@@ -16,7 +16,7 @@ report_models <- function(...,reglabels=c(), label='', caption='') {
         insert_row(c('Race',rep('', ncols-1)),
                      after=(which(ht$names=="Asian")-1)) %>%
         insert_row(c('Demographics',rep('', ncols-1)),
-                   after=(which(ht$names=="Latinx")+2)) %>%
+                   after=(which(ht$names=="Age"))) %>%
         insert_row(c('Socioeconomic',rep('', ncols-1)),
                    after=(which(ht$names=="Married")+3)) %>%
         insert_row(c('Neighborhood perceptions',rep('', ncols-1)),
