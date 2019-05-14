@@ -1,0 +1,940 @@
+\documentclass[]{article}
+\usepackage{rotating}
+\usepackage{setspace}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Satisfaction and Stability in Multiethnic Neighborhoods},
+            pdfauthor={Michael Bader},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Satisfaction and Stability in Multiethnic Neighborhoods}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Michael Bader}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2019-05-13}
+
+\usepackage{array}
+\usepackage{caption}
+\usepackage{graphicx}
+\usepackage{siunitx}
+\usepackage[table]{xcolor}
+\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{proposition}{Proposition}[section]
+\theoremstyle{definition}
+\newtheorem{example}{Example}[section]
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}[section]
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
+\begin{document}
+\maketitle
+
+%{
+%\setcounter{tocdepth}{2}
+%\tableofcontents
+%}
+\doublespacing
+\section{Introduction}\label{introduction}
+
+Multiethnic neighborhoods have emerged as a common feature in U.S.
+metropolitan areas during the past half century. Federal
+anti-discrimination laws, changing racial attitudes, and increased
+immigration created new opportunities for people to become neighbors
+with people across multiple racial and ethnic categories. Once
+exceptional, racial integration among the four largest racial and ethnic
+groups in the United States has become one of the most common forms--and
+in some metropolitan areas, \emph{the} most common form--of neighborhood
+racial change since the 1970s and 1980s \textbf{{[}cite: Logan \& Zhang;
+Bader \& Warkentien{]}}. In a nation beset by its history of racial
+discrimination and resulting segregation, multiethnic neighborhoods
+offer hope for a more integrated future.
+
+Academic research has not kept pace with the growing presence of
+multiethnically integrated neighborhoods in American metropolitan areas.
+A small body of qualitative works studying the unique dynamics of
+integrated neighborhoods provides valuable insight\textbf{{[}w.ch{]}}
+into the dynamics of racial integration. But research on neighborhood
+gentrification and the concentration of poverty has dwarfed that which
+focuses on this emergent form of neighborhood change. Without systematic
+research on multiethnic neighborhoods, any predictions about the
+sustainability of this newfound integration will be imprecise and
+insufficient to inform policies to maintain multiethnic integration.
+
+To help build the body of evidence on multiethnic neighborhoods, this
+article examines whether residents of all races feel equally satisfied
+living in multiethnic neighborhoods. It does so among a representative
+sample of residents living in multiethnic neighborhoods in the
+Washington, D.C. area, a major metropolitan area in the United States
+with a large number of multiethnic neighborhoods. Evidence from the
+sample shows that satisfaction is quite high, and that whites are
+similarly satisfied living in multiethnic neighborhoods as their Asian,
+black, and Latino neighbors. The findings also show, however, mixed
+evidence that multiethnic segregation will remain sustainable in the
+future as the neighborhoods continue to change. The findings reveal
+directions of future research and possible policy intervention that
+might be necessary to understand and promote racial integration in the
+coming decades.
+
+\section{Background}\label{background}
+
+Multiethnic neighborhoods came about as Asian, black, and Latinx
+newcomers moved into neighborhoods that had been all white, or nearly
+so, starting in the 1980s \textbf{(cite: Logan; Bader)}. The trend
+accelerated in the 1990s and 2000s. Unlike past decades where the entry
+of non-white residents sparked violence and white flight that caused
+racial transitions, many whites stayed put as their neighborhoods
+integrated around them. The number of neighborhoods shared among white,
+Asian, black, and Latinx neighbors rose rapidly in the 1990s and 2000s.
+Logan and Zhang estimate that \textbf{TK\%} of neighborhoods in 2010
+were what they termed ``global neighborhoods.'' Similarly, Bader and
+Warkentien found stable multiethnic integration represented between
+\textbf{TK\%} and \textbf{TK\%} of neighborhoods in the metropolitan
+areas of the four largest cities.
+
+Several currents made the growth of multiethnic neighborhoods possible.
+Federal legislation, especially the Fair Housing Act, made housing
+discrimination a federal crime. The impact of the FHA, which was passed
+in 1968 in the wake of the Rev.~Dr.~Martin Luther King, Jr.'s
+assassination, was neither immediate nor universal. Racial
+discrimination has persisted in more subtle ways such as real-estate
+agents ``steering'' clients to neighborhoods. The FHA provided, however,
+provided a legal mechanism for people of color to enter white
+neighborhoods and challenge overt forms of discrimination.
+
+Second, \emph{multiethnic} integration would be impossble without a
+multiethnic population. Increased immigration from Asian and Latin
+American countries increased the number of Asian and Latinx people in
+the United States. Immigration unsettled the stark black-white divide in
+many American metropolitan areas. The trend\textbf{{[}w.ch{]}} was most
+pronounced in metropolitan areas that became ``new immigrant''
+destinations in the 1980s and 1990s. The growing economies that
+attracted migrants also required new housing construction to accomodate
+growing populations that made integrated neighborhoods possible from the
+get-go\textbf{{[}w.ch.{]}}.
+
+Finally, racial attitudes have been changing.\textbf{Add text.}
+
+\subsection{Satisfaction and Long-Term
+Stability}\label{satisfaction-and-long-term-stability}
+
+\subsubsection{Satisfaction and
+Mobility}\label{satisfaction-and-mobility}
+
+Neighborhood satisfaction influences whether people stay put in their
+neighborhoods. The process of white flight can be described as whites
+having acted on the immediate and strong feelings of dissatisfaction
+that the entry of a black family prompted. As whites vacated their
+houses, additional black families--who were dissatisfied being forced to
+live in overcrowded ghettos through law and custom--filled those
+vacancies. The process resulted in the rapid ``succession'' of the
+neighborhood's composition from all-white to all-black.
+
+The more sanguine attitudes whites hold about people of color could mean
+that whites are now satisfied living in integrated neighborhoods. If so,
+then there is a stronger prospect of long-term integration. Evidence is
+mixed. On the one hand, patterns of neighborhood change seem to bear
+this out, with little evidence of rapid racial succession since the
+1980s. On the other, studies consistently show lower levels of
+satisfaction among whites who live in neighborhoods in which people of
+color make up an increasing share of their neighbors.
+
+Existing studies of satisfaction among residents measure the composition
+of racial groups separately or measure the composition of all non-white
+residents grouped into a single category. \textbf{{[}cite findings
+here{]}} Multiethnic neighborhoods represent a distinctive form of
+integration not captured by the method of measuring racial compositions
+of groups. Instead, the \emph{presence} of all four racial groups
+distinguishes these neighborhoods and satisfaction among residents of
+different races in these distinctive neighborhoods have not been
+measured.
+
+Measuring whether residents think that the neighborhood has improved
+provides an additional measure of satisfaction. While satisfied
+residents might not feel compelled to leave, they could be more inclined
+to leave if they perceive less improvement in the neighborhood. Previous
+research shows that white perceptions of neighborhood trends diminish
+with increasing non-white composition. Whites might not, therefore, flee
+neighborhoods as they become integrated, but might be differentially
+susceptible to being enticed to leave integrated neighborhoods. Again,
+however, these studies do not sample \emph{multiethnic} neighborhoods.
+
+\subsubsection{Long-Term Stability}\label{long-term-stability}
+
+Even residents satisfied living in their neighborhood will find
+themselves exiting for reasons unrelated to the racial composition of
+the neighborhood. Residents will get married, retire, have children, get
+divorced, and, in the most extreme case, exit upon their death. Life
+course transitions such as these cause most moves; and, as residents
+move out for those reasons, new residents will move in. Satisfaction
+will be insufficient to predict future integration because integration
+will survive only as long as the current cohort of residents does. To
+maintain the multiethnic diversity of the neighborhood therefore
+requires that the racial composition of households \emph{leaving}
+multiethnic neighborhoods approximates the racial composition of those
+\emph{entering} multiethnic neighborhoods.
+
+Multiethnic neighborhoods must attract racially diverse newcomers to
+maintain integration. Residents currently residing in multiethnic
+neighborhoods provide an obvious clientele to fill vacancies in
+multiethnic neighborhoods. Yet, we have neither a sense whether current
+residents of multiethnic neighborhoods would consider moving to another
+multiethnic neighborhood, nor whether the proportion who would consider
+another multiethnic neighborhood differs across racial groups.
+
+Rather than being individually derived or collectively negotiated within
+households, housing preferences reflect a deeply social process.
+Households cannot engage with the housing market across an entire
+metropolitan area. Krysan and Crowder show that people approach housing
+searches based on word of mouth that shape what people think about
+different communities, and whether they even know anything about the
+community at all. Settling on which neighborhoods to consider--and which
+not to waste time considering--reflects social networks that are
+segregated by race. Differences in the knowledge residents use as
+starting points for their housing searches can help us predict the
+future stability of multiethnic integration.
+
+Race influences the familiarity residents have with communities and
+where residents consider moving. Whites know more about and desire
+moving to neighborhoods with larger shares of white residents. Whites
+differ from other racial groups, who have stronger desires for
+integration than whites. Havekes and colleagues find that racial
+composition influences white searches more at each stage of the search
+process. They find that whites move to communities with lower shares of
+whites on average than communities that they search which, in turn, have
+lower shares of whites on average than communities whites report
+considering. Multiethnic neighborhoods might expose white residents to
+more diverse social networks and increase the probability that whites
+would consider another multiethnic neighborhood. But, again, we have no
+evidence one way or the other among residents living in multiethnic
+neighborhoods.
+
+\subsubsection{Hypotheses}\label{hypotheses}
+
+In light of this evidence, this article examines two hypotheses:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Whites living in multiethnic neighborhoods will be a) less satisfied
+  with their neighborhoods and b) less likely to perceive neighborhood
+  improvement compared to their Asian, black, and Latinx neighbors; and
+\item
+  Whites living in multiethnic neighborhoods will be will be a) less
+  familiar with, b) less likely to consider, and c) more likely to never
+  consider moving to other multiethnic neighborhoods in their
+  metropolitan area.
+\end{enumerate}
+
+\singlespacing
+\section{Data}\label{data}
+
+\begin{itemize}
+\tightlist
+\item
+  Data come from the 2016 DC Area Survey
+
+  \begin{itemize}
+  \tightlist
+  \item
+    A mail survey using an address-based sample of households in the
+    Washington, D.C. area that comprises the District of Columbia and
+    the surrounding jurisdictions: Montgomery and Prince George's
+    Counties in Maryland, Arlington and Fairfax Counties in Virginia
+    (Fairfax County included the independent cities of Fairfax and Falls
+    Church), and the city of Alexandria.
+  \item
+    Households were sampled from two types of neighborhoods:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      Quadrivial: neighborhoods where Asians, blacks, Latinos, and
+      whites each made up at least 10\% of the neighborhood and no group
+      made up a majority
+
+      \begin{itemize}
+      \tightlist
+      \item
+        Prefer the term `quadrivial' based on Bader \& Warkentien rather
+        than `global neighborhoods' because global can imply that
+        residents of the neighborhoods are somehow un-American. While
+        many residents of these neighborhoods were born abroad, most
+        were born in the United States.
+      \item
+        114 of the 973 tracts in the DC area could be classified as
+        quadrivial neighborhoods, with a population of 600,176. Almost
+        half of the quadrivial neighborhoods (54) were in Montgomery
+        County; none fell in the District of Columbia.
+      \item
+        \textbf{Insert Map of Quadrivial Neighborhoods in DC area}
+      \end{itemize}
+    \item
+      Disproportionately Latino: neighborhoods where at least 25\% of
+      the residents were Latinos that were not already classified as a
+      quadrivial neighborhood
+    \end{itemize}
+  \item
+    This study uses only the 641 respondents from quadrivial
+    neighborhoods that also answered the race and ethnicity questions (0
+    respondents provided insufficient data to determine their race).
+  \item
+    Sample details:
+
+    \begin{itemize}
+    \tightlist
+    \item
+      The survey oversampled households with Asian and Hispanic surnames
+      as well as neighborhoods that were disproportionately black that
+      satisfied the criteria for being a quadrivial neighborhood
+    \item
+      Surveys were mailed to households with a \$2 incentive enclosed
+      and directions for the resident over 18 years of age with the most
+      recent birthday to fill out the questionnaire; cover letter was
+      printed in English and Spanish on reverse sides; booklet was in
+      English with instructions on how to receive a booklet in Spanish
+      in the Spanish-language cover letter
+    \item
+      A reminder was mailed out two weeks after the initial mailing
+    \item
+      The response rate (RR4, cite) was 12.8\%; this is in line with
+      mail surveys (CITE)
+    \end{itemize}
+  \item
+    Survey weights were calculated to allow for estimates represent the
+    population of D.C.-area residents living in quadrivial (and
+    disproportionately Latino) neighborhoods
+  \end{itemize}
+\end{itemize}
+
+\subsection{Dependent Variables}\label{dependent-variables}
+
+\subsubsection{Satisfaction Variable}\label{satisfaction-variable}
+
+The current neighborhood satisfaction variable (\texttt{satisfied})
+comes from Question 5: ``How satisfied are you with your neighborhood as
+a place to live?'' Responses of ``Extremely satisfied'' and ``Very
+satisfied'' are coded as ``satisfied'' (\texttt{1}); other responses
+(``Somewhat satisfied'' and ``Not at all satisfied'' and coded as
+``unsatisfied'' {[}\texttt{0}{]}).
+
+\subsubsection{Neighborhood Change
+Variable}\label{neighborhood-change-variable}
+
+The satisfaction with neighborhood change variable (\texttt{better})
+comes from Question 9: ``Looking back over the past five years or so,
+would you say that your neighborhood has:'' Response options ``Become a
+much better place to live'' and ``Become a somewhat better place to
+live'' are coded as ``better'' (\texttt{1}) and the other three
+responses are coded as ``not better'' (\texttt{0}).
+
+\subsection{Independent Variable}\label{independent-variable}
+
+The independent variable for these analyses is self-identified race that
+has been recoded to represent non-Latinx white alone, non-Latinx black
+alone or in combination with other races, Latinx of any race, and
+non-Latinx Asian or Pacific Islander alone or in combination with any
+race except black. Respondents with other races were dropped from the
+analysis (N=641).
+
+These data are ideal to answer the hypotheses because: * They are
+representative of residents living in quadrivial neighborhoods * They
+ask about satisfaction and neighborhood improvement using same questions
+that have been used in previous studies * Have a sufficient sample of
+all four racial groups to compare results across racial groups
+
+\subsection{Control Variables}\label{control-variables}
+
+In addition to racial variables, I also included variables to control
+for other demographic characteristics of residents.
+
+\textbf{Demographic characteristics}
+
+\begin{itemize}
+\item
+  \emph{Age}, calculated from answer to Question 49: ``In what year were
+  you born?''
+\item
+  \emph{Foreign born}, answer to Question 58: ``Where were you born?''
+\item
+  \emph{Gender}, male or female
+\item
+  \emph{Kids}, if answer to Question 2--``How many children ages 17 or
+  under live in your household?''--is greater than zero
+\item
+  \emph{Marital status}, if answer to Question 60--``What is your
+  marital status''-- is ``Now married or in a married-style
+  arrangement''
+\end{itemize}
+
+\textbf{Economic Status}
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{Educational attainment}, five categories based on Question 59,
+  ``What is the highest level of school you have completed or the
+  highest degree you have received?'' Used only educational attainment
+  because it was highly correlated with income and would likely pick up
+  stable features of status differences.
+\end{itemize}
+
+\textbf{Neighborhood Experience} In addition to demographic
+characteristics, I also included controls for the respondent's
+experience in the neighborhood.
+
+\begin{itemize}
+\item
+  \emph{Years in neighborhood}, based on Question 4: ``How many years
+  have you lived in your current neighborhood?'' (The length of time
+  that respondents have lived in their neighborhoods could affect their
+  perception of neighborhood quality and certainly neighborhood change)
+\item
+  \emph{Neighborhood size}, based on Question 7: ``How many blocks are
+  in the area that you think of as your neighborhood?'' (The size of the
+  area the respondent conjures as being part of their neighborhood could
+  affect perceptions of neighborhood quality and change)
+\end{itemize}
+
+\textbf{Residence variables}
+
+\begin{itemize}
+\tightlist
+\item
+  \emph{State of residence}, factor variable indicating the state in
+  which the respondent lives.
+\end{itemize}
+
+(set up data for survey weights \& multiple imputation)
+
+\section{Analysis}\label{analysis}
+
+\subsection{Analytical Approach}\label{analytical-approach}
+
+For each analysis, ran three models.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Race-only model
+\item
+  Race and demographic controls
+\item
+  Race, demographic, and neighborhood perception variables
+\end{enumerate}
+
+\begin{itemize}
+\tightlist
+\item
+  Can't ``prove a null'' in this case, so will examine how much overlap
+  there is in the confidence intervals (I need to work on explaining
+  this better; any suggestions would be most welcome) {[}Create
+  subsection at end of \textbf{Analysis} to address ``proving the
+  null''?{]}
+\end{itemize}
+
+\subsection{Fixed Effects}\label{fixed-effects}
+
+The correct test of the hypotheses compares the responses of white
+residents to those of blacks, Latinos, and Asians, \emph{living in the
+same neighborhood}. As a result, I include fixed effects for each census
+tract in which respondents resided. Only one respondent lived in 9
+tracts, and were therefore dropped from the analysis. Without these
+tracts, the number of respondents per tract ranged from 2 to 19.
+
+\subsection{Multiple Imputation \& Survey
+Weights}\label{multiple-imputation-survey-weights}
+
+Several variables have a substantial amount of missing data. I used the
+Amelia package (cite) to create five imputation datasets that will be
+combined for the final results. I then set up the survey dseign using
+the list of imputed datasets to account for the complex survey design.
+
+\subsection{Descriptive Statistics of Independent \& Control
+Variables}\label{descriptive-statistics-of-independent-control-variables}
+
+\input{../tables/descriptives.tex}
+
+Residents of multiethnic neighborhoods are:
+
+\begin{itemize}
+\tightlist
+\item
+  Racially diverse
+\item
+  Likely to be foreign-born: 46\% of respondents are foreign born. This
+  varied by racial group, however: 79\% of Asian residents were born
+  abroad, 66\% of Latinos, and even 37\% of blacks while an overwhelming
+  majority of whites (86\%) were native-born.
+\item
+  Residents are highly educated as almost a third hold a bachelor's
+  degree and another third hold an advanced degree
+\item
+  Nearly two-thirds report being married
+\end{itemize}
+
+\doublespacing
+\section{Results}\label{results}
+
+\subsection{Satisfication Living in Multiethnic
+Neighborhoods}\label{satisfication-living-in-multiethnic-neighborhoods}
+
+Most residents of multiethnic neighborhoods, 71 percent, are satisfied
+living in their neighborhood. Satisfaction was equally high among all
+four racial groups: 72 percent of Asians, 76 percent of Latinxs, 67
+percent of blacks, and 69 percent of whites in the sample were either
+``extremely'' or ``very'' satisfied living in their multiethnic
+neighborhoods.
+
+The agreement across racial groups held when I statistically compared
+groups within the same neighborhoods by modeling satisfaction with
+neighborhood fixed effects. The first column of Table
+\ref{tab:satisfaction} reports the results of a model including only
+respondent race and neighborhood fixed effects. The estimates for racial
+groups are small and not distinguishable from zero.
+
+{[}Table \ref{tab:satisfaction} about here{]}
+
+To further show the lack of difference between racial groups, I plotted
+the predicted probability from the model in the left panel of Figure
+\ref{fig:satisfaction}. The plotted figures represent the predicted
+probability in the neighborhood with median satisfaction in the data,
+and reflect the estimates predicted across the five imputed data sets
+combined using Rubin's rules \textbf{{[}need cite{]}}. \textbf{{[}Look
+into replacing this estimate with the AME{]}} Only 8 percent separated
+the most satisfied group (Latinxs) from the least satisfied (Asians).
+
+{[}Figure \ref{fig:satisfaction} about here{]}
+
+The second column of Table \ref{tab:satisfaction} further confirmed that
+satisfaction was an interracial sentiment among residents of multiethnic
+neighborhoods. The estimates were again small and could not be
+distinguished from a null effect. The right panel of Figure
+@ref\{fig:satisfaction\} shows the predicted probabilities of
+satisfaction from the model with controls. I estimated the probabilities
+and standard errors at the reference level for all other variables in
+the model, meaning the figure represents the satisfaction of a
+50-year-old, native-born, unmarried woman with a high school degree and
+no children who has lived in her neighborhood for 10 years.
+\textbf{{[}Look into replacing this estimate with the AME{]}} In the
+complete model, only 6 separated the least satisfied group (now whites)
+from the most satisfied (still Latinxs).
+
+Not only are individual coefficients not large or statistically
+singificant, but including race does not improve the explanatory power
+of the model. The final column of Table \ref{tab:satisfaction} reports
+the results of model estimating satisfaction in which I did not include
+race. The bottom row of the table reports the Akaike information
+criterion (AIC), a measure that balances a model's parsimony with its
+goodness of fit to the data \textbf{{[}need cite{]}}. A lower AIC
+represents a better fit to the data, and we can observe from Table
+\ref{tab:satisfaction} that the model without race fits the data better
+than the model that includes race. I further affirmed the lack of
+explanatory power attributable to race by conducting Wald's F-test
+between the models with and without race. The mean value of the test
+across the imputed data sets was 0.59, and the p-values ranged from 0.58
+to 0.66.
+
+These results establish that residents are satisfied living in
+multiethnic neighborhoods regardless of their own race. Two other
+factors, education and the perceived size of the neighborhood, are
+associated with neighborhood satisfaction rather than race. Education
+had a curvilinear relationship with satisfaction among multiethnic
+neighborhood residents. Residents of multiethnic neighborhoods with a
+high school degree were the most satisfied, while residents with less
+than a high school education and those with a postgraduate degree felt
+satisfaction the least often. The perceived size of the neighborhood
+also mattered, as those residents who thought their neighborhood
+comprised 10-50 blocks were 3.02 times more likely to be satisfied than
+those who perceived their neighborhood to be only one to nine blocks.
+\textbf{{[}Connect back to idea that this is a sufficient size to avoid
+the worst of microsegregation, so people are actually satisfied with
+their neighborhood with multiracial composition.{]}}
+
+\subsection{Views on Neighborhood
+Improvement}\label{views-on-neighborhood-improvement}
+
+While seven in ten residents of multiethnic neighborhoods were
+satisfied, half that proportion (34\%) thought that their neighborhood
+had become a ``much better'' or ``somewhat better'' place to live over
+the past five years. Also unlike satisfaction, the probability that
+residents perceived improvements varied by race. Thirty-eight percent of
+Asian and Latinx residents, and 35 percent of black residents, felt that
+their neighborhoods had improved, while only 27 percent of whites felt
+that way.
+
+The first column of Table \ref{tab:improvement} shows that the racial
+differences were unlikely due to the randomness of the sample. The
+column reports the coefficients estimated for racial groups in a
+neighborhood fixed-effect model that also controls for respondents'
+satisfaction. The results show a strong association between perceived
+improvement and race: whites were much less likely than Asian, black, or
+Latinx residents to believe that their neighborhoods had improved. The
+left panel of Figure \ref{fig:improvement} shows the lower probability
+at which whites were predicted to report improvement in multiethnic
+neighborhoods than the probabilities at which people of color were
+predicted to report improvement. \textbf{{[}Look into replacing this
+estimate with the AME{]}}
+
+{[}Table \ref{tab:improvement} about here{]}
+
+The lower propensity of whites to report improvement in multiethnic
+neighborhoods persisted after including controls. The second column of
+Table \ref{tab:improvement} shows positive associations for all three
+non-white racial groups. Asians were 2.35 times more likely to report
+improvement in their neighborhood, blacks were 2.64 times more likely,
+and Latinos were 3.12 times more likely. The latter two differences were
+large enough to be confident that the difference was not due to sampling
+variation at the p=0.05 level. The right panel of Figure
+\ref(fig:improvement) shows the predicted probabilities of reporting
+neighborhood improvement across racial groups. \textbf{{[}Look into
+replacing this estimate with the AME{]}}
+
+{[}Figure \ref{fig:improvement} about here{]}
+
+In addition to the differences between whites and people of color in the
+outcome, the model that included race fit the data better than the model
+that did not. The third column of Table \ref{tab:improvement} reports
+coefficient estimates and standard errors of the model without race and
+shows that the AIC value increases (fits less well) between the full
+model and the model without race. Wald F-tests of including race versus
+not provided evidence in the same direction: the mean value of the tests
+across imputed data sets was 2.16 and the mean p-value was 0.09.
+
+In summary, a lower proportion of whites perceived improvement in
+multiethnic neighborhoods than their neighbors of color. Whites,
+therefore, might be satisfied living in their multiethnic neighborhood,
+but not inclined to see their neighborhood being a better place to live
+in the future. Neighborhood racial diversity would have been growing in
+the time period whites perceived less improvement than their neighbors.
+The present study provides insufficient evidence to conclude that
+increasing diversity \emph{caused} whites to perceive less improvement
+than their neighbors, but it does indicate\textbf{{[}w.ch{]}} a temporal
+correlation between growing diversity and a lower white endorsement of
+neighborhood change.
+
+Projecting forward, too, the less positive trajectory whites perceive
+could portend a future in which whites might be more inclined, on the
+margin, to move out of the neighborhood than their non-white neighbors.
+Such marginal differences combined with the high rates of satisfaction
+among whites would be unlikely to instigate white flight, but the higher
+probability of losing white households could increase the chances of
+long-term racial turnover. The chances of long-term turnover would
+increase further if multiethnic neighborhoods attracted people of color
+at higher rates than whites.
+
+%\textbf{Where does this go?} The model also included whether respondents
+%reported feeling satisfied living in their neighborhoods as a means to
+%adjust for the levels off of which a respondent would evaluate change
+%(satisfied residents might be less likely to perceive improvement, for
+%example, since they are already satisfied with the
+%neighborhood).\textbf{fix wording}
+
+\singlespacing
+\section{Familiarity with and Preferences for Other Multiethnic
+Places}\label{familiarity-with-and-preferences-for-other-multiethnic-places}
+
+The long-term stability of multiethnic neighborhoods requires that
+residents of all races consider moving to existing multiethnic
+neighborhoods. The subsequent analyses assess how likely residents are
+to consider neighborhoods and how likely they are to actively not
+consider multiethnic neighborhoods.
+
+\subsection{Familiarity with Multiethnic
+Places}\label{familiarity-with-multiethnic-places}
+
+Two measures of familiarity with other multiethnic places in the
+Washington, D.C. area:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Whether the respondent reports knowing anything about the place
+\item
+  Whether respondent reports having friends or family in the place
+\end{enumerate}
+
+Uses the same analytical strategy, except that we add two covariates to
+each model:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Whether the respondent reports living in the place
+\end{enumerate}
+
+%\section{Notes}\label{notes}
+%
+%Correlation of education and income:
+%
+%\begin{Shaded}
+%\begin{Highlighting}[]
+%\KeywordTok{ggplot}\NormalTok{(dcas, }\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{dem.income.cat4,}\DataTypeTok{y=}\NormalTok{dem.educ.attain)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_jitter}\NormalTok{()}
+%\end{Highlighting}
+%\end{Shaded}
+%
+%%\includegraphics{multiethnic-nhoods_files/figure-latex/education-income-correlation-1.pdf}
+%
+%\subsection{Notes from Writing Group April 4,
+%2019}\label{notes-from-writing-group-april-4-2019}
+%
+%\subsubsection{Comments}\label{comments}
+%
+%\begin{description}
+%\item[David]
+%\begin{itemize}
+%\tightlist
+%\item
+%  Like the setup on the front end (but didn't have a whole lot of time
+%  to read it)
+%\item
+%  The graphs with point estimates and confidence intervals were helpful
+%  ``to prove the null''
+%\item
+%  Examine whether a joint F-test for significance of the race variables
+%  together provide significant improvement in fit; alternatively, use
+%  the AIC \& BIC values to run the full model without race variable and
+%  then with race variable
+%\item
+%  \textbf{Add fixed effects}
+%
+%  \begin{itemize}
+%  \tightlist
+%  \item
+%    Have fixed effects in the models the entire time
+%  \item
+%    Used fixed effects to frame the method as being about comparing
+%    residents of different races \emph{in the same neighborhood}
+%  \end{itemize}
+%\end{itemize}
+%\item[Alex]
+%\begin{itemize}
+%\tightlist
+%\item
+%  Was left with the question, so what? Bring out that this fits with my
+%  research showing that white acceptance of non-white neighbors is
+%  insufficient, they need to seek diverse neighborhoods for integration
+%  to persist
+%\item
+%  I am selecting on people who stayed, so these would be the whites
+%  \emph{most} inclined to be satisfied with their neighborhoods; bring
+%  out that in most of these neighborhoods, whites are still the majority
+%  -- so if they \emph{are} selected, there is still a large proportion
+%  of whites satisfied living in multiethnic neighborhoods
+%\item
+%  Subset by parental status (link to Ann Owens' ASR paper)
+%\item
+%  Point out that this study is unique to some degree to DC, which is a
+%  type of multiethnic metropolitan area that is often overlooked (it's
+%  not a black/white city, which are now the anomolies, places like DC
+%  are the future)
+%\end{itemize}
+%\end{description}
+%
+%\subsubsection{Potential Journals}\label{potential-journals}
+%
+%\begin{itemize}
+%\tightlist
+%\item
+%  \emph{Demography} especially with Mark Hayward as the editor
+%\item
+%  Possibly worth trying at a general sociology journal like \emph{Social
+%  Forces}; subject-matter also fits at \emph{Social Problems} and
+%  \emph{Social Science Research}
+%\item
+%  \emph{Urban Affairs Review}
+%\end{itemize}
+%
+%\subsubsection{Future Directions}\label{future-directions}
+%
+%\begin{itemize}
+%\tightlist
+%\item
+%  Do white conservatives look different than white liberals? Maybe find
+%  a political scientist interested in neighborhoods to collaborate
+%\item
+%  Look at paper by Ryan Enos about how the demolition of public housing
+%  shifted whites' political views:
+%  \url{https://onlinelibrary.wiley.com/doi/epdf/10.1111/ajps.12156}
+%\end{itemize}
+
+\section{Supplement}\label{supplement}
+
+\subsection{Model of Neighborhood Improvement without Including
+Neighborhood Satisfaction as a
+Variable}\label{model-of-neighborhood-improvement-without-including-neighborhood-satisfaction-as-a-variable}
+
+The following reports an analysis of neighborhood improvement that does
+not include neighborhood satisfaction as a covariate in the model.
+
+\subsection{Full Analytic Model, Don't Know About
+Communities}\label{full-analytic-model-dont-know-about-communities}
+
+The following reports the full analytic model minus the coefficients and
+standard errors for neighborhood fixed effects (second and third models)
+predicting whether respondent doesn't know anything about the community.
+
+\subsection{Full Analytic Model, Knowing Friends or
+Family}\label{full-analytic-model-knowing-friends-or-family}
+
+The following reports the full analytic model minus the coefficients and
+standard errors for neighborhood fixed effects (second and third models)
+predicting whether respondent knew friends or family who lived in the
+neighborhood.
+
+\clearpage
+\section{Tables}\label{sec:tables}
+\input{../tables/satisfaction.tex}
+
+\input{../tables/improvement.tex}
+
+\input{../tables/knowledge.tex}
+
+\input{../tables/consider.tex}
+
+\input{../tables/notconsider.tex}
+
+\clearpage
+\section{Figures}
+\label{sec:figures}
+
+\begin{figure}[h!]
+\caption{Predicted probability that residents of multiethnic neighborhoods are satisfied in their neighborhood, by race}
+\label{fig:satisfaction}
+\includegraphics{../images/satisfied.png}
+\end{figure}
+
+\begin{figure}[h!]
+\caption{Predicted probability that residents of multiethnic neighborhoods perceive improvement in their neighborhood in the past five years, by race}
+\label{fig:improvement}
+\includegraphics{../images/improvement.png}
+\end{figure}
+\end{document}
