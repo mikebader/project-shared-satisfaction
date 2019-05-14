@@ -1,7 +1,7 @@
 # Notes
 Correlation of education and income: 
 
-```{r, echo=TRUE, include=TRUE}
+```{r education-income-correlation, echo=TRUE, include=TRUE}
 ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
 ```
 
