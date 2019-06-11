@@ -79,30 +79,30 @@ tracts <- t(sapply(dcarea[, tablevars], meansd))
 tracttbl <- data.frame(quads, tracts)
 
 ## List of variable names to be published in the table
-tblnames <- c('\\emph{Racial composition}&&\\\\Percent Asian',
+tblnames <- c('\\emph{Racial composition}&&&\\\\Percent Asian',
               'Percent Hispanic',
               'Percent non-Hispanic black',
               'Percent non-Hispanic white',
-              '&&\\\\\\emph{Educational attainment}&&\\\\Percent less than high school',
+              '\\emph{Educational attainment}&&&\\\\Percent less than high school',
               'Percent high school',
               'Percent some college', 'Percent bachelor\'s degree',
               'Percent professional degree',
-              '\\emph{Other demographic characteristics}&&\\\\Percent foreign-born',
+              '\\emph{Other demographic characteristics}&&&\\\\Percent foreign-born',
               'Percent of households with children present',
               'Percent married (not separated)'
 )
 
 ## Create table with formatting
-tbl <- data.frame(tblnames, quads, tracts)
-tbl[,c(2:5)] <- lapply(tbl[,c(2:5)], function(x) sprintf('%3.1f', x))
-tbl[,c(3,5)] <- lapply(tbl[,c(3,5)], function(x) paste0('(',x,')'))
-colnames(tbl) <- c('Variable', 'Mean', 'S.D.', 'Mean', 'S.D.')
+tbl <- data.frame(tblnames, quads, blank=rep(' ', nrow(quads)), tracts)
+tbl[,c(2,3,5,6)] <- lapply(tbl[,c(2,3,5,6)], function(x) sprintf('%3.1f', x))
+# tbl[,c(3,6)] <- lapply(tbl[,c(3,6)], function(x) paste0('(',x,')'))
+colnames(tbl) <- c('Variable', 'Mean', 'S.D.','', 'Mean', 'S.D.')
 
 ## Write table to file
 fname <- 'analysis/tables/nhood_descriptives.tex'
 print.xtable(xtable(tbl,
                     caption='Means and standard deviations of tract-level variables in multiethnic and quadrivial neighborhoods in the DC Area',
-                    align=c('l','p{2in}','R{4em}','R{4em}','R{4em}','R{4em}'),
+                    align=c('l','p{2in}','R{4em}','R{4em}','p{1em}','R{4em}','R{4em}'),
                     label='tab:nhd_descriptives'),
              booktabs=TRUE,
              caption.placement='top',
@@ -111,7 +111,7 @@ print.xtable(xtable(tbl,
              sanitize.text.function = identity,
              timestamp='')
 
-colsets <- paste('&\\multicolumn{2}{p{8em}}{\\centering Multiethnic neighborhoods}',
+colsets <- paste('&\\multicolumn{2}{p{8em}}{\\centering Multiethnic neighborhoods}&',
                  '&\\multicolumn{2}{p{8em}}{\\centering All neighborhoods}\\\\ ')
 tbltxt <- readLines(fname, -1)
 tbltxt <- c(tbltxt[1:8], colsets, tbltxt[9:length(tbltxt)])
