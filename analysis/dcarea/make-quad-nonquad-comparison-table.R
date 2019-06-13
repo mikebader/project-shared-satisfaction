@@ -36,36 +36,36 @@ source('analysis/dcarea/split-violin-functions.R')
 ## Load and join data from different categories of variables
 dcarea <- lapply(vartypes, dcarea.data) %>%
     reduce(left_join, by='GISJOIN') %>%
-    select('GISJOIN', ends_with('14'))
+    select('GISJOIN', ends_with('15'))
 
 ## Construct variables for analytic table, and keep only those variables
 dcarea <- dcarea %>% mutate(
     ## Children present in HH
-    pchildpres = pchpr14 * 100,
+    pchildpres = pchpr15 * 100,
 
     ## Educational attainment
-    peduc.lhs = plh14 * 100,
-    peduc.hs = phs14 * 100,
-    peduc.somecoll = (psc14 + paa14) * 100,
-    peduc.ba = pba14 * 100,
-    peduc.ma = pgr14 * 100,
+    peduc.lhs = plh15 * 100,
+    peduc.hs = phs15 * 100,
+    peduc.somecoll = (psc15 + paa15) * 100,
+    peduc.ba = pba15 * 100,
+    peduc.ma = pgr15 * 100,
 
     ## Foreign-born
-    pfborn = fbpop14 / totpop14 * 100,
+    pfborn = fbpop15 / totpop15 * 100,
 
     ## Currently married
-    pmarried = pmar14 * 100,
+    pmarried = pmar15 * 100,
 
     ## Median age (no new variable necessary)
 
     ## Race-ethnicity
-    race.papi = papi14 * 100,
-    race.phsp = phsp14 * 100,
-    race.pnhb = pnhb14 * 100,
-    race.pnhw = pnhw14 * 100
+    race.papi = papi15 * 100,
+    race.phsp = phsp15 * 100,
+    race.pnhb = pnhb15 * 100,
+    race.pnhw = pnhw15 * 100
 ) %>%
-    select(GISJOIN, pchildpres, pfborn, pmarried, mdage14,
-           starts_with('peduc'), starts_with('race'), quad14)
+    select(GISJOIN, pchildpres, pfborn, pmarried, mdage15,
+           starts_with('peduc'), starts_with('race'), quad15)
 
 ## CONSTRUCT TABLE
 ## Define list of variables in desired display order
@@ -74,7 +74,7 @@ tablevars <- c(grep('^race', names(dcarea), value=TRUE),
                'pfborn', 'pchildpres', 'pmarried')
 
 ## Create table of values for multiethnic and all DC Area tracts
-quads <- t(sapply(dcarea[dcarea$quad14==TRUE, tablevars], meansd))
+quads <- t(sapply(dcarea[dcarea$quad15==TRUE, tablevars], meansd))
 tracts <- t(sapply(dcarea[, tablevars], meansd))
 tracttbl <- data.frame(quads, tracts)
 
@@ -117,9 +117,42 @@ tbltxt <- readLines(fname, -1)
 tbltxt <- c(tbltxt[1:8], colsets, tbltxt[9:length(tbltxt)])
 writeLines(tbltxt, fname)
 
+## TABLES OF MULTIETHNIC NEIGHBORHOOD LOCATIONS
+## Construct variables measuring multiethnic neighborhoods, both those included
+## and those excluded due to no-majority constraint
+racevars <- paste0('race.',c('papi','pnhb','phsp','pnhw'))
+dcarea$othmulti <- apply(sapply(dcarea[, racevars],
+                                function(x) !is.na(x) & x>=10), 1, all)
+dcarea$exclmulti <- dcarea$quad15 != dcarea$othmulti
+dcarea$county <- factor(substr(as.character(dcarea$GISJOIN), 2, 7))
+levels(dcarea$county) <- c(
+    'D.C.'
+    , 'Montgomery county'
+    , 'Prince George\'s county'
+    , 'Arlington county'
+    , 'Fairfax county'
+    , 'Fairfax city'
+    , 'Falls Church city'
+    , 'Alexandria city'
+)
+
+## Breakdown of multiethnic neighborhoods by county
+table(dcarea[, c('county', 'quad15')])
+
+## Breakdown of 'excluded' multiethnic neighborhoods by county
+table(dcarea[, c('county', 'exclmulti')])
+
+## Listing of racail composition for all 'excluded' multiethnic nhoods
+dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE,
+       c('county', racevars)]
+
+
+
+
 ## Violin plots of racial composition
-# g <- ggplot(dcarea, aes(x=quad14, y=race.phsp)) + geom_violin()
+# g <- ggplot(dcarea, aes(x=quad15, y=race.phsp)) + geom_violin()
 #
 # dcarea$x <- 1
-# g <- ggplot(dcarea, aes(x=x, y=race.pnhw, fill=quad14)) + geom_split_violin()
+# g <- ggplot(dcarea, aes(x=x, y=race.pnhw, fill=quad15)) + geom_split_violin()
 #
+
