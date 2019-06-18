@@ -14,21 +14,25 @@ N_quad <- length(dcas$studycase)
 N <- sum(!is.na(dcas$dem.race))
 ```
 
-* Data come from the 2016 DC Area Survey
-    * A mail survey using an address-based sample of households in the Washington, D.C. area that comprises the District of Columbia and the surrounding jurisdictions: Montgomery and Prince George's Counties in Maryland, Arlington and Fairfax Counties in Virginia (Fairfax County included the independent cities of Fairfax and Falls Church), and the city of Alexandria. 
-    * Households were sampled from two types of neighborhoods: 
-        * Quadrivial: neighborhoods where Asians, blacks, Latinos, and whites each made up at least 10% of the neighborhood and no group made up a majority
-            * Prefer the term 'quadrivial' based on Bader & Warkentien rather than 'global neighborhoods' because global can imply that residents of the neighborhoods are somehow un-American. While many residents of these neighborhoods were born abroad, most were born in the United States. 
-            * 114 of the 973 tracts in the DC area could be classified as quadrivial neighborhoods, with a population of 600,176. Almost half of the quadrivial neighborhoods (54) were in Montgomery County; none fell in the District of Columbia.
-            * **Insert Map of Quadrivial Neighborhoods in DC area**
-        * Disproportionately Latino: neighborhoods where at least 25% of the residents were Latinos that were not already classified as a quadrivial neighborhood
-    * This study uses only the `r N` respondents from quadrivial neighborhoods that also answered the race and ethnicity questions (`r N_quad - N` respondents provided insufficient data to determine their race).
-    * Sample details:
-        * The survey oversampled households with Asian and Hispanic surnames as well as neighborhoods that were disproportionately black that satisfied the criteria for being a quadrivial neighborhood
-        * Surveys were mailed to households with a $2 incentive enclosed and directions for the resident over 18 years of age with the most recent birthday to fill out the questionnaire; cover letter was printed in English and Spanish on reverse sides; booklet was in English with instructions on how to receive a booklet in Spanish in the Spanish-language cover letter
-        * A reminder was mailed out two weeks after the initial mailing
-        * The response rate (RR4, cite) was 12.8%; this is in line with mail surveys (CITE)
-    * Survey weights were calculated to allow for estimates represent the population of D.C.-area residents living in quadrivial (and disproportionately Latino) neighborhoods
+## Multiethnic Neighborhoods in the Washington, D.C. Area
+
+Data to test the hypotheses come from the 2016 DC Area Survey (DCAS). Washington, D.C. has historically been a segregated metropolitan area. Almost all blacks lived in the eastern part of the city and nearly all whites in the west. This east-west pattern spilled out to the Maryland suburbs. Few blacks lived across the Potomac River in Northern Virginia, though they were highly clustered in a small number of neighborhoods. In 1970, only TK% and TK% of Asians and Latinxs lived in the DC area. 
+
+The region's economy grew and became less based on the federal government in the 1980s and 1990. The expansion of finance, insurance, and real estate services, collectively known by the acronym FIRE, mirrored the sector's prominence in redeveloping metropolitan areas in the U.S. and abroad. During the same period, the region emerged as an immigrant destination. As the nation's capital and importance in international relations, the region's foreign-born residents are more socioeconomically diverse than average. Latinos and Asians now comprise TK% and TK%, respectively, of the DC area while blacks make up TK% and whites TK%. TK residents were born outside of the United States, with the largest shares coming from El Salvador, TK, and TK. 
+
+Real estate developers capitalized on the expanding population by developing large swaths of land in middle-ring suburbs in the counties surrounding the District. Having been built after the Fair Housing Act passed, the residences developed in these suburbs were not subject to the history of redlining restrictive covenants of previous developments. Residents of all races were attracted to these new suburban homes, especially in Montgomery and Fairfax Counties that boasted nationally renowned school systems. As Figure TK shows, multiethnic neighborhoods were especially likely to emerge along the hub-and-spoke system of the region's commuter rail lines. Additionally, Montgomery County has, since 1974, mandated that all housing developments larger than 20 units include a set percentage of units that qualify as affordable housing.[^fairfax-iz]
+
+[^fairfax-iz]: Fairfax County passed an inclusionary zoning ordinance in 1971, but it was struck down by the Virginia Supreme Court. Fairfax County implemented a different mandatory inclusionary zoning policy in 1990. 
+
+The 2016 DCAS sought to represent residents of two types of neighborhoods--multiethnic and disproportionately Latinx--in the Washington, D.C. area, which comprised Washington, D.C. and the surrounding jurisdictions of Montgomery and Prince George's Counties in Maryland, Arlington and Fairfax (including the cities of Falls Church and Fairfax) Counties Virginia, and the independent city of Alexandria, Virginia. Only responses from residents sampled in the multiethnic neighborhoods were included in this analysis.[^latinx] 
+
+[^latinx]: Disproportionately Latinx neighborhoods were those in which Latinx residents made up at least a quarter of the residents and were not already classified as a multiethnic neighborhood. 
+
+Multiethnic neighborhoods included in the sampling frame met two criteria. First, Asians, blacks, Latinxs, and whites each comprised at least 10~percent of the population of the neighborhood. This cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. Second, none of those four groups could represent a majority of residents. This criterion was included to eliminate neighborhoods where a single group formed the dominant identity of the neighborhood. These criteria resulted in a sample frame of TK neighborhoods, with the majority in Montgomery County, Maryland, followed by Fairfax County, Virginia, then TK... The neighborhoods included in the sampling frame are shown in Figure TK. An address-based sample of households was drawn from these eligible neighborhoods that included oversamples of households with Asian and Hispanic surnames and households located in from disproportionately black tracts (that still satisfied the criteria as multiethnic neighborhoods).
+
+Fourteen neighborhoods met the first inclusion criterion but not the second. Of those fourteen, TK were neighborhoods that had a white majority and were located in TK (N),... Only TK had a black majority, and [both?] were located in the gentrifying neighborhood of TK. Only [TK] neighborhood had a Latinx majority. 
+
+A 12-page survey booklet was mailed to 9,600 households in those two types of neighborhoods along with a one-page cover letter written in English and Spanish on opposite sides, a two-dollar bill as an incentive, and a postage-paid return envelope. A reminder was sent to all households that had not responded approximately two weeks after the original survey was sent. By the end of the 54-day field period, 1,222 households responded with complete surveys, 674 of which were from households in multiethnic neighborhoods. The responses from the entire sample represeted a 12.8 percent response rate (AAPOR RR4 standard). 
 
 ## Dependent Variables
 ### Satisfaction Variable
