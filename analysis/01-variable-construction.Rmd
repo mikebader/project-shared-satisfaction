@@ -35,11 +35,11 @@ Fourteen neighborhoods met the first inclusion criterion but not the second. Of 
 A 12-page survey booklet was mailed to 9,600 households in those two types of neighborhoods along with a one-page cover letter written in English and Spanish on opposite sides, a two-dollar bill as an incentive, and a postage-paid return envelope. A reminder was sent to all households that had not responded approximately two weeks after the original survey was sent. By the end of the 54-day field period, 1,222 households responded with complete surveys, 674 of which were from households in multiethnic neighborhoods. The responses from the entire sample represeted a 12.8 percent response rate (AAPOR RR4 standard). 
 
 ## Dependent Variables
-### Satisfaction Variable
-The current neighborhood satisfaction variable (`satisfied`) comes from Question 5: "How satisfied are you with your neighborhood as a place to live?" Responses of "Extremely satisfied" and "Very satisfied" are coded as "satisfied" (`1`); other responses ("Somewhat satisfied" and "Not at all satisfied" and coded as "unsatisfied" [`0`]). 
 
-### Neighborhood Change Variable
-The satisfaction with neighborhood change variable (`better`) comes from Question 9: "Looking back over the past five years or so, would you say that your neighborhood has:" Response options "Become a much better place to live" and "Become a somewhat better place to live" are coded as "better" (`1`) and the other three responses are coded as "not better" (`0`). 
+The analyses use dichotomous measures of satisfaction and neighborhood improvement as dependent variables. To measure current neighborhood *satisfaction*, respondents who indicated that they were "extremely" or "very" satisfied living in their neighborhood were coded as being satisfied. Those who indicated that they were "somewhat" or "not at all" satisfied were coded as being unsatisfied. 
+
+The measure of neighborhood improvement was taken from the respondents' answers to the question, "Looking back over the past five years or so, would you say that your neighborhood has$\ldots$" I coded respondents as having indicated that their neighborhood improved if they answered that their neighborhood has become a "much better" or "somewhat better" place to live. Respondents coded as not perceiving neighborhood improvement were those who answered that their neighborhoods "about the same," "somewhat worse," or "much worse."
+
 
 ```{r dependent-variables}
 dcas$satisfied <- dcas$nhd.satisfaction %in% c(
@@ -76,33 +76,20 @@ table(dcas[, c('nhd.change','much_better')])
 
 
 ## Independent Variable
-The independent variable for these analyses is self-identified race that has been recoded to represent non-Latinx white alone, non-Latinx black alone or in combination with other races, Latinx of any race, and non-Latinx Asian or Pacific Islander alone or in combination with any race except black. Respondents with other races were dropped from the analysis (N=`r N_norace`). This left a final analytic dataset of `r N` respondents.
+A measure created from respondents' self-identified race and ethnicity is the independent variable in all analyses. Respondents were allowed to pick multiple racial categories and indicate if they identified as Latinx. I collapsed these two variables to create four categories: *Latinx* for those of any race who identified as Latinx; *white* for those who identified only as white; *black* for those who non-Latinx respondents who identified as black, either alone or in combination with any other race; and *Asian* for those non-Latinx respondents who identified as either Asian or Pacific Islander, either alone or in combination with any other race other than black. Respondents missing on either the race or ethnicity question and respondents who identified with other racial groups were not included in the analysis. This left a final analytic dataset of `r N` respondents. 
 
 ```{r independent-variables}
 table(dcas$dem.race, useNA='always')
 dcas$dem.race <- relevel(dcas$dem.race, ref='white')
 ```
 
-These data are ideal to answer the hypotheses because:
-    * They are representative of residents living in quadrivial neighborhoods
-    * They ask about satisfaction and neighborhood improvement using same questions that have been used in previous studies
-    * Have a sufficient sample of all four racial groups to compare results across racial groups
+
 
 
 ## Control Variables
-In addition to racial variables, I also included variables to control for other demographic characteristics of residents. 
+In addition to racial variables, I also included variables to control for other demographic characteristics of residents. I calculated *age* based on respondents' birth year and *gender* based on respondents' gender identity, for which they were given the choices "male," "female," and "other." Male was set as the reference. Only two respondents chose "other" and were coded as missing. I included an indicator for *being partnered* based on those respondents who indicated that they were "now married or in a marriage-style arrangment," with those not currently partnered as the reference. 
 
-**Demographic characteristics**
-
-* *Age*, calculated from answer to Question 49: "In what year were you born?"
-
-* *Foreign born*, answer to Question 58: "Where were you born?"
-
-* *Gender*, male or female
-
-* *Kids*, if answer to Question 2--"How many children ages 17 or under live in your household?"--is greater than zero
-
-* *Marital status*, if answer to Question 60--"What is your marital status"-- is "Now married or in a married-style arrangement"
+I included whether the respondent had *children in the household* because the presence of children would likely affect the outlook residents have of their neighborhoods. The question did not limit the response to respondents' own children. I also included an indicator to measure whether respondents were *foreign born* since immigrant status would likely correlate with residential perceptions and race simultaneously. 
 
 ```{r demographic-variables}
 
@@ -114,11 +101,8 @@ dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
 dcas$married <- grepl("Now married", dcas$dem.marital.stat)
 table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
 ```
-**Economic Status**
 
-* *Educational attainment*, five categories based on Question 59, "What is the highest level of school you have completed or the highest degree you have received?" Used only educational attainment because it was highly correlated with income and would likely pick up stable features of status differences.
-
-<!-- * *Income*, four categories based on Question 64, "Last year, that is in 2015, what was your total family income from all sources before taxes?" -->
+I represented economic status with a measure of *educational attainment*. I created a measure with five categories based on the highest level of education respondents reported: less than high school, high school (including GED), some college (including associates degrees), bachelors degree, and graduate degree. I chose to use educational attainment to measure socioeconomic status because it is a more stable measure than income, and space did not permit the DCAS to ascertain income longitudinally. Income also had more missing data compared to educational attainment (`r sum(is.na(dcas$dem.income.cat4)) ` instead of `r sum(is.na(dcas$dem.educ.attain))`. Among those respondents who answered both questions, however, education and income were highly correlated. 
 
 ```{r economic-variables}
 dcas$educ <- factor(dcas$dem.educ.attain, order=FALSE) %>% 
@@ -144,11 +128,7 @@ for(i in 1:4) { ## Check recoding
 ```
 
 **Neighborhood Experience**
-In addition to demographic characteristics, I also included controls for the respondent's experience in the neighborhood. 
-
-* *Years in neighborhood*, based on Question 4: "How many years have you lived in your current neighborhood?" (The length of time that respondents have lived in their neighborhoods could affect their perception of neighborhood quality and certainly neighborhood change)
-
-* *Neighborhood size*, based on Question 7: "How many blocks are in the area that you think of as your neighborhood?" (The size of the area the respondent conjures as being part of their neighborhood could affect perceptions of neighborhood quality and change)
+In addition to demographic characteristics, I also included controls for the respondent's experience in the neighborhood. First, I included the *years respondents lived in their neighborhoods* since the length of time lived in neighborhoods could affect perceptions of quality and would certainly affect perceptions of neighborhood change. Second, I included a measure of *neighborhood size*. This measure was self-reported by respondents and including it in models accounts for how subjective perceptions of neighborhood boundaries affect satisfaction and perceived change. 
 
 ```{r nhood-variables}
 dcas$nhdyrs <- as.numeric(as.character(dcas$q4)) - 10 ## Center at 10 years
@@ -164,6 +144,13 @@ dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
+
+These data are ideal to answer the hypotheses because:
+    * They are representative of residents living in quadrivial neighborhoods
+    * They ask about satisfaction and neighborhood improvement using same questions that have been used in previous studies
+    * Have a sufficient sample of all four racial groups to compare results across racial groups
+    
+    
 **Residence variables**
 
 * *State of residence*, factor variable indicating the state in which the respondent lives.  
