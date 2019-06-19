@@ -144,13 +144,9 @@ dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
+## Summary
+The 2016 DCAS data contain the elements required to test the hypotheses stated above. The data represent the whole of residents of multiethnic neighborhoods in a metropolitan sample. The data also provide sufficient power to compare the responses of all four racial groups to one another due to the oversamples. The questions used to measure satisfaction and improvement come from previous surveys and allow for the direct comparison of responses to the existing literature. Together, these attributes overcome problems with previous data sources to investigate interracial differences in multiethnic neighborhoods. 
 
-These data are ideal to answer the hypotheses because:
-    * They are representative of residents living in quadrivial neighborhoods
-    * They ask about satisfaction and neighborhood improvement using same questions that have been used in previous studies
-    * Have a sufficient sample of all four racial groups to compare results across racial groups
-    
-    
 **Residence variables**
 
 * *State of residence*, factor variable indicating the state in which the respondent lives.  
