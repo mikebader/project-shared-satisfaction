@@ -15,7 +15,7 @@ m0_bet <- with(dcassvy,
 m0_bet <- MIcombine_aic(m0_bet)
 
 m1_bet <- with(dcassvy,
-               svyglm(as.formula(paste('better ~', m1, '+ satisfied')), 
+               svyglm(as.formula(paste('better ~', m1)), 
                       family=binomial))
 bet_pred_m1 <- MIpredict(m1_bet)
 bet_pred_m1$race <- levels(dcas$dem.race)
@@ -23,12 +23,12 @@ bet_pred_m1$model <- 'Race only'
 m1_bet <- MIcombine_aic(m1_bet)
 
 m2_bet <- with(dcassvy,
-               svyglm(as.formula(paste('better ~', m2, '+ satisfied')),
+               svyglm(as.formula(paste('better ~', m2)),
                       family=binomial))
 m2_bet <- MIcombine_aic(m2_bet)
 
 m3_bet <- with(dcassvy,
-               svyglm(as.formula(paste('better ~', m3, '+ satisfied')),
+               svyglm(as.formula(paste('better ~', m3)),
                       family=binomial))
 m3_bet_racewald <- lapply(m3_bet, regTermTest, test.terms=~dem.race, df=NULL)
 bet_wald_F <- summary(sapply(m3_bet_racewald, function(x) x$Ftest))
@@ -39,16 +39,14 @@ bet_pred_m3$model <- 'Race + controls'
 m3_bet <- MIcombine_aic(m3_bet)
 
 m4_bet <- with(dcassvy,
-               svyglm(as.formula(paste('better ~ ', m4, '+ satisfied')),
+               svyglm(as.formula(paste('better ~ ', m4)),
                       family=binomial))
 m4_bet <- MIcombine_aic(m4_bet)
 ```
 
 ```{r report-better-analysis, echo=TRUE, include=TRUE}
-regression_labels_bet <- c(regression_labels[1:3], 'Satisfied',
-                           regression_labels[-1:-3])
 bet_tbl <- report_models(m1_bet, m3_bet, m4_bet,
-                         reglabels=regression_labels_bet,
+                         reglabels=regression_labels,
                          caption=paste0('Estimated coefficients predicting ',
                                         'neighborhood improvement'),
                          label='tab:improvement')
@@ -56,7 +54,7 @@ bet_tbl
 cat(to_latex(bet_tbl), file='tables/improvement.tex')
 ```
 
-The first column of Table \@ref(tab:improvement) shows that the racial differences were unlikely due to the randomness of the sample. The column reports the coefficients estimated for racial groups in a neighborhood fixed-effect model that also controls for respondents' satisfaction. The results show a strong association between perceived improvement and race: whites were much less likely than Asian, black, or Latinx residents to believe that their neighborhoods had improved. The left panel of Figure \@ref(fig:improvement) shows the lower probability at which whites were predicted to report improvement in multiethnic neighborhoods than the probabilities at which people of color were predicted to report improvement. **[Look into replacing this estimate with the AME]** 
+The first column of Table \@ref(tab:improvement) shows that the racial differences were unlikely due to the randomness of the sample. The results show a strong association between perceived improvement and race: whites were much less likely than Asian, black, or Latinx residents to believe that their neighborhoods had improved. The left panel of Figure \@ref(fig:improvement) shows the lower probability at which whites were predicted to report improvement in multiethnic neighborhoods than the probabilities at which people of color were predicted to report improvement. **[Look into replacing this estimate with the AME]** 
 
 [Table \@ref(tab:improvement) about here]
 
@@ -69,10 +67,6 @@ In addition to the differences between whites and people of color in the outcome
 In summary, a lower proportion of whites perceived improvement in multiethnic neighborhoods than their neighbors of color. Whites, therefore, might be satisfied living in their multiethnic neighborhood, but not inclined to see their neighborhood being a better place to live in the future. Neighborhood racial diversity would have been growing in the time period whites perceived less improvement than their neighbors. The present study provides insufficient evidence to conclude that increasing diversity *caused* whites to perceive less improvement than their neighbors, but it does indicate**[w.ch]** a temporal correlation between growing diversity and a lower white endorsement of neighborhood change. 
 
 Projecting forward, too, the less positive trajectory whites perceive could portend a future in which whites might be more inclined, on the margin, to move out of the neighborhood than their non-white neighbors. Such marginal differences combined with the high rates of satisfaction among whites would be unlikely to instigate white flight, but the higher probability of losing white households could increase the chances of long-term racial turnover. The chances of long-term turnover would increase further if multiethnic neighborhoods attracted people of color at higher rates than whites. 
-
-
-**Where does this go?** The model also included whether respondents reported feeling satisfied living in their neighborhoods as a means to adjust for the levels off of which a respondent would evaluate change (satisfied residents might be less likely to perceive improvement, for example, since they are already satisfied with the neighborhood).**fix wording**
-
 
 ```{r plot-improvement}
 bet_pred <- rbind(bet_pred_m1, bet_pred_m3)

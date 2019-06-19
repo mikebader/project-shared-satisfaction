@@ -1,71 +1,12 @@
-# Analysis
 ```{r setup-analysis-environment}
 rm(list=ls())
+R_version <- paste(R.version$major, R.version$minor, sep='.')
 load('../data/dcassvy.Rdata')
-```
-## Analytical Approach
-For each analysis, ran three models. 
-
-1. Race-only model
-2. Race and demographic controls
-3. Race, demographic, and neighborhood perception variables
-
-* Can't "prove a null" in this case, so will examine how much overlap there is in the confidence intervals (I need to work on explaining this better; any suggestions would be most welcome) [Create subsection at end of **Analysis** to address "proving the null"?]
-
-```{r reporting-functions}
-source('report_models.R')
-source('make_predictions.R')
-get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
-    aics <- sapply(d, function(x) x$aic)
-    return(list(mean=mean(aics), var=var(aics)))
-}
-
-MIcombine_aic <- function(m) { ## Combines imputations, including AIC
-    aic <- get_aic(m)
-    mi <- MIcombine(m)
-    mi$aic <- aic
-    return(mi)
-}
-
-```
-
-## Fixed Effects
-```{r tract-clustering}
-## Describe clustering of respondents within tracts
-tract_Ns <- sapply(unique(dcas$sample_tract), 
-                   function(x){nrow(dcas[dcas$sample_tract==x,])})
-num_quads <- length(tract_Ns)
-N_oneresp <- sum(tract_Ns==1)
-tract_Ns_max <- max(tract_Ns)
-tract_Nfreq <- as.data.frame(table(tract_Ns))
-tract_Ns_hist <- ggplot(tract_Nfreq, aes(x=Freq)) + 
-    geom_histogram(binwidth=1) +
-    scale_x_continuous(breaks=1:19, labels=1:19) +
-    labs(title="Distribution of respondents per tract",
-         subtitle="Respondents living in quadrivial tracts, 2016 DCAS")
-ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
-       height=3, width=4, units='in')
-```
-
-The correct test of the hypotheses compares the responses of white residents to those of blacks, Latinos, and Asians, *living in the same neighborhood*. As a result, I include fixed effects for each census tract in which respondents resided. Only one respondent lived in `r N_oneresp` tracts, and were therefore dropped from the analysis. Without these tracts, the number of respondents per tract ranged from 2 to `r tract_Ns_max`.
-
-```{r define-models}
-m1 <- 'dem.race + sample_tract '
-m2 <- paste0(m1, '+ age + I(forborn*1) + I(man*1) + I(kids*1) + I(married*1) +
-                 educ')
-m3 <- paste0(m2, '+ nhdyrs + nhdsize')
-m4 <- sub('dem\\.race \\+ ','',m3)
-```
-
-## Multiple Imputation & Survey Weights
-Several variables have a substantial amount of missing data. I used the Amelia package (cite) to create five imputation datasets that will be combined for the final results. I then set up the survey dseign using the list of imputed datasets to account for the complex survey design.
-
-```{r multiple-imputation-functions}
 source('broom_mi.R') ## Saves multiple imputation
                      ## objects for use with tidyverse
 ```
 
-## Descriptive Statistics of Independent & Control Variables
+## Sample Description
 ```{r descriptives}
 desc <- function(x, d=descriptives) {
     vals <- MIcombine(with(dcassvy, svymean(as.formula(paste0('~',x)))))
@@ -138,6 +79,66 @@ Residents of multiethnic neighborhoods are:
 * Likely to be foreign-born: `r d['forbornTRUE',2]*100`% of respondents are foreign born. This varied by racial group, however: `r forborn.race['api']`% of Asian residents were born abroad, `r forborn.race['latino']`% of Latinos, and even `r forborn.race['black']`% of blacks while an overwhelming majority of whites (`r 100-forborn.race['white']`%) were native-born. 
 * Residents are highly educated as almost a third hold a bachelor's degree and another third hold an advanced degree
 * Nearly two-thirds report being married
+
+
+## Summary
+The 2016 DCAS data contain the elements required to test the hypotheses stated above. The data represent the whole of residents of multiethnic neighborhoods in a metropolitan sample. The data also provide sufficient power to compare the responses of all four racial groups to one another due to the oversamples. The questions used to measure satisfaction and improvement come from previous surveys and allow for the direct comparison of responses to the existing literature. Together, these attributes overcome problems with previous data sources to investigate interracial differences in multiethnic neighborhoods. 
+
+
+# Analytical Approach
+I used logistic regression analysis to test the hypotheses above. The general model estimated can be expressed as:
+
+$$\mathbf{y} = \alpha + \mathbf{\beta^T X} + \mathbf{\gamma^T Z} + \mathbf{\delta_j} + \mathbf{\epsilon}$$
+
+\noindent where $\mathbf{y}$ is the vector of outcomes for respondents, $\alpha$ is the intercept, $\mathbf{\beta}$ is a vector of point estimates for racial groups (with whites omitted), $\mathbf{X}$, and $\mathbf{\epsilon}$ is a vector of individual-specific errors. Non-Latinx whites were the reference group since the hypotheses ask whether whites differ from other groups. The vector $\mathbf{\gamma}$ contains point estimates of demographic and neighborhood experience controls, $\mathbf{Z}$. I first estimated each outcome with only the intercept and race terms included. I then estimated each outcome with controls present. I conducted all analyses in R version `r R_version`. 
+
+```{r reporting-functions}
+source('report_models.R')
+source('make_predictions.R')
+get_aic <- function(d, m=5){ ## Record mean and between-model variance of AIC
+    aics <- sapply(d, function(x) x$aic)
+    return(list(mean=mean(aics), var=var(aics)))
+}
+
+MIcombine_aic <- function(m) { ## Combines imputations, including AIC
+    aic <- get_aic(m)
+    mi <- MIcombine(m)
+    mi$aic <- aic
+    return(mi)
+}
+
+```
+
+```{r define-models}
+m1 <- 'dem.race + sample_tract '
+m2 <- paste0(m1, '+ age + I(forborn*1) + I(man*1) + I(kids*1) + I(married*1) +
+                 educ')
+m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+m4 <- sub('dem\\.race \\+ ','',m3)
+```
+
+```{r tract-clustering}
+## Describe clustering of respondents within tracts
+tract_Ns <- sapply(unique(dcas$sample_tract), 
+                   function(x){nrow(dcas[dcas$sample_tract==x,])})
+num_quads <- length(tract_Ns)
+N_oneresp <- sum(tract_Ns==1)
+tract_Ns_med <- median(tract_Ns[tract_Ns>1])
+tract_Ns_max <- max(tract_Ns)
+tract_Nfreq <- as.data.frame(table(tract_Ns))
+tract_Ns_hist <- ggplot(tract_Nfreq, aes(x=Freq)) + 
+    geom_histogram(binwidth=1) +
+    scale_x_continuous(breaks=1:19, labels=1:19) +
+    labs(title="Distribution of respondents per tract",
+         subtitle="Respondents living in quadrivial tracts, 2016 DCAS")
+ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
+       height=3, width=4, units='in')
+```
+
+All models included a fixed effect, $\mathbf{\delta_j}$, for the neighborhood of residence. Neighborhoods were defined as residents' census tracts. Including neighborhood fixed effects makes the estimates, $\mathbf{\beta}$, reflect the differences between white outcomes and those of Asians, blacks, and Latinxs *living in the same neighborhood. Respondents who lived in neighborhoods without other respondents (N=`r N_oneresp`) were removed from the analysis. The remaining respondents lived in tracts with a median of `r tract_Ns_med` and a maximum of `r tract_Ns_max`. 
+
+All analyses accounted for missing data and the complex survey design. I used the `Amelia` package (cite) to impute missing values in five datasets. I conducted all analyses using these five datasets weighting outcomes to account for the complex sample design using the `survey` library. I combined all results using Rubin's rules  [TK:cite]. All code for the models presented here are available at [redacted]. 
+
 
 # Results 
 
