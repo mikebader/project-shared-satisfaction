@@ -1,6 +1,5 @@
-(set up data for survey weights & multiple imputation)
-
 ```{r weights}
+## Set up data for survey weights & multiple imputation
 vars <- c(
           'satisfied', 'better'
           , 'extremely_satisfied', 'much_better'
@@ -13,7 +12,6 @@ vars <- c(
           , 'educ'
           , 'nhdyrs'
           , 'nhdsize'
-          , 'state'
 )
 load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 racecomp <- paste0('pct', c('nhw','api','nhb','lat'))

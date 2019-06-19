@@ -1,27 +1,28 @@
 # Supplement
 
-## Model of Neighborhood Improvement without Including Neighborhood Satisfaction as a Variable
+## Model of Neighborhood Improvement Including Neighborhood Satisfaction as a Variable
 
 The following reports an analysis of neighborhood improvement that does not include neighborhood satisfaction as a covariate in the model. 
 
 ```{r improvement-analysis-no-satisfaction}
 m1_bet_alt <- with(dcassvy,
-               svyglm(as.formula(paste('better ~', m1)), 
+               svyglm(as.formula(paste('better ~', m1, '+ satisfied')), 
                       family=binomial))
 m1_bet_alt <- MIcombine_aic(m1_bet_alt)
 
 m3_bet_alt <- with(dcassvy,
-               svyglm(as.formula(paste('better ~', m3)),
+               svyglm(as.formula(paste('better ~', m3, '+ satisfied')),
                       family=binomial))
 m3_bet_alt <- MIcombine_aic(m3_bet_alt)
 
 m4_bet_alt <- with(dcassvy,
-               svyglm(as.formula(paste('better ~ ', m4)),
+               svyglm(as.formula(paste('better ~ ', m4, '+ satisfied')),
                       family=binomial))
 m4_bet_alt <- MIcombine_aic(m4_bet_alt)
 
 bet_tbl_alt <- report_models(m1_bet_alt, m3_bet_alt, m4_bet_alt,
-                         reglabels=regression_labels,
+                         reglabels=c(regression_labels[1:3], 'Satisfied',
+                                     regression_labels[-1:-3]),
                          caption=paste0('Estimated coefficients predicting ',
                                         'neighborhood improvement without satisfaction'),
                          label='tab:improvement-nosatisfaction')
@@ -62,4 +63,14 @@ ff_out <- function(nhd) {
                                       nhd,'.tex'))
 }
 ff_sup <- lapply(quad.nhoods, ff_out)
+```
+
+## Exploratory analysis examining influence of state of residence
+
+* *State of residence*, factor variable indicating the state in which the respondent lives.  
+```{r residence-variables}
+# dcas$state <- sapply(dcas$sample_tract, substr, start=1, stop=2)
+# dcas$state[dcas$state=='24'] <- 'Maryland'
+# dcas$state[dcas$state=='51'] <- 'Virginia'
+# dcas$state <- factor(dcas$state)
 ```

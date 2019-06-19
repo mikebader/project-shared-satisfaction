@@ -2,7 +2,6 @@
 ## neighborhoods in DC Area to all neighborhoods in the DC Area.
 
 library(tidyverse)
-rm(list=ls())
 DIR <- '~/work/projects/multiethnic_nhoods/'
 DATADIR <- '~/work/data/nhgis/DCArea/tracts/2010/tabular/'
 
