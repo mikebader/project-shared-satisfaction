@@ -28,9 +28,25 @@ The 2016 DCAS sought to represent residents of two types of neighborhoods--multi
 
 [^latinx]: Disproportionately Latinx neighborhoods were those in which Latinx residents made up at least a quarter of the residents and were not already classified as a multiethnic neighborhood. 
 
-Multiethnic neighborhoods included in the sampling frame met two criteria. First, Asians, blacks, Latinxs, and whites each comprised at least 10~percent of the population of the neighborhood. This cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. Second, none of those four groups could represent a majority of residents. This criterion was included to eliminate neighborhoods where a single group formed the dominant identity of the neighborhood. These criteria resulted in a sample frame of **TK** neighborhoods that represented **TK** people. The majority of neighborhoods were in Montgomery County, Maryland, followed by Fairfax County, Virginia, then **TK**... The neighborhoods included in the sampling frame are shown in Figure **TK**. An address-based sample of households was drawn from these eligible neighborhoods that included oversamples of households with Asian and Hispanic surnames and households located in from disproportionately black tracts (that still satisfied the criteria as multiethnic neighborhoods).
+Multiethnic neighborhoods included in the sampling frame met two criteria. First, Asians, blacks, Latinxs, and whites each comprised at least 10~percent of the population of the neighborhood. This cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. Second, none of those four groups could represent a majority of residents. This criterion was included to eliminate neighborhoods where a single group formed the dominant identity of the neighborhood. These criteria resulted in a sample frame of 114 neighborhoods that represented **TK** people. The majority of neighborhoods were in Montgomery County, Maryland, followed by Fairfax County, Virginia, then **TK**... The neighborhoods included in the sampling frame are shown in Figure \@ref(fig:map). An address-based sample of households was drawn from these eligible neighborhoods that included oversamples of households with Asian and Hispanic surnames and households located in from disproportionately black tracts (that still satisfied the criteria as multiethnic neighborhoods).
 
-Fourteen neighborhoods met the first inclusion criterion but not the second. Of those fourteen, **TK** were neighborhoods that had a white majority and were located in **TK** (N),... Only **TK** had a black majority, and [both?] were located in the gentrifying neighborhood of **TK**. Only [**TK**] neighborhood had a Latinx majority. 
+[Figure \@ref(fig:map) about here]
+
+```{r quad-all-comparison}
+source('dcarea/make-quad-nonquad-comparison-table.R')
+```
+
+```{r quad-table, echo=TRUE, include=TRUE}
+kable(quad_tbl, row.names = FALSE)
+```
+
+Table \@ref(tab:nhddescriptives) contains a comparison of multiethnic neighborhoods to all neighborhoods in the DC area. Whites make up about a third of multiethnic neighborhoods, on average, while Latinxs make up about a quarter. Blacks and Asians make up 22 and 18 percent of residents, respectively. 
+
+[Table \@ref(tab:nhddescriptives) about here]
+
+Immigration represented the largest deviation of multiethnic neighborhoods from DC area neighborhoods overall. Immigrants make up nearly two of every five residents in multiethnic neighborhoods, compared to just under one of every four residents in neighborhoods overall. Residents of multiethnic neighborhoods had slightly lower educational attainment than neighborhoods overall. One in four residents of multiethnic neighborhoods, however, had a bachelor's degree and one in five had a post-graduate degree. Married households and those with children comprised a larger share of households in multiethnic neighborhoods compared to DC area neighborhoods overall. 
+
+Eighteen neighborhoods met the first inclusion criterion but not the second. Of those eighteen, fifteen were neighborhoods that had a white majority; six were located in Fairfax County, Virginia (including one in Fairfax city), five in Montgomery County, Maryland, and two each in D.C. and Arlington County, Virginia. Two neighborhoods had a black majority, one each in Montgomery County and Prince George's County, and only one neighborhood, in Montgomery County, had a Latinx majority. 
 
 A 12-page survey booklet was mailed to 9,600 households in those two types of neighborhoods along with a one-page cover letter written in English and Spanish on opposite sides, a two-dollar bill as an incentive, and a postage-paid return envelope. A reminder was sent to all households that had not responded approximately two weeks after the original survey was sent. By the end of the 54-day field period, 1,222 households responded with complete surveys, 674 of which were from households in multiethnic neighborhoods. The responses from the entire sample represeted a 12.8 percent response rate (AAPOR RR4 standard). 
 
@@ -127,7 +143,6 @@ for(i in 1:4) { ## Check recoding
 # inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
 ```
 
-**Neighborhood Experience**
 In addition to demographic characteristics, I also included controls for the respondent's experience in the neighborhood. First, I included the *years respondents lived in their neighborhoods* since the length of time lived in neighborhoods could affect perceptions of quality and would certainly affect perceptions of neighborhood change. Second, I included a measure of *neighborhood size*. This measure was self-reported by respondents and including it in models accounts for how subjective perceptions of neighborhood boundaries affect satisfaction and perceived change. 
 
 ```{r nhood-variables}

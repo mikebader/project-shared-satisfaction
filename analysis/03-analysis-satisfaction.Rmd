@@ -80,6 +80,8 @@ Residents of multiethnic neighborhoods are:
 * Residents are highly educated as almost a third hold a bachelor's degree and another third hold an advanced degree
 * Nearly two-thirds report being married
 
+[Table \@ref(tab:descriptives) about here]
+
 
 ## Summary
 The 2016 DCAS data contain the elements required to test the hypotheses stated above. The data represent the whole of residents of multiethnic neighborhoods in a metropolitan sample. The data also provide sufficient power to compare the responses of all four racial groups to one another due to the oversamples. The questions used to measure satisfaction and improvement come from previous surveys and allow for the direct comparison of responses to the existing literature. Together, these attributes overcome problems with previous data sources to investigate interracial differences in multiethnic neighborhoods. 

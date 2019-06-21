@@ -99,17 +99,17 @@ colnames(tbl) <- c('Variable', 'Mean', 'S.D.','', 'Mean', 'S.D.')
 
 ## Write table to file
 fname <- 'analysis/tables/nhood_descriptives.tex'
-print.xtable(xtable(tbl,
-                    caption='Means and standard deviations of tract-level variables in multiethnic and quadrivial neighborhoods in the DC Area',
-                    align=c('l','p{2in}','R{4em}','R{4em}','p{1em}','R{4em}','R{4em}'),
-                    label='tab:nhd_descriptives'),
+quad_tbl <- xtable(tbl,
+                   caption='Means and standard deviations of tract-level variables in multiethnic and quadrivial neighborhoods in the DC Area',
+                   align=c('l','p{2in}','R{4em}','R{4em}','p{1em}','R{4em}','R{4em}'),
+                   label='tab:nhddescriptives')
+print.xtable(quad_tbl,
              booktabs=TRUE,
              caption.placement='top',
              include.rownames=FALSE,
-             file=fname,
+             # file=fname,
              sanitize.text.function = identity,
              timestamp='')
-
 colsets <- paste('&\\multicolumn{2}{p{8em}}{\\centering Multiethnic neighborhoods}&',
                  '&\\multicolumn{2}{p{8em}}{\\centering All neighborhoods}\\\\ ')
 tbltxt <- readLines(fname, -1)
@@ -137,13 +137,21 @@ levels(dcarea$county) <- c(
 
 ## Breakdown of multiethnic neighborhoods by county
 table(dcarea[, c('county', 'quad15')])
+sort(table(dcarea[, c('county', 'quad15')])[,2], decreasing=TRUE)
 
 ## Breakdown of 'excluded' multiethnic neighborhoods by county
-table(dcarea[, c('county', 'exclmulti')])
-
-## Listing of racail composition for all 'excluded' multiethnic nhoods
+excl_juris <- table(dcarea[, c('county', 'exclmulti')])
+N_excluded <- sum(excl_juris[,2])
+## Listing of racial composition for all 'excluded' multiethnic nhoods
 dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE,
        c('county', racevars)]
+dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.pnhw>50,
+       c('county', racevars)]
+dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.pnhb>50,
+       c('county', racevars)]
+dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.phsp>50,
+       c('county', racevars)]
+
 
 
 
