@@ -1,5 +1,13 @@
 # Supplement
 
+## Correlation of education and income: 
+
+```{r education-income-correlation, echo=TRUE, include=TRUE}
+ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
+```
+
+
+
 ## Model of Neighborhood Improvement Including Neighborhood Satisfaction as a Variable
 
 The following reports an analysis of neighborhood improvement that does not include neighborhood satisfaction as a covariate in the model. 

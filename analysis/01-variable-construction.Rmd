@@ -3,6 +3,7 @@
 rm(list=ls())
 dataDIR <- '~/work/data/dcas/dcas2016/'
 load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
+texcmds <- list()
 
 dcas$quad <- dcas$neighborhood=='Global Neighborhood'
 table(dcas[,c('neighborhood','quad')])
@@ -12,25 +13,9 @@ dcas$sample_tract <- droplevels(dcas$sample_tract)
 # dcas$sample_tract <- relevel(dcas$sample_tract, ref="51059452600")
 N_quad <- length(dcas$studycase)
 N <- sum(!is.na(dcas$dem.race))
+texcmds[['N']] <- N
 ```
 
-## Multiethnic Neighborhoods in the Washington, D.C. Area
-
-Data to test the hypotheses come from the 2016 DC Area Survey (DCAS). Washington, D.C. has historically been a segregated metropolitan area. Almost all blacks lived in the eastern part of the city and nearly all whites in the west. This east-west pattern spilled out to the Maryland suburbs. Few blacks lived across the Potomac River in Northern Virginia, though they were highly clustered in a small number of neighborhoods. In 1970, only **TK**% and **TK**% of Asians and Latinxs lived in the DC area. 
-
-The region's economy grew and became less based on the federal government in the 1980s and 1990. The expansion of finance, insurance, and real estate services, collectively known by the acronym FIRE, mirrored the sector's prominence in redeveloping metropolitan areas in the U.S. and abroad. During the same period, the region emerged as an immigrant destination. As the nation's capital and importance in international relations, the region's foreign-born residents are more socioeconomically diverse than average. Latinos and Asians now comprise **TK**% and **TK**%, respectively, of the DC area while blacks make up **TK**% and whites **TK**%. **TK** residents were born outside of the United States, with the largest shares coming from El Salvador, **TK**, and **TK**. 
-
-Real estate developers capitalized on the expanding population by developing large swaths of land in middle-ring suburbs in the counties surrounding the District. Having been built after the Fair Housing Act passed, the residences developed in these suburbs were not subject to the history of redlining restrictive covenants of previous developments. Residents of all races were attracted to these new suburban homes, especially in Montgomery and Fairfax Counties that boasted nationally renowned school systems. As Figure **TK** shows, multiethnic neighborhoods were especially likely to emerge along the hub-and-spoke system of the region's commuter rail lines. Additionally, Montgomery County has, since 1974, mandated that all housing developments larger than 20 units include a set percentage of units that qualify as affordable housing.[^fairfax-iz]
-
-[^fairfax-iz]: Fairfax County passed an inclusionary zoning ordinance in 1971, but it was struck down by the Virginia Supreme Court. Fairfax County implemented a different mandatory inclusionary zoning policy in 1990. 
-
-The 2016 DCAS sought to represent residents of two types of neighborhoods--multiethnic and disproportionately Latinx--in the Washington, D.C. area, which comprised Washington, D.C. and the surrounding jurisdictions of Montgomery and Prince George's Counties in Maryland, Arlington and Fairfax (including the cities of Falls Church and Fairfax) Counties Virginia, and the independent city of Alexandria, Virginia. Only responses from residents sampled in the multiethnic neighborhoods were included in this analysis.[^latinx] 
-
-[^latinx]: Disproportionately Latinx neighborhoods were those in which Latinx residents made up at least a quarter of the residents and were not already classified as a multiethnic neighborhood. 
-
-Multiethnic neighborhoods included in the sampling frame met two criteria. First, Asians, blacks, Latinxs, and whites each comprised at least 10~percent of the population of the neighborhood. This cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. Second, none of those four groups could represent a majority of residents. This criterion was included to eliminate neighborhoods where a single group formed the dominant identity of the neighborhood. These criteria resulted in a sample frame of 114 neighborhoods that represented **TK** people. The majority of neighborhoods were in Montgomery County, Maryland, followed by Fairfax County, Virginia, then **TK**... The neighborhoods included in the sampling frame are shown in Figure \@ref(fig:map). An address-based sample of households was drawn from these eligible neighborhoods that included oversamples of households with Asian and Hispanic surnames and households located in from disproportionately black tracts (that still satisfied the criteria as multiethnic neighborhoods).
-
-[Figure \@ref(fig:map) about here]
 
 ```{r quad-all-comparison}
 source('dcarea/make-quad-nonquad-comparison-table.R')
@@ -39,23 +24,6 @@ source('dcarea/make-quad-nonquad-comparison-table.R')
 ```{r quad-table, echo=TRUE, include=TRUE}
 kable(quad_tbl, row.names = FALSE)
 ```
-
-Table \@ref(tab:nhddescriptives) contains a comparison of multiethnic neighborhoods to all neighborhoods in the DC area. Whites make up about a third of multiethnic neighborhoods, on average, while Latinxs make up about a quarter. Blacks and Asians make up 22 and 18 percent of residents, respectively. 
-
-[Table \@ref(tab:nhddescriptives) about here]
-
-Immigration represented the largest deviation of multiethnic neighborhoods from DC area neighborhoods overall. Immigrants make up nearly two of every five residents in multiethnic neighborhoods, compared to just under one of every four residents in neighborhoods overall. Residents of multiethnic neighborhoods had slightly lower educational attainment than neighborhoods overall. One in four residents of multiethnic neighborhoods, however, had a bachelor's degree and one in five had a post-graduate degree. Married households and those with children comprised a larger share of households in multiethnic neighborhoods compared to DC area neighborhoods overall. 
-
-Eighteen neighborhoods met the first inclusion criterion but not the second. Of those eighteen, fifteen were neighborhoods that had a white majority; six were located in Fairfax County, Virginia (including one in Fairfax city), five in Montgomery County, Maryland, and two each in D.C. and Arlington County, Virginia. Two neighborhoods had a black majority, one each in Montgomery County and Prince George's County, and only one neighborhood, in Montgomery County, had a Latinx majority. 
-
-A 12-page survey booklet was mailed to 9,600 households in those two types of neighborhoods along with a one-page cover letter written in English and Spanish on opposite sides, a two-dollar bill as an incentive, and a postage-paid return envelope. A reminder was sent to all households that had not responded approximately two weeks after the original survey was sent. By the end of the 54-day field period, 1,222 households responded with complete surveys, 674 of which were from households in multiethnic neighborhoods. The responses from the entire sample represeted a 12.8 percent response rate (AAPOR RR4 standard). 
-
-## Dependent Variables
-
-The analyses use dichotomous measures of satisfaction and neighborhood improvement as dependent variables. To measure current neighborhood *satisfaction*, respondents who indicated that they were "extremely" or "very" satisfied living in their neighborhood were coded as being satisfied. Those who indicated that they were "somewhat" or "not at all" satisfied were coded as being unsatisfied. 
-
-The measure of neighborhood improvement was taken from the respondents' answers to the question, "Looking back over the past five years or so, would you say that your neighborhood has$\ldots$" I coded respondents as having indicated that their neighborhood improved if they answered that their neighborhood has become a "much better" or "somewhat better" place to live. Respondents coded as not perceiving neighborhood improvement were those who answered that their neighborhoods "about the same," "somewhat worse," or "much worse."
-
 
 ```{r dependent-variables}
 dcas$satisfied <- dcas$nhd.satisfaction %in% c(
@@ -91,8 +59,6 @@ table(dcas[, c('nhd.change','much_better')])
 ```
 
 
-## Independent Variable
-A measure created from respondents' self-identified race and ethnicity is the independent variable in all analyses. Respondents were allowed to pick multiple racial categories and indicate if they identified as Latinx. I collapsed these two variables to create four categories: *Latinx* for those of any race who identified as Latinx; *white* for those who identified only as white; *black* for those who non-Latinx respondents who identified as black, either alone or in combination with any other race; and *Asian* for those non-Latinx respondents who identified as either Asian or Pacific Islander, either alone or in combination with any other race other than black. Respondents missing on either the race or ethnicity question and respondents who identified with other racial groups were not included in the analysis. This left a final analytic dataset of `r N` respondents. 
 
 ```{r independent-variables}
 table(dcas$dem.race, useNA='always')
@@ -102,10 +68,6 @@ dcas$dem.race <- relevel(dcas$dem.race, ref='white')
 
 
 
-## Control Variables
-In addition to racial variables, I also included variables to control for other demographic characteristics of residents. I calculated *age* based on respondents' birth year and *gender* based on respondents' gender identity, for which they were given the choices "male," "female," and "other." Male was set as the reference. Only two respondents chose "other" and were coded as missing. I included an indicator for *being partnered* based on those respondents who indicated that they were "now married or in a marriage-style arrangment," with those not currently partnered as the reference. 
-
-I included whether the respondent had *children in the household* because the presence of children would likely affect the outlook residents have of their neighborhoods. The question did not limit the response to respondents' own children. I also included an indicator to measure whether respondents were *foreign born* since immigrant status would likely correlate with residential perceptions and race simultaneously. 
 
 ```{r demographic-variables}
 
@@ -117,8 +79,6 @@ dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
 dcas$married <- grepl("Now married", dcas$dem.marital.stat)
 table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
 ```
-
-I represented economic status with a measure of *educational attainment*. I created a measure with five categories based on the highest level of education respondents reported: less than high school, high school (including GED), some college (including associates degrees), bachelors degree, and graduate degree. I chose to use educational attainment to measure socioeconomic status because it is a more stable measure than income, and space did not permit the DCAS to ascertain income longitudinally. Income also had more missing data compared to educational attainment (`r sum(is.na(dcas$dem.income.cat4)) ` instead of `r sum(is.na(dcas$dem.educ.attain))`. Among those respondents who answered both questions, however, education and income were highly correlated. 
 
 ```{r economic-variables}
 dcas$educ <- factor(dcas$dem.educ.attain, order=FALSE) %>% 
@@ -139,11 +99,11 @@ dcas[,inc_dummies] <- lapply(1:4,
 for(i in 1:4) { ## Check recoding
     print(table(dcas[,c('dem.income.cat4',paste0('inc',i))]))
 }
+texcmds[['miinc']] <- sum(is.na(dcas$dem.income.cat4))
+texcmds[['miedu']] <- sum(is.na(dcas$dem.educ.attain))
 # inc_names <- sanitize(levels(dcas$dem.income.cat4))
 # inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
 ```
-
-In addition to demographic characteristics, I also included controls for the respondent's experience in the neighborhood. First, I included the *years respondents lived in their neighborhoods* since the length of time lived in neighborhoods could affect perceptions of quality and would certainly affect perceptions of neighborhood change. Second, I included a measure of *neighborhood size*. This measure was self-reported by respondents and including it in models accounts for how subjective perceptions of neighborhood boundaries affect satisfaction and perceived change. 
 
 ```{r nhood-variables}
 dcas$nhdyrs <- as.numeric(as.character(dcas$q4)) - 10 ## Center at 10 years

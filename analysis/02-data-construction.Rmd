@@ -48,5 +48,6 @@ tract_means <- sort(tract_means)
 median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
 dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
 impute_weights(dcas[, c(idvars, vars, commvars)])
-save(vars, dcassvy, dcas, dcasmi, dataDIR, file = '../data/dcassvy.Rdata')
+save(vars, dcassvy, dcas, dcasmi, dataDIR, texcmds, 
+     file = '../data/dcassvy.Rdata')
 ```

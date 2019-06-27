@@ -1,12 +1,11 @@
 ```{r setup-analysis-environment}
 rm(list=ls())
-R_version <- paste(R.version$major, R.version$minor, sep='.')
 load('../data/dcassvy.Rdata')
+texcmds[['Rversion']] <- paste(R.version$major, R.version$minor, sep='.')
 source('broom_mi.R') ## Saves multiple imputation
                      ## objects for use with tidyverse
 ```
 
-## Sample Description
 ```{r descriptives}
 desc <- function(x, d=descriptives) {
     vals <- MIcombine(with(dcassvy, svymean(as.formula(paste0('~',x)))))
@@ -73,27 +72,6 @@ print.xtable(xtable(descriptive_tbl,
              timestamp='')
 ```
 
-Residents of multiethnic neighborhoods are:
-
-* Racially diverse
-* Likely to be foreign-born: `r d['forbornTRUE',2]*100`% of respondents are foreign born. This varied by racial group, however: `r forborn.race['api']`% of Asian residents were born abroad, `r forborn.race['latino']`% of Latinos, and even `r forborn.race['black']`% of blacks while an overwhelming majority of whites (`r 100-forborn.race['white']`%) were native-born. 
-* Residents are highly educated as almost a third hold a bachelor's degree and another third hold an advanced degree
-* Nearly two-thirds report being married
-
-[Table \@ref(tab:descriptives) about here]
-
-
-## Summary
-The 2016 DCAS data contain the elements required to test the hypotheses stated above. The data represent the whole of residents of multiethnic neighborhoods in a metropolitan sample. The data also provide sufficient power to compare the responses of all four racial groups to one another due to the oversamples. The questions used to measure satisfaction and improvement come from previous surveys and allow for the direct comparison of responses to the existing literature. Together, these attributes overcome problems with previous data sources to investigate interracial differences in multiethnic neighborhoods. 
-
-
-# Analytical Approach
-I used logistic regression analysis to test the hypotheses above. The general model estimated can be expressed as:
-
-$$\mathbf{y} = \alpha + \mathbf{\beta^T X} + \mathbf{\gamma^T Z} + \mathbf{\delta_j} + \mathbf{\epsilon}$$
-
-\noindent where $\mathbf{y}$ is the vector of outcomes for respondents, $\alpha$ is the intercept, $\mathbf{\beta}$ is a vector of point estimates for racial groups (with whites omitted), $\mathbf{X}$, and $\mathbf{\epsilon}$ is a vector of individual-specific errors. Non-Latinx whites were the reference group since the hypotheses ask whether whites differ from other groups. The vector $\mathbf{\gamma}$ contains point estimates of demographic and neighborhood experience controls, $\mathbf{Z}$. I first estimated each outcome with only the intercept and race terms included. I then estimated each outcome with controls present. I conducted all analyses in R version `r R_version`. 
-
 ```{r reporting-functions}
 source('report_models.R')
 source('make_predictions.R')
@@ -124,9 +102,9 @@ m4 <- sub('dem\\.race \\+ ','',m3)
 tract_Ns <- sapply(unique(dcas$sample_tract), 
                    function(x){nrow(dcas[dcas$sample_tract==x,])})
 num_quads <- length(tract_Ns)
-N_oneresp <- sum(tract_Ns==1)
-tract_Ns_med <- median(tract_Ns[tract_Ns>1])
-tract_Ns_max <- max(tract_Ns)
+texcmds[['oneresp']] <- sum(tract_Ns==1)
+texcmds[['medNpertract']] <- median(tract_Ns[tract_Ns>1])
+texcmds[['maxNpertract']] <- max(tract_Ns)
 tract_Nfreq <- as.data.frame(table(tract_Ns))
 tract_Ns_hist <- ggplot(tract_Nfreq, aes(x=Freq)) + 
     geom_histogram(binwidth=1) +
@@ -137,26 +115,18 @@ ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
        height=3, width=4, units='in')
 ```
 
-All models included a fixed effect, $\mathbf{\delta_j}$, for the neighborhood of residence. Neighborhoods were defined as residents' census tracts. Including neighborhood fixed effects makes the estimates, $\mathbf{\beta}$, reflect the differences between white outcomes and those of Asians, blacks, and Latinxs *living in the same neighborhood. Respondents who lived in neighborhoods without other respondents (N=`r N_oneresp`) were removed from the analysis. The remaining respondents lived in tracts with a median of `r tract_Ns_med` and a maximum of `r tract_Ns_max`. 
-
-All analyses accounted for missing data and the complex survey design. I used the `Amelia` package (cite) to impute missing values in five datasets. I conducted all analyses using these five datasets weighting outcomes to account for the complex sample design using the `survey` library. I combined all results using Rubin's rules  [TK:cite]. All code for the models presented here are available at [redacted]. 
-
-
-# Results 
-
-## Satisfication Living in Multiethnic Neighborhoods
 ```{r satisfied-mean}
 mean_satisfied <- MIcombine(with(dcassvy,svymean(~satisfied)))
+texcmds[['meansatisfied']] <- round(coef(mean_satisfied),2)[[1]]*100
 satisfied_byrace <- MIcombine(
     with(dcassvy,svyby(~satisfied, ~I(dem.race), svymean))) %>%
     coef() %>% round(2)*100
+texcmds[['apisatisfied']] <- round(satisfied_byrace[['api']])
+texcmds[['nhbsatisfied']] <- round(satisfied_byrace[['black']])
+texcmds[['hspsatisfied']] <- round(satisfied_byrace[['latino']])
+texcmds[['nhwsatisfied']] <- round(satisfied_byrace[['white']])
 ```
 
-Most residents of multiethnic neighborhoods, `r round(coef(mean_satisfied), 2)*100` percent, are satisfied living in their neighborhood. Satisfaction was equally high among all four racial groups: `r satisfied_byrace['api']` percent of Asians, `r satisfied_byrace['latino']` percent of Latinxs, `r satisfied_byrace['black']` percent of blacks, and `r satisfied_byrace['white']` percent of whites in the sample were either "extremely" or "very" satisfied living in their multiethnic neighborhoods.
-
-The agreement across racial groups held when I statistically compared groups within the same neighborhoods by modeling satisfaction with neighborhood fixed effects. The first column of Table \@ref(tab:satisfaction) reports the results of a model including only respondent race and neighborhood fixed effects. The estimates for racial groups are small and not distinguishable from zero. 
-
-[Table \@ref(tab:satisfaction) about here]
 
 ```{r satisfied-analysis, warning=FALSE, results='hide'}
 m0_sat <- with(dcassvy,
@@ -179,10 +149,14 @@ m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)),
 m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
 sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
 sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
+texcmds[['satWaldF']] <- round(sat_wald_F['Mean'], 2)[[1]]
+texcmds[['satWaldpMin']] <- round(sat_wald_p['Min.'], 2)[[1]]
+texcmds[['satWaldpMax']] <- round(sat_wald_p['Max.'], 2)[[1]]
 sat_pred_m3 <- MIpredict(m3_sat)
 sat_pred_m3$race <- levels(dcas$dem.race)
 sat_pred_m3$model <- 'Race + controls'
 m3_sat <- MIcombine_aic(m3_sat)
+texcmds[['satnhdsize']] <- round(exp(coef(m3_sat)['nhdsize10-50 blocks']),2)[[1]]
 
 m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
                                family=binomial))
@@ -205,18 +179,6 @@ sat_tbl
 cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
 
-To further show the lack of difference between racial groups, I plotted the predicted probability from the model in the left panel of Figure \@ref(fig:satisfaction). The plotted figures represent the predicted probability in the neighborhood with median satisfaction in the data, and reflect the estimates predicted across the five imputed data sets combined using Rubin's rules **[need cite]**. **[Look into replacing this estimate with the AME]** Only `r round(max(sat_pred_m1['P']) - min(sat_pred_m1['P']),2)*100` percent separated the most satisfied group (Latinxs) from the least satisfied (Asians). 
-
-[Figure \@ref(fig:satisfaction) about here]
-
-The second column of Table \@ref(tab:satisfaction) further confirmed that satisfaction was an interracial sentiment among residents of multiethnic neighborhoods. The estimates were again small and could not be distinguished from a null effect. The right panel of Figure \@ref{fig:satisfaction} shows the predicted probabilities of satisfaction from the model with controls. I estimated the probabilities and standard errors at the reference level for all other variables in the model, meaning the figure represents the satisfaction of a 50-year-old, native-born, unmarried woman with a high school degree and no children who has lived in her neighborhood for 10 years. **[Look into replacing this estimate with the AME]** In the complete model, only `r round(max(sat_pred_m3[,'P']) - min(sat_pred_m3[,'P']), 2)*100` separated the least satisfied group (now whites) from the most satisfied (still Latinxs). 
-
-Not only are individual coefficients not large or statistically singificant, but including race does not improve the explanatory power of the model. The final column of Table \@ref(tab:satisfaction) reports the results of model estimating satisfaction in which I did not include race. The bottom row of the table reports the Akaike information criterion (AIC), a measure that balances a model's parsimony with its goodness of fit to the data **[need cite]**. A lower AIC represents a better fit to the data, and we can observe from Table \@ref(tab:satisfaction) that the model without race fits the data better than the model that includes race. I further affirmed the lack of explanatory power attributable to race by conducting Wald's F-test between the models with and without race. The mean value of the test across the imputed data sets was `r round(sat_wald_F['Mean'], 2)`, and the p-values ranged from `r round(sat_wald_p['Min.'], 2)` to `r round(sat_wald_p['Max.'], 2)`.
-
-These results establish that residents are satisfied living in multiethnic neighborhoods regardless of their own race. Two other factors, education and the perceived size of the neighborhood, are associated with neighborhood satisfaction rather than race. Education had a curvilinear relationship with satisfaction among multiethnic neighborhood residents. Residents of multiethnic neighborhoods with a high school degree were the most satisfied, while residents with less than a high school education and those with a postgraduate degree felt satisfaction the least often. The perceived size of the neighborhood also mattered, as those residents who thought their neighborhood comprised 10-50 blocks were `r round(exp(coef(m3_sat)['nhdsize10-50 blocks']),2)` times more likely to be satisfied than those who perceived their neighborhood to be only one to nine blocks. **[Connect back to idea that this is a sufficient size to avoid the worst of microsegregation, so people are actually satisfied with their neighborhood with multiracial composition.]**
-
-<!-- Those who perceived their neighborhoods to be 1-9 blocks were `r round(exp(coef(m3_sat)['nhdsize1c']),3)` as likely to find satisfaction in their neighborhood. Those who perceived their neighborhoods to be greater than 50 blocks were `r round(exp(coef(m3_sat)['nhdsize3c']),3)` as likely to find satisfaction, but the difference was not distinguishable from those who perceived their neighborhoods to be between 10 and 50 blocks. -->
-
 ```{r plot-satisfaction}
 sat_pred <- rbind(sat_pred_m1, sat_pred_m3)
 sat_pred$model <- relevel(factor(sat_pred$model), ref='Race only')
@@ -238,4 +200,8 @@ sat_plt <- ggplot(sat_pred, aes(x=x, y=P)) +
 sat_plt
 ggsave('images/satisfied.png', plot=sat_plt, 
        height=3, width=4, units='in')
+diff_m1 <- max(sat_pred_m1['P']) - min(sat_pred_m1['P'])
+texcmds[['maxdiffone']] <- round(diff_m1,2)*100
+diff_m3 <- max(sat_pred_m3['P']) - min(sat_pred_m3['P'])
+texcmds[['maxdiffthree']] <- round(diff_m3,2)*100
 ```

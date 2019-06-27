@@ -1,18 +1,3 @@
-# Familiarity with and Preferences for Other Multiethnic Places
-
-The long-term stability of multiethnic neighborhoods requires that residents of all races consider moving to existing multiethnic neighborhoods. The subsequent analyses assess how likely residents are to consider neighborhoods and how likely they are to actively not consider multiethnic neighborhoods. 
-
-## Familiarity with Multiethnic Places
-
-Two measures of familiarity with other multiethnic places in the Washington, D.C. area: 
-
-1. Whether the respondent reports knowing anything about the place
-2. Whether respondent reports having friends or family in the place
-
-Uses the same analytical strategy, except that we add two covariates to each model: 
-
-1. Whether the respondent reports living in the place
-
 ```{r familiarity-analysis}
 m3_srch <- sub('\\+ nhdyrs.+$', '', m3) # Eliminate nhood perceptions variables
 
@@ -73,7 +58,6 @@ know_tbl
 cat(to_latex(know_tbl), file='tables/knowledge.tex')
 ```
 
-## Where People Would Consider Moving
 ```{r consider-analysis}
 m0_con <- lapply(quad.nhoods, nhd.model, 'cons', 'dem.race')
 names(m0_con) <- quad.nhoods
@@ -130,7 +114,6 @@ cons_tbl
 cat(to_latex(cons_tbl), file='tables/consider.tex')
 ```
 
-## Where Would People Never Consider Moving
 
 ```{r not-consider-analysis}
 m0_nc <- lapply(quad.nhoods, nhd.model, 'nc', 'dem.race')
