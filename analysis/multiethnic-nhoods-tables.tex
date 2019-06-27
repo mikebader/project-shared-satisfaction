@@ -1,0 +1,54 @@
+\documentclass[]{baderart}
+%\usepackage{lmodern}
+%\usepackage{amssymb,amsmath}
+%\usepackage{ifxetex,ifluatex}
+%\usepackage{fixltx2e} % provides \textsubscript
+%\usepackage{color}
+%\usepackage{fancyvrb}
+%\usepackage{array}
+%\usepackage{caption}
+%\usepackage{graphicx}
+%\usepackage{siunitx}
+%\usepackage[table]{xcolor}
+%\usepackage{multirow}
+\usepackage{hhline}
+\usepackage{calc}
+\usepackage{tabularx}
+\usepackage{rotating}
+\title{Analysis for Satisfaction \& Stability in Multiethnic Neighborhoods Paper}
+\date{\today}
+\begin{document}
+\maketitle
+
+\input{tables/nhood_descriptives.tex}
+
+\input{tables/descriptives.tex}
+
+\input{tables/satisfaction.tex}
+
+\input{tables/improvement.tex}
+
+\clearpage
+
+\begin{figure}[h!]
+\centering
+\caption{Predicted probabilities of white, Asian, black, and Latinx residents of quadrivial neighborhoods being `very' or `extremely' satisfied living in their neighborhood}
+\includegraphics[width=5in]{images/satisfied.png}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\caption{Predicted probabilities of white, Asian, black, and Latinx residents of quadrivial neighborhoods reporting their neighborhood has improved in past five years}
+\includegraphics[width=5in]{images/improvement.png}
+\end{figure}
+
+\clearpage
+
+
+\input{tables/knowledge.tex}
+
+\input{tables/consider.tex}
+
+\input{tables/notconsider.tex}
+
+\end{document}
