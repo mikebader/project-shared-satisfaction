@@ -107,12 +107,12 @@ print.xtable(quad_tbl,
              booktabs=TRUE,
              caption.placement='top',
              include.rownames=FALSE,
-             # file=fname,
+             file=fname,
              sanitize.text.function = identity,
              timestamp='')
 colsets <- paste('&\\multicolumn{2}{p{8em}}{\\centering Multiethnic neighborhoods}&',
                  '&\\multicolumn{2}{p{8em}}{\\centering All neighborhoods}\\\\ ')
-tbltxt <- readLines(fname, -1)
+tbltxt <- readLines(fname)
 tbltxt <- c(tbltxt[1:8], colsets, tbltxt[9:length(tbltxt)])
 writeLines(tbltxt, fname)
 
