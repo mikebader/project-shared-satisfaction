@@ -37,6 +37,7 @@ m3_ff <- lapply(m3_ff, MIcombine_aic)
 ```
 
 ```{r report-familiarity-results, echo=TRUE, include=TRUE}
+fname <- 'tables/knowledge.tex'
 know_tbl <- huxreg(append(m3_dk, m3_ff))
 know_tbl[seq(4,9,2),1] <- regression_labels[1:3]
 know_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
@@ -57,22 +58,17 @@ know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
     set_label('tab:knowledge') 
 
 know_tbl
-cat(to_latex(know_tbl), file='tables/knowledge.tex')
+cat(to_latex(know_tbl), file=fname)
 
-tbltxt <- readLines('tables/knowledge.tex')
+tbltxt <- readLines(fname)
 tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
 tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
 tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
-writeLines(tbltxt, 'tables/knowledge.tex')
+writeLines(tbltxt, fname)
 
 ```
 
 ```{r consider-analysis}
-m0_con <- lapply(quad.nhoods, nhd.model, 'cons', 'dem.race')
-names(m0_con) <- quad.nhoods
-m0_con_pred <- lapply(m0_con, MIpredict)
-m0_con <- lapply(m0_con, MIcombine_aic)
-
 m1_con <- lapply(quad.nhoods, nhd.model, 'cons', m1)
 names(m1_con) <- quad.nhoods
 m1_con_pred <- lapply(m1_con, MIpredict)
@@ -86,23 +82,8 @@ m3_con <- lapply(m3_con, MIcombine_aic)
 
 ```{r report-consider-results}
 ## Label lives in community variable to be the same across models
-varlabel <- 'Lives in community'
-varnames <- sub('.+liveTRUE$', varlabel, names(m3_con$herndon$coefficients))
-varnames_m1 <- sub('.+liveTRUE$', varlabel, 
-                   names(m1_con$herndon$coefficients))
-for (nhd in quad.nhoods) {
-    names(m1_con[[nhd]]$coefficients) <- varnames_m1
-    colnames(m1_con[[nhd]]$variance) <- varnames_m1
-    rownames(m1_con[[nhd]]$variance) <- varnames_m1
-    names(m3_con[[nhd]]$coefficients) <- varnames
-    colnames(m3_con[[nhd]]$variance) <- varnames
-    rownames(m3_con[[nhd]]$variance) <- varnames
-}
-cons_labels <- 
-    c(regression_labels[1:3], 'Lives in community',
-      regression_labels[4:(length(regression_labels)-3)])
-# cons_labels <- c(regression_labels[1:(length(regression_labels)-3)], 
-#                  'Lives in community')
+fname <- 'tables/consider.tex'
+    cons_labels <- regression_labels[1:(length(regression_labels)-3)]
 cons_tbl <- report_models(m1_con$herndon, m3_con$herndon, 
                           m1_con$germantown, m3_con$germantown,
                           m1_con$wheaton, m3_con$wheaton, 
@@ -117,19 +98,16 @@ cons_tbl <- cons_tbl[
     merge_cells(1:1,2:3) %>% merge_cells(1:1,4:5) %>% merge_cells(1:1,6:7) %>%
     set_align(1, everywhere, 'center') %>%
     set_bottom_border(row=1,col=everywhere, value=0) %>%
-    set_top_border(row=2,col=everywhere, value=0)
+    set_top_border(row=final(1), col=everywhere, value=1) %>%
+    set_top_border(row=2,col=everywhere, value=0) %>%
+    set_left_padding(row=1, col=final(2), value=15) 
 cons_tbl[2,] <- c('',sapply(rep(c(1,2),3),function(x) paste0('(',x,')')))
 cons_tbl
-cat(to_latex(cons_tbl), file='tables/consider.tex')
+cat(to_latex(cons_tbl), file=fname)
 ```
 
 
 ```{r not-consider-analysis}
-m0_nc <- lapply(quad.nhoods, nhd.model, 'nc', 'dem.race')
-names(m0_nc) <- quad.nhoods
-m0_nc_pred <- lapply(m0_nc, MIpredict)
-m0_nc <- lapply(m0_nc, MIcombine_aic)
-
 m1_nc <- lapply(quad.nhoods, nhd.model, 'nc', m1)
 names(m1_nc) <- quad.nhoods
 m1_nc_pred <- lapply(m1_nc, MIpredict)
@@ -142,15 +120,7 @@ m3_nc <- lapply(m3_nc, MIcombine_aic)
 ```
 
 ```{r report-non-consider-results}
-for (nhd in quad.nhoods) {
-    names(m1_nc[[nhd]]$coefficients) <- varnames_m1
-    colnames(m1_nc[[nhd]]$variance) <- varnames_m1
-    rownames(m1_nc[[nhd]]$variance) <- varnames_m1
-    names(m3_nc[[nhd]]$coefficients) <- varnames
-    colnames(m3_nc[[nhd]]$variance) <- varnames
-    rownames(m3_nc[[nhd]]$variance) <- varnames
-}
-
+fname <- 'tables/notconsider.tex'
 nc_tbl <- report_models(m1_nc$herndon, m3_nc$herndon, 
                         m1_nc$germantown, m3_nc$germantown,
                         m1_nc$wheaton, m3_nc$wheaton,
@@ -164,9 +134,11 @@ nc_tbl <- nc_tbl[
     insert_row(c('','Herndon','','Germantown','','Wheaton',''), after=0) %>%
     merge_cells(1:1,2:3) %>% merge_cells(1:1,4:5) %>% merge_cells(1:1,6:7) %>%
     set_align(1, everywhere, 'center') %>%
-    set_bottom_border(row=1,col=everywhere, value=1) %>%
-    set_top_border(row=2,col=everywhere, value=0)
+    set_bottom_border(row=1,col=everywhere, value=0) %>%
+    set_top_border(row=final(1), col=everywhere, value=1) %>%
+    set_top_border(row=2,col=everywhere, value=0) %>%
+    set_left_padding(row=1, col=final(2), value=15)
 nc_tbl[2,] <- c('',sapply(rep(c(1,2),3),function(x) paste0('(',x,')')))
 nc_tbl
-cat(to_latex(nc_tbl), file='tables/notconsider.tex')
+cat(to_latex(nc_tbl), file=fname)
 ```
