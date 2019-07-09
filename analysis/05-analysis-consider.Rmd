@@ -3,18 +3,17 @@ m3_srch <- sub('\\+ nhdyrs.+$', '', m3) # Eliminate nhood perceptions variables
 
 nhd.model <- function(nhd, dim, model) {
     nhdvar <- paste0('nhd.srch.', nhd, '.', dim)
-    f <- as.formula(paste0(nhdvar, ' ~ ', model, ' + nhd.srch.', nhd, '.live'))
-    return(with(dcassvy, svyglm(f, family=binomial())))
+    f <- as.formula(paste0(nhdvar, ' ~ ', model))
+    ## Removed whether respondents indicated that they lived in the community 
+    ## because so few indicated living in the neighborhoods when broken out by
+    ## race
+    # f <- as.formula(paste0(nhdvar, ' ~ ', model, ' + nhd.srch.', nhd, '.live'))
+    return(with(dcassvy, svyglm(f, family=binomial)))
 }
 
 quad.nhoods <- c('herndon', 'germantown', 'wheaton')
 
 ## Don't Know
-m0_dk <- lapply(quad.nhoods, nhd.model, 'dk', 'dem.race')
-names(m0_dk) <- quad.nhoods
-m0_dk_pred <- lapply(m0_dk, MIpredict)
-m0_dk <- lapply(m0_dk, MIcombine_aic)
-
 m1_dk <- lapply(quad.nhoods, nhd.model, 'dk', m1)
 names(m1_dk) <- quad.nhoods
 m1_dk_pred <- lapply(m1_dk, MIpredict)
@@ -26,11 +25,6 @@ m3_dk_pred <- lapply(m3_dk, MIpredict)
 m3_dk <- lapply(m3_dk, MIcombine_aic)
 
 ## Friends & Family
-m0_ff <- lapply(quad.nhoods, nhd.model, 'ff', 'dem.race')
-names(m0_ff) <- quad.nhoods
-m0_ff_pred <- lapply(m0_ff, MIpredict)
-m0_ff <- lapply(m0_ff, MIcombine_aic)
-
 m1_ff <- lapply(quad.nhoods, nhd.model, 'ff', m1)
 names(m1_ff) <- quad.nhoods
 m1_ff_pred <- lapply(m1_ff, MIpredict)
@@ -45,17 +39,32 @@ m3_ff <- lapply(m3_ff, MIcombine_aic)
 ```{r report-familiarity-results, echo=TRUE, include=TRUE}
 know_tbl <- huxreg(append(m3_dk, m3_ff))
 know_tbl[seq(4,9,2),1] <- regression_labels[1:3]
+know_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
 know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
     insert_column(rep('',10),after=4) %>%
-    insert_row(c('', 
-                 'Don\'t know', '', '', '', 
-                 'Friends and family','',''),after=0) %>%
+    insert_row(c('',
+                 'Don\'t know', '', '', '',
+                 'Friends and family','',''), after=0) %>%
     merge_cells(c(1:1),c(2:4)) %>% merge_cells(c(1:1),c(6:8)) %>%
     set_align(1, everywhere, 'center') %>%
-    set_bottom_border(row=where(know_tbl$names=='Latinx')+2, 
-                      col=everywhere, value=1)
+    set_bottom_border(row=everywhere, col=everywhere, value=0) %>%
+    set_bottom_border(row=2, col=everywhere, value=1) %>%
+    set_bottom_border(row=where(know_tbl$names=='Latinx')+2,
+                      col=everywhere, value=1) %>%
+    set_top_border(row=everywhere, col=everywhere, value=0) %>%
+    set_top_border(row=1, col=everywhere, value=1) %>%
+    set_caption('Estimated coefficients predicting knowledge and acquaintances in selected multiethnic communities') %>%
+    set_label('tab:knowledge') 
+
 know_tbl
 cat(to_latex(know_tbl), file='tables/knowledge.tex')
+
+tbltxt <- readLines('tables/knowledge.tex')
+tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
+tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
+tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
+writeLines(tbltxt, 'tables/knowledge.tex')
+
 ```
 
 ```{r consider-analysis}
@@ -155,7 +164,7 @@ nc_tbl <- nc_tbl[
     insert_row(c('','Herndon','','Germantown','','Wheaton',''), after=0) %>%
     merge_cells(1:1,2:3) %>% merge_cells(1:1,4:5) %>% merge_cells(1:1,6:7) %>%
     set_align(1, everywhere, 'center') %>%
-    set_bottom_border(row=1,col=everywhere, value=0) %>%
+    set_bottom_border(row=1,col=everywhere, value=1) %>%
     set_top_border(row=2,col=everywhere, value=0)
 nc_tbl[2,] <- c('',sapply(rep(c(1,2),3),function(x) paste0('(',x,')')))
 nc_tbl
