@@ -11,7 +11,26 @@ nhd.model <- function(nhd, dim, model) {
     return(with(dcassvy, svyglm(f, family=binomial)))
 }
 
+srch.mean <- function(nhd, dim) {
+    x <- paste0('nhd.srch.', nhd, '.', dim)
+    sum <- summary(
+        MIcombine(with(dcassvy, svymean(as.formula(paste0('~',x))))))
+    return(sum$results[2])
+}
+
 quad.nhoods <- c('herndon', 'germantown', 'wheaton')
+
+## Calculate averages of each dimension for each community and report to 
+## LaTeX commands
+dk_means <- sapply(quad.nhoods, srch.mean, 'dk')
+ff_means <- sapply(quad.nhoods, srch.mean, 'ff')
+cons_means <- sapply(quad.nhoods, srch.mean, 'cons')
+nc_means <- sapply(quad.nhoods, srch.mean, 'nc')
+
+texcmds[paste0('dk', quad.nhoods)] <- round(dk_means, 2) * 100
+texcmds[paste0('ff', quad.nhoods)] <- round(ff_means, 2) * 100
+texcmds[paste0('cons', quad.nhoods)] <- round(cons_means, 2) * 100
+texcmds[paste0('nc', quad.nhoods)] <- round(nc_means, 2) * 100
 
 ## Don't Know
 m1_dk <- lapply(quad.nhoods, nhd.model, 'dk', m1)
