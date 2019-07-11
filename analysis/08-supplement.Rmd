@@ -82,3 +82,88 @@ ff_sup <- lapply(quad.nhoods, ff_out)
 # dcas$state[dcas$state=='51'] <- 'Virginia'
 # dcas$state <- factor(dcas$state)
 ```
+
+
+## AIC of Knowledge & Consideration Models
+```{r aic-know-consider}
+m4_srch <- sub('dem\\.race \\+ ','', m3_srch)
+
+## Don't Know
+m4_dk <- lapply(quad.nhoods, nhd.model, 'dk', m4_srch)
+names(m4_dk) <- quad.nhoods
+m4_dk <- lapply(m4_dk, MIcombine_aic)
+
+## Friends & Family 
+m4_ff <- lapply(quad.nhoods, nhd.model, 'ff', m4_srch)
+names(m4_ff) <- quad.nhoods
+m4_ff <- lapply(m4_ff, MIcombine_aic)
+
+## Seriously Consider
+m4_con <- lapply(quad.nhoods, nhd.model, 'cons', m4_srch)
+names(m4_con) <- quad.nhoods
+m4_con <- lapply(m4_con, MIcombine_aic)
+
+## Never Consider
+m4_nc <- lapply(quad.nhoods, nhd.model, 'nc', m4_srch)
+names(m4_nc) <- quad.nhoods
+m4_nc <- lapply(m4_nc, MIcombine_aic)
+```
+
+```{r}
+res_m3 <- list(dk=m3_dk, ff=m3_ff, con=m3_con, nc=m3_nc)
+res_m4 <- list(dk=m4_dk, ff=m4_ff, con=m4_con, nc=m4_nc)
+
+aic.mat <- function(dim, res) {
+    vals <- as.numeric(c(
+        sapply(quad.nhoods, function(x) res_m3[[dim]][[x]]$aic[res]),
+        sapply(quad.nhoods, function(x) res_m4[[dim]][[x]]$aic[res])
+    ))
+    assign('vals',vals,.GlobalEnv)
+    if(res=='var') vals <- sqrt(vals)
+    return(vals)
+}
+
+dims <- c('dk','ff','con','nc')
+
+aics <- sapply(c('mean','var'), function(res) sapply(dims, aic.mat, res))
+res <- data.frame(matrix(t(aics), nrow=6)) %>%
+    round(2) %>%
+    cbind()
+tf <- sapply(c(2,4,6,8), function(x) res[,x] < res[,x-1])
+
+aictbl <- cbind(res[,1:2], tf[,1])
+aictbl <- cbind(aictbl, res[,3:4], tf[,2])
+aictbl <- cbind(aictbl, res[,5:6], tf[,3])
+aictbl <- cbind(aictbl, res[,7:8], tf[,4])
+aictbl[c(2,4,6), c(3,6,9,12)] <- ''
+aictbl <- cbind(as.vector(sapply(quad.nhoods, function(x) c(x, ''))), aictbl)
+names(aictbl) <- c('Community', rep(c('Full', 'Reduced', 'R < F'), 4))
+
+fname <- 'tables/supplement/aics.tex'
+print.xtable(xtable(aictbl,
+                    caption='Multiple imputation means and standard deviations of AIC values comparing full models to those not including race',
+                    align=c('l', 'l', rep('R{5.5em}', 12)),
+                    label='tab:aics'),
+             booktabs = TRUE,
+             floating.environment = 'sidewaystable',
+             caption.placement = 'top',
+             include.rownames = FALSE,
+             file = fname,
+             sanitize.text.function = identity,
+             timestamp = '')
+colsets <-  paste(
+      '& \\multicolumn{3}{c}{\\strong{Don\'t Know}}'
+    , '& \\multicolumn{3}{c}{\\strong{Friends \\& Family}}'
+    , '& \\multicolumn{3}{c}{\\strong{Seriously Consider}}'
+    , '& \\multicolumn{3}{c}{\\strong{Never Consider}} \\\\'
+)
+tbltxt <- readLines(fname)
+ruleline <- grep('toprule', tbltxt)
+tbltxt <- c(tbltxt[1:ruleline], colsets, tbltxt[(ruleline+1):length(tbltxt)])
+writeLines(tbltxt, fname)
+
+    
+
+
+
+``` 
