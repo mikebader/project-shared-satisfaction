@@ -161,9 +161,105 @@ tbltxt <- readLines(fname)
 ruleline <- grep('toprule', tbltxt)
 tbltxt <- c(tbltxt[1:ruleline], colsets, tbltxt[(ruleline+1):length(tbltxt)])
 writeLines(tbltxt, fname)
-
-    
-
-
-
 ``` 
+
+## Households with Children that Consider and Reject Communities by Race
+
+```{r}
+## Percent of race that considers & rejects communities by presence of 
+## children in household
+kids.by.race <- function(nhd, dim) {
+    f <- as.formula(paste('~nhd.srch', nhd, dim, sep='.'))
+    res <- MIcombine(with(dcassvy, svyby(f, ~kids + dem.race, svymean)))
+    res <- res$coefficients[grep('^TRUE.*TRUE$', names(res$coefficients))]
+}
+
+cons_vals <- sapply(quad.nhoods, kids.by.race, 'cons') %>%
+    round(2) * 100
+nc_vals <- sapply(quad.nhoods, kids.by.race, 'nc') %>%
+    round(2) * 100
+
+## Models of consideration and rejection interacting race and children present
+m3_kr <- gsub('I\\(kids\\*1\\) \\+|\\n\\s+', '', m4_srch, perl=TRUE) %>% 
+    paste('+ dem.race * kids')
+
+m3_conk <- lapply(quad.nhoods, nhd.model, 'cons', m3_kr)
+names(m3_conk) <- quad.nhoods
+m3_conk <- lapply(m3_conk, MIcombine_aic)
+
+m3_nck <- lapply(quad.nhoods, nhd.model, 'nc', m3_kr)
+names(m3_nck) <- quad.nhoods
+m3_nck <- lapply(m3_nck, MIcombine_aic)
+
+kr_labels <- c('Age', 'Foreign born', 'Man', 'Married', 
+               '<H.S.', 'Some college', 'B.A.', 'M.A.',
+               regression_labels[1:3], 'Child present',
+               paste(regression_labels[1:3], 'X child'))
+fname = 'tables/supplement/race-kids-interactions.tex'
+kr_tbl <- huxreg(append(m3_conk, m3_nck))
+fe_rows <- grep('^sample', kr_tbl$names)
+kr_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
+kr_tbl <- kr_tbl[-1*c(fe_rows, fe_rows+1),] %>%
+    insert_row(c('',
+                 'Seriously Consider', '', '',
+                 'Never Consider','',''), after=0) %>%
+    merge_cells(1, 2:4) %>% merge_cells(1, 5:7) %>% 
+    set_bottom_border(row=everywhere, col=everywhere, value =0) %>%
+    set_top_border(row=everywhere, col=everywhere, value=0) %>%
+    set_bottom_border(row=2, col=everywhere, value=1) %>%
+    set_top_border(row=1, col=everywhere, value=1) %>%
+    set_caption('Estimated coefficients and standard errors of model regressing consideration and rejection of communities interacting race with child presence') %>%
+    set_label('tab:racekids') 
+kr_tbl[seq(5,length(kr_labels)*2+3, 2),1] <- kr_labels
+kr_tbl <- kr_tbl[1:(nrow(kr_tbl)-3), ] %>%
+    set_bottom_border(row=final(), col=everywhere, value=1)
+kr_tbl
+
+cat(to_latex(kr_tbl), file=fname)
+
+tbltxt <- readLines(fname)
+tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
+tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
+tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
+writeLines(tbltxt, fname)
+```
+
+```{r}
+## Repeat the above WITHOUT fixed effects
+m3_kr_nofe <- sub('sample_tract \\+', '', m3_kr)
+
+m3_conk_nofe <- lapply(quad.nhoods, nhd.model, 'cons', m3_kr_nofe)
+names(m3_conk_nofe) <- quad.nhoods
+m3_conk_nofe <- lapply(m3_conk_nofe, MIcombine_aic)
+
+m3_nck_nofe <- lapply(quad.nhoods, nhd.model, 'nc', m3_kr_nofe)
+names(m3_nck_nofe) <- quad.nhoods
+m3_nck_nofe <- lapply(m3_nck_nofe, MIcombine_aic)
+
+fname = 'tables/supplement/race-kids-interactions-nofe.tex'
+kr_tbl <- huxreg(append(m3_conk_nofe, m3_nck_nofe))
+kr_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
+kr_tbl <- kr_tbl %>%
+    insert_row(c('',
+                 'Seriously Consider', '', '',
+                 'Never Consider','',''), after=0) %>%
+    merge_cells(1, 2:4) %>% merge_cells(1, 5:7) %>% 
+    set_bottom_border(row=everywhere, col=everywhere, value =0) %>%
+    set_top_border(row=everywhere, col=everywhere, value=0) %>%
+    set_bottom_border(row=2, col=everywhere, value=1) %>%
+    set_top_border(row=1, col=everywhere, value=1) %>%
+    set_caption('Estimated coefficients and standard errors of model regressing consideration and rejection of communities interacting race with child presence \\strong{without fixed effects}') %>%
+    set_label('tab:racekids') 
+kr_tbl[seq(5,length(kr_labels)*2+3, 2),1] <- kr_labels
+kr_tbl <- kr_tbl[1:(nrow(kr_tbl)-3), ] %>%
+    set_bottom_border(row=final(), col=everywhere, value=1)
+kr_tbl
+
+cat(to_latex(kr_tbl), file=fname)
+
+tbltxt <- readLines(fname)
+tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
+tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
+tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
+writeLines(tbltxt, fname)
+```
