@@ -3,11 +3,14 @@
 \usepackage{hhline}
 \usepackage{calc}
 
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\newcommand{\TK}{\strong{TK}}
+
 \title{Satisfaction and Stability of Multiethnic Neighborhoods}
 \author{Michael D.\ M.\ Bader}
 
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \input{../analysis/values_to_tex.tex}
 
 
@@ -106,7 +109,6 @@ Existing studies of satisfaction among residents measure the composition of raci
 \begin{itemize} \tightlist \item   Are groups equally satisifed living in integrated neighborhoods, and   therefore likely to stay (maintaining integration)? \end{itemize}
 
 Measuring whether residents think that the neighborhood has improved provides an additional measure of satisfaction. While satisfied residents might not feel compelled to leave, they could be more inclined to leave if they perceive less improvement in the neighborhood. Previous research shows that white perceptions of neighborhood trends diminish with increasing non-white composition. Even if whites feel satisfied living in neighborhoods, they might feel less confident that they will be satisfied in the future. If true, then whites might be enticed to leave the neighborhood more readily than neighbors of color. Again, however, existing studies do not sample \emph{multiethnic} neighborhoods.
-
 
 \subsubsection{Long-Term Stability}\label{long-term-stability}
 
@@ -251,16 +253,49 @@ Despite the relatively high levels of unfamiliarity, few differences existed bet
 
 \abouthere{Table}{tab:knowledge}
 
+\subsection{Considering Multiracial Communities in the DC Area}
+Few respondents reported being willing to seriously consider the three neighborhoods. One in ten respondents reported seriously considering Herndon with few differences between races. Table \ref{tab:consider} shows small influences of race on willingness to consider Herndon, and adding race did not improve the model's fit. 
 
+\abouthere{Table}{tab:consider}
 
+Rates of consideration were similar in the Maryland suburbs: ten percent would consider Germantown and six percent would consider Wheaton.\footnote{These values fit into the middle of the distribution of values reported in \TK\ Krysan and Bader (2007) and Bader and Krysan (2009).} Unlike in Herndon, however, race was associated with who considered the two Maryland communities. Table \ref{tab:consider} shows that Latinxs were the most likely to consider both communities; they were approximately fifteen times more likely than whites to consider Germantown and and nine times more likely than whites to consider Wheaton. Black respondents were 6.5 times more likely than whites to consider Wheaton. Adding controls strengthened the associations between consideration and race among blacks and Latinos. Controls also revealed more of a willingness among Asians to consider Germantown compared to whites, but the coefficient was not precise enough to be confident in a true underlying difference. 
 
-\subsection{Where People Would Consider Moving}\label{where-people-would-consider-moving}
+The controls reveal some patterns that explain which current residents of integrated neighborhoods would consider moving to another integrated neighborhood. Compared to native-born residents, immigrants were about a third as likely to consider Germantown and a quarter as likely to consider Wheaton; though both estimates were sufficiently imprecise to know whether a true difference exists. Households with children were less likely to consider living in Germantown and Wheaton than those without children. The estimates of both coefficients were large, but sufficiently imprecise to rule out a difference in the population at large. 
 
-\subsection{Where Would People Never Consider Moving}\label{where-would-people-never-consider-moving}
+Education did not have a straightforward relationship with the consideration of the communities. More education was generally associated with higher propensities to consider Herndon. Meanwhile, respondents with middling levels of education were those most likely to consider Germantown, and those with the least education were the most likely to consider Wheaton. Although some of these associations were large, especially those among the least educated, most were not significantly distinguishable from having no relationship at conventional levels of statistical significance. 
+
+\subsection{Rejecting Multiracial Communities in the DC Area}\label{ssec:reject}
+
+Respondents were overall more likely to reject all three multiracial communities than consider them. Among respondents, \ncherndon~percent rejected Herndon, \ncgermantown~percent rejected Germantown, and \ncwheaton~percent rejected Wheaton. While these rejection rates were two to four times higher than the rates at which respondents considered neighborhoods, the rates are on the low end of the distribution of rejection rates from previous research. 
+
+Table~\ref{tab:notconsider} reports the results of models estimating the influence of individual characteristics on the propensity to reject the three communities. Whites were more likely than people identifying with the other racial groups to reject all three communities. The difference between whites and Asians was statistically distinguishable from zero. Adding controls, however, moderated the influence of race in all cases, though the difference between whites and Asians was still significant in Wheaton after adding controls. Models with nonracial controls fit the models better, according to AIC statistics, than those with race in Herndon and Germantown. The reduced influence of race after adding controls suggests that the demographic dissimilarity of whites from people of color generally explains whites' higher rejection rates of multiracial communities. 
+
+\abouthere{Table}{tab:notconsider}
+
+Among controls, immigration and education affected rejection. Immigrants were about a quarter as likely to reject Herndon as US-born residents were. The coefficients for foreign-born respondents were also negative in the Germantown and Wheaton models, but their magnitudes were small. Respondents with a high school education (the reference group) were the most likely to reject living in the three communities. They were much more likely than those without high school degrees and only modestly more likely than those with more education (though none of the coefficients for higher levels of attainment approached statistical significance). Surprisingly, having a child present in the household did not seem to affect rejecting the communities much. Although respondents with children were more likely to reject living in all three communities, the magnitudes of the coefficients were very small.  
+
+\clearpage
 
 
 \section{Tables}
 
+\input{../analysis/tables/nhood_descriptives.tex}
+
+\input{../analysis/tables/descriptives.tex}
+
+\input{../analysis/tables/satisfaction.tex}
+
+\input{../analysis/tables/improvement.tex}
+
 \input{../analysis/tables/knowledge.tex}
+
+\input{../analysis/tables/consider.tex}
+
+\input{../analysis/tables/notconsider.tex}
+
+\input{../analysis/tables/supplement/race-kids-interactions.tex}
+
+\input{../analysis/tables/supplement/race-kids-interactions-nofe.tex}
+
 \end{document}
 
