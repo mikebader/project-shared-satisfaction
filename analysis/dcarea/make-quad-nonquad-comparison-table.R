@@ -1,7 +1,9 @@
 ## Creates table comparing demographic characteristics of multiethnic
 ## neighborhoods in DC Area to all neighborhoods in the DC Area.
 
+library(knitr)
 library(tidyverse)
+library(xtable)
 DIR <- '~/work/projects/multiethnic_nhoods/'
 DATADIR <- '~/work/data/nhgis/DCArea/tracts/2010/tabular/'
 
@@ -36,6 +38,37 @@ source('analysis/dcarea/split-violin-functions.R')
 dcarea <- lapply(vartypes, dcarea.data) %>%
     reduce(left_join, by='GISJOIN') %>%
     select('GISJOIN', ends_with('15'))
+
+## Calculate proportion of DC-area population made up each racial group
+n.hsp <- sum(dcarea$hsp15)
+n.api <- sum(dcarea$api15)
+n.nhw <- sum(dcarea$nhw15)
+n.nhb <- sum(dcarea$nhb15)
+n.totpop <- sum(dcarea$totpop15)
+
+p.hsp <- n.hsp/n.totpop
+p.api <- n.api/n.totpop
+p.nhw <- n.nhw/n.totpop
+p.nhb <- n.nhb/n.totpop
+
+dcarea.race <- data.frame(
+    race=c('Latinx','Asian','Non-Hispanic white', 'Non-Hispanic black'),
+    vals=c(p.hsp, p.api, p.nhw, p.nhb))
+kable(dcarea.race,
+      caption='Percent of DC-area made up of each racial group')
+
+## Calculate percentage of residents that are foreign-born in DC area
+print('Percent foreign-born:')
+print(sum(dcarea$fbpop15)/sum(dcarea$totpop15))
+
+## Report largest three countries of origin in DC area
+source('analysis/dcarea/report-countries-of-origin.R')
+
+## Report percentage of U.S. and DC-area residents with BA or graduate
+## degrees by foreign-born status
+source('analysis/dcarea/report-educ-by-foreign-born.R')
+kable(fbeduc.comp,
+      caption='Percent of foreign-born residents in DC area and US with college degrees')
 
 ## Construct variables for analytic table, and keep only those variables
 dcarea <- dcarea %>% mutate(
