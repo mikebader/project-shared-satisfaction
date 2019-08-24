@@ -40,6 +40,17 @@ dcarea <- lapply(vartypes, dcarea.data) %>%
     select('GISJOIN', ends_with('15'))
 
 ## Calculate proportion of DC-area population made up each racial group
+## In 1980
+fname <- paste(DATADIR, '../..', '1980/tabular/race-ethnicity/dataset',
+                'tracts-1980TIGER-race-ethnicity.csv', sep='/')
+dcarea80 <- read.csv(fname)
+dcarea80 <- sapply(dcarea80[,c('totpop', 'nhw','nhb','hsp','api')], sum)
+print('Per')
+prace80 <- round(sapply(dcarea80[2:5], function(x) x/dcarea80[1]),3)*100
+kable(prace80,
+      caption='Percentage of DC-area residents in each racial group')
+
+## In 2010
 n.hsp <- sum(dcarea$hsp15)
 n.api <- sum(dcarea$api15)
 n.nhw <- sum(dcarea$nhw15)
