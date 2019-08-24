@@ -70,6 +70,11 @@ source('analysis/dcarea/report-educ-by-foreign-born.R')
 kable(fbeduc.comp,
       caption='Percent of foreign-born residents in DC area and US with college degrees')
 
+## Report number of people living in multiracial neighborhoods
+quadpop <- sum(dcarea[dcarea$quad15==TRUE, 'totpop15'], na.rm=TRUE)
+print('Number of people living in multiracial neighborhoods:')
+quadpop
+
 ## Construct variables for analytic table, and keep only those variables
 dcarea <- dcarea %>% mutate(
     ## Children present in HH
@@ -96,7 +101,7 @@ dcarea <- dcarea %>% mutate(
     race.pnhb = pnhb15 * 100,
     race.pnhw = pnhw15 * 100
 ) %>%
-    select(GISJOIN, pchildpres, pfborn, pmarried, mdage15,
+    select(GISJOIN, totpop15, pchildpres, pfborn, pmarried, mdage15,
            starts_with('peduc'), starts_with('race'), quad15)
 
 ## CONSTRUCT TABLE
