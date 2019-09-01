@@ -3,19 +3,21 @@ library(prediction)
 ## get.margins; fit = single fitted model
 ## Returns AMEs, margins and fitted values whites on the link scale for
 ## a fitted model
-get.margins <- function(fit) {
+get.margins <- function(i, modelset) {
     res <- list()
+    fit <- modelset[[i]]
+    des <- dcassvy$designs[[i]]
 
     ## Set baseline data to everyone being white
     d0 <- fit$data
     d0$dem.race <- 'white'
 
     ## Predict outcome on link scale when all respondents are white
-    pred0 <- prediction(fit, data=d0, type='link')
+    pred0 <- prediction(fit, data=d0, design=des, type='link')
 
     ## Calculate marginal effects on link scale for other races
-    m <- margins(fit, variables='dem.race', data=des$variables,
-                 design=des, type='link')
+    m <- margins(fit, variables='dem.race', data=des$variables, type='link',
+                 design=des)
     ame <- summary(m)
     ame$V <- ame$SE^2
 
@@ -36,7 +38,7 @@ get.predictions <- function(res) {
     fitted <- data.frame(white=rep(0,N),
                          mlink[grep('^dydx_', names(mlink))])
     mprobs <- sapply(fitted, function(x) {
-        stats::weighted.mean(plogis(x+pred0$fitted), w=des$variables$weight)
+        stats::weighted.mean(plogis(x+pred0$fitted), w=mlink[['_weights']])
     })
     names(mprobs) <- gsub('^dydx_dem\\.race','',names(mprobs))
     return(mprobs)
@@ -51,14 +53,14 @@ calculate.pvals <- function(amelist) {
     AMEs <- lapply(amelist, function(x) x$ame)
     pwide <- as.data.frame(AMEs)
 
-    AME.cols <- grep('AME$', names(pwide))
-    V.cols <- grep('V$', names(pwide))
+    AME.cols <- grep('AME', names(pwide))
+    V.cols <- grep('V', names(pwide))
 
     # pwide$dem.race <- sub('dem\\.race','', pwide[,1])
     pwide$AMEmi <- apply(pwide[, AME.cols], 1, mean)
     pwide$Vin <- apply(pwide[, V.cols], 1, mean)
-    pwide$Vbn <- (1/length(modelset))*apply((pwide[, V.cols]-pwide$Vin)^2, 1, sum)
-    pwide$Vmi <- pwide$Vin + (1 + (1/length(modelset)))*pwide$Vbn
+    pwide$Vbn <- (1/length(amelist))*apply((pwide[, V.cols]-pwide$Vin)^2, 1, sum)
+    pwide$Vmi <- pwide$Vin + (1 + (1/length(amelist)))*pwide$Vbn
     pwide$pmi <- pnorm(abs(pwide$AMEmi/sqrt(pwide$Vmi)), lower.tail = FALSE)*2
 
     res$AME_link <- pwide[, c('AMEmi','Vin','Vbn','Vmi','pmi')]

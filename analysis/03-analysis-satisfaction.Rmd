@@ -108,7 +108,7 @@ MIcombine_aic <- function(m) { ## Combines imputations, including AIC
 
 ```{r define-models}
 m1 <- 'dem.race + sample_tract '
-m2 <- paste0(m1, '+ age + I(forborn*1) + I(man*1) + I(kids*1) + I(married*1) +
+m2 <- paste0(m1, '+ age + forborn + man + kids + married +
                  educ')
 m3 <- paste0(m2, '+ nhdyrs + nhdsize')
 m4 <- sub('dem\\.race \\+ ','',m3)
@@ -146,38 +146,59 @@ texcmds[['nhwsatisfied']] <- round(satisfied_byrace[['white']])
 
 
 ```{r satisfied-analysis, warning=FALSE, results='hide'}
+## Satisfaction Model 0: Only fixed effects (not reported)
 m0_sat <- with(dcassvy,
                svyglm(satisfied ~ sample_tract), family=binomial)
 m0_sat <- MIcombine_aic(m0_sat)
 
+## Satisfaction Model 1: Race & Fixed Effects
 m1_sat <- with(dcassvy,
                svyglm(as.formula(paste('satisfied ~',m1)), family=binomial))
+m1_sat_ame <- lapply(seq_along(m1_sat), get.margins, m1_sat) %>%
+    calculate.pvals() 
+ame_names <- paste0('satame1',c('api','black','latino'))
+texcmds[ame_names] <- round(abs(m1_sat_ame$AME_link$AMEmi),3)*100
+
 sat_pred_m1 <- MIpredict(m1_sat)
 sat_pred_m1$race <- levels(dcas$dem.race)
 sat_pred_m1$model <- 'Race only'
+
 m1_sat <- MIcombine_aic(m1_sat)
 
+## Satisfaction Model 2: Race & Demographic Controls (not reported)
 m2_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m2)),
                                family=binomial))
 m2_sat <- MIcombine_aic(m2_sat)
 
+## Satisfaction Model 3: Full Model
 m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)), 
                                family=binomial))
+m3_sat_ame <- lapply(seq_along(m3_sat), get.margins, m3_sat) %>%
+    calculate.pvals()
+ame_names <- paste0('satame3',c('api','black','latino'))
+texcmds[ame_names] <- round(abs(m3_sat_ame$AME_link$AMEmi),3)*100
+
+## Report values of Wald test of change in model fit for model 
+## not including race
 m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
 sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
 sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
 texcmds[['satWaldF']] <- round(sat_wald_F['Mean'], 2)[[1]]
 texcmds[['satWaldpMin']] <- round(sat_wald_p['Min.'], 2)[[1]]
 texcmds[['satWaldpMax']] <- round(sat_wald_p['Max.'], 2)[[1]]
+
 sat_pred_m3 <- MIpredict(m3_sat)
 sat_pred_m3$race <- levels(dcas$dem.race)
 sat_pred_m3$model <- 'Race + controls'
+
 m3_sat <- MIcombine_aic(m3_sat)
 texcmds[['satnhdsize']] <- round(exp(coef(m3_sat)['nhdsize10-50 blocks']),2)[[1]]
 
+## Satisfaction Model 4: Full Model Without Race
 m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
-                               family=binomial))
+                                family=binomial))
 m4_sat <- MIcombine_aic(m4_sat)
+
 ```
 
 ```{r report-satisfaction-results, echo=TRUE, include=TRUE}
@@ -197,28 +218,21 @@ cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
 ```
 
 ```{r plot-satisfaction}
-sat_pred <- rbind(sat_pred_m1, sat_pred_m3)
-sat_pred$model <- relevel(factor(sat_pred$model), ref='Race only')
-sat_pred$x <- c(seq(2,4.25,.75), seq(7,9.25,.75))
-sat_pred$x <- rep(1:4,2)
-sat_plt <- ggplot(sat_pred, aes(x=x, y=P)) + 
-    geom_point() +
-    geom_errorbar(aes(ymin=lci, ymax=uci), width=0.25) +
-    # annotate(geom='text', x=c(3.125,8.125), y=1.05, 
-    #          label=c('Race only', 'Race + controls'), size=4) +
-    facet_grid(.~model) +
-    scale_x_continuous(breaks=sat_pred$x, label=sat_pred$race) +
-    # scale_x_continuous(limits=c(.5,11), breaks=sat_pred$x, label=sat_pred$race,
-    #                    minor_breaks = c()) +
-    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.2)) +
-    # theme_bw() +
-    labs(y='Proportion satisfied in neighborhood', x='Race') +
-    theme(panel.spacing.x = unit(2.5,'lines'))
+
+sat_plt <- plot.predictions(sat_pred_m1, sat_pred_m3) +
+    theme_bw() + theme(legend.position='none')
+
 sat_plt
 ggsave('images/satisfied.png', plot=sat_plt, 
-       height=3, width=4, units='in')
-diff_m1 <- max(sat_pred_m1['P']) - min(sat_pred_m1['P'])
+       width=6.75, units='in')
+```
+
+
+```{r ame-satisfaction}
+
+
+diff_m1 <- max(sat_pred_m1['p']) - min(sat_pred_m1['p'])
 texcmds[['maxdiffone']] <- round(diff_m1,2)*100
-diff_m3 <- max(sat_pred_m3['P']) - min(sat_pred_m3['P'])
+diff_m3 <- max(sat_pred_m3['p']) - min(sat_pred_m3['p'])
 texcmds[['maxdiffthree']] <- round(diff_m3,2)*100
 ```
