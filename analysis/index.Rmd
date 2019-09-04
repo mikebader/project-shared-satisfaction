@@ -1,5 +1,6 @@
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
+
 ```
 
 ```{r libraries, message=FALSE}
@@ -10,6 +11,7 @@ library(broom)
 library(ggplot2)
 library(huxtable)
 library(knitr)
+library(margins)
 library(mitools)
 library(survey)
 library(tidyverse)
