@@ -145,11 +145,22 @@ writeLines(gsub('\\\\~\\{\\}', '~', txt), 'tables/knowledge2.tex')
 ```{r consider-analysis}
 m1_con <- lapply(quad.nhoods, nhd.model, 'cons', m1)
 names(m1_con) <- quad.nhoods
+m1_con_ame <- lapply(m1_con, function(x) calculate.pvals(lapply(seq_along(x), get.margins, x)))
 m1_con_pred <- lapply(m1_con, MIpredict)
 m1_con <- lapply(m1_con, MIcombine_aic)
+texcmds[['conameonelatinogerman']] <- round(
+    m1_con_ame$germantown$AME_resp[['latino']], 2)*100
+texcmds[['conameonelatinowheaton']] <- round(
+    m1_con_ame$wheaton$AME_resp[['latino']], 2)*100
+texcmds[['conameoneblackwheaton']] <- round(
+    m1_con_ame$wheaton$AME_resp[['black']], 2)*100
+texcmds[['conameoneblackwheatonp']] <- round(
+    m1_con_ame$wheaton$AME_link$pmi[2], 3)
+
 
 m3_con <- lapply(quad.nhoods, nhd.model, 'cons', m3_srch)
 names(m3_con) <- quad.nhoods
+m3_con_ame <- lapply(m3_con, function(x) calculate.pvals(lapply(seq_along(x), get.margins, x)))
 m3_con_pred <- lapply(m3_con, MIpredict)
 m3_con <- lapply(m3_con, MIcombine_aic)
 ```
@@ -157,7 +168,7 @@ m3_con <- lapply(m3_con, MIcombine_aic)
 ```{r report-consider-results}
 ## Label lives in community variable to be the same across models
 fname <- 'tables/consider.tex'
-    cons_labels <- regression_labels[1:(length(regression_labels)-3)]
+cons_labels <- regression_labels[1:(length(regression_labels)-3)]
 cons_tbl <- report_models(m1_con$herndon, m3_con$herndon, 
                           m1_con$germantown, m3_con$germantown,
                           m1_con$wheaton, m3_con$wheaton, 

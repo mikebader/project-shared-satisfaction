@@ -73,6 +73,8 @@ texcmds[ame_names] <- round(abs(m1_sat_ame$AME_link$AMEmi),3)*100
 sat_pred_m1 <- MIpredict(m1_sat)
 sat_pred_m1$race <- levels(dcas$dem.race)
 sat_pred_m1$model <- 'Race only'
+texcmds[['satmaxdiffone']] <- round(
+    max(sat_pred_m1$p) - min(sat_pred_m1$p), 2)*100
 
 m1_sat <- MIcombine_aic(m1_sat)
 
@@ -101,6 +103,8 @@ texcmds[['satWaldpMax']] <- round(sat_wald_p['Max.'], 2)[[1]]
 sat_pred_m3 <- MIpredict(m3_sat)
 sat_pred_m3$race <- levels(dcas$dem.race)
 sat_pred_m3$model <- 'Race + controls'
+texcmds[['satmaxdiffthree']] <- round(
+    max(sat_pred_m3$p) - min(sat_pred_m3$p), 2)*100
 
 m3_sat <- MIcombine_aic(m3_sat)
 texcmds[['satnhdsize']] <- round(exp(coef(m3_sat)['nhdsize10-50 blocks']),2)[[1]]

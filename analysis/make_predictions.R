@@ -11,12 +11,16 @@ get.margins <- function(i, modelset) {
     ## Set baseline data to everyone being white
     d0 <- fit$data
     d0$dem.race <- 'white'
+    # d0$sample_tract <- '51059452600'
 
     ## Predict outcome on link scale when all respondents are white
     pred0 <- prediction(fit, data=d0, design=des, type='link')
 
     ## Calculate marginal effects on link scale for other races
-    m <- margins(fit, variables='dem.race', data=des$variables, type='link',
+    dta <- des$variables
+    dta$sample_tract <- '51059452600'
+
+    m <- margins(fit, variables='dem.race', data=dta, type='link',
                  design=des)
     ame <- summary(m)
     ame$V <- ame$SE^2

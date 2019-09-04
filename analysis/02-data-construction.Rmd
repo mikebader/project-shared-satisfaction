@@ -12,6 +12,7 @@ vars <- c(
           , 'educ'
           , 'nhdyrs'
           , 'nhdsize'
+          , 'inc'
 )
 load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
 racecomp <- paste0('pct', c('nhw','api','nhb','lat'))

@@ -3,7 +3,7 @@
 ```{r improvement-mean}
 mean_improved <- MIcombine(with(dcassvy, svymean(~better)))
 improved_byrace <- MIcombine(
-    with(dcassvy, svyby(~better, dem.race, svymean))) %>%
+    with(dcassvy, svyby(~better, ~dem.race, svymean))) %>%
     coef() %>% round(2)*100
 texcmds[['meanimproved']] <- round(coef(mean_improved), 2)[[1]]*100
 ```
@@ -42,7 +42,7 @@ m3_bet <- with(dcassvy,
                       family=binomial))
 m3_bet_ame <- lapply(seq_along(m3_bet), get.margins, m3_bet) %>%
     calculate.pvals()
-ame_names <- paste0('betamethr',c('api','black','latino'))
+ame_names <- paste0('betamethree',c('api','black','latino'))
 texcmds[ame_names] <- round(abs(m3_bet_ame$AME_link$AMEmi),3)*100
 
 ## Report values of Wald test of change in model fit for model 
@@ -58,9 +58,6 @@ bet_pred_m3$race <- levels(dcas$dem.race)
 bet_pred_m3$model <- 'Race + controls'
 
 m3_bet <- MIcombine_aic(m3_bet)
-texcmds[['apibetter']] <- round(exp(coef(m3_bet)['dem.raceapi']),2)[[1]]
-texcmds[['nhbbetter']] <- round(exp(coef(m3_bet)['dem.raceblack']),2)[[1]]
-texcmds[['hspbetter']] <- round(exp(coef(m3_bet)['dem.racelatino']),2)[[1]]
 
 ## Satisfaction Model 4: Full Model Without Race
 m4_bet <- with(dcassvy,
