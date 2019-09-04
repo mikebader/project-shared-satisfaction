@@ -156,7 +156,7 @@ m1_sat <- with(dcassvy,
                svyglm(as.formula(paste('satisfied ~',m1)), family=binomial))
 m1_sat_ame <- lapply(seq_along(m1_sat), get.margins, m1_sat) %>%
     calculate.pvals() 
-ame_names <- paste0('satame1',c('api','black','latino'))
+ame_names <- paste0('satameone',c('api','black','latino'))
 texcmds[ame_names] <- round(abs(m1_sat_ame$AME_link$AMEmi),3)*100
 
 sat_pred_m1 <- MIpredict(m1_sat)
@@ -175,7 +175,7 @@ m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)),
                                family=binomial))
 m3_sat_ame <- lapply(seq_along(m3_sat), get.margins, m3_sat) %>%
     calculate.pvals()
-ame_names <- paste0('satame3',c('api','black','latino'))
+ame_names <- paste0('satamethree',c('api','black','latino'))
 texcmds[ame_names] <- round(abs(m3_sat_ame$AME_link$AMEmi),3)*100
 
 ## Report values of Wald test of change in model fit for model 

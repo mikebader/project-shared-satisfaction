@@ -19,6 +19,7 @@ srch.mean <- function(nhd, dim) {
 }
 
 quad.nhoods <- c('herndon', 'germantown', 'wheaton')
+Quad.Nhoods <- c('Herndon', 'Germantown', 'Wheaton')
 
 ## Calculate averages of each dimension for each community and report to 
 ## LaTeX commands
@@ -56,34 +57,88 @@ m3_ff <- lapply(m3_ff, MIcombine_aic)
 ```
 
 ```{r report-familiarity-results, echo=TRUE, include=TRUE}
-fname <- 'tables/knowledge.tex'
-know_tbl <- huxreg(append(m3_dk, m3_ff))
-know_tbl[seq(4,9,2),1] <- regression_labels[1:3]
-know_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
-know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
-    insert_column(rep('',10),after=4) %>%
-    insert_row(c('',
-                 'Don\'t know', '', '', '',
-                 'Friends and family','',''), after=0) %>%
-    merge_cells(c(1:1),c(2:4)) %>% merge_cells(c(1:1),c(6:8)) %>%
-    set_align(1, everywhere, 'center') %>%
-    set_bottom_border(row=everywhere, col=everywhere, value=0) %>%
-    set_bottom_border(row=2, col=everywhere, value=1) %>%
-    set_bottom_border(row=where(know_tbl$names=='Latinx')+2,
-                      col=everywhere, value=1) %>%
-    set_top_border(row=everywhere, col=everywhere, value=0) %>%
-    set_top_border(row=1, col=everywhere, value=1) %>%
-    set_caption('Estimated coefficients predicting knowledge and acquaintances in selected multiethnic communities') %>%
-    set_label('tab:knowledge') 
+know_tbl <- report_models(m3_dk[[1]], m3_dk[[2]], m3_dk[[3]],
+                         reglabels=regression_labels,
+                         caption='Estimated coefficients predicting unfamiliarity with selected multiethnic communities',
+                         label='tab:knowledge')
+
+rmv <- grep('Neighborhood perceptions|>50 blocks', know_tbl$names, perl=TRUE)
+
+know_tbl[1, ] <-c('','Herndon','~~~~Germantown','~~~~~~Wheaton')
+insert_column(know_tbl, after=2, rep(' ', nrow(know_tbl)))
+know_tbl <- know_tbl[-1*seq(from=rmv[1], to=rmv[2])] %>%
+    # insert_row(c('','Herndon','Germantown','Wheaton'), after=0) %>%
+    set_bottom_border(row=1,col=everywhere, value=1) %>%
+    set_bottom_border(row=final(1), col=everywhere, value=1) %>%
+    # set_top_border(row=2,col=everywhere, value=0) %>%
+    set_left_padding(row=1, col=final(2), value=15)
 
 know_tbl
-cat(to_latex(know_tbl), file=fname)
+cat(to_latex(know_tbl), file='tables/knowledge.tex')
 
-tbltxt <- readLines(fname)
-tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
-tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
-tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
-writeLines(tbltxt, fname)
+## Replace LaTeX formatted tildas with unformatted tildas to reduce
+## crowding of text in first row of table
+txt <- readLines('tables/knowledge.tex')
+writeLines(gsub('\\\\~\\{\\}', '~', txt), 'tables/knowledge2.tex')
+```
+
+
+
+
+
+
+
+
+
+```{r}
+# know_tbl[1, 2:4] <- Quad.Nhoods
+# 
+# ## Remove rows labeling neighborhood perception data
+# rmv <- c(which(know_tbl$names=='Neighborhood perceptions')) %>%
+#     append(as.vector(
+#         unique(sapply(c(0,1), function(x) {
+#             which(know_tbl$names %in% c('Years in neighborhood', 
+#                                         '10-50 blocks', '>50 blocks'))+x
+# }))))
+# know_tbl <- know_tbl[-rmv, ] 
+# know_tbl <- set_bottom_border(know_tbl,
+#     row=nrow(know_tbl)-1, col=everywhere, value=1) %>%
+#     set_col_width(2:4, '12')
+# know_tbl
+# 
+# know_tbl <- set_align(know_tbl, row=everywhere, col=2:4, value='right')
+# 
+# cat(to_latex(know_tbl), file='tables/knowledge.tex')
+# 
+# 
+# 
+# know_tbl <- huxreg(append(m3_dk, m3_ff))
+# know_tbl[seq(4,9,2),1] <- regression_labels[1:3]
+# know_tbl[1,] <- c('', rep(c('\tHerndon', '   German.','   Wheaton'), 2))
+# know_tbl <- know_tbl[c(1:9, nrow(know_tbl)),] %>%
+#     insert_column(rep('',10),after=4) %>%
+#     insert_row(c('',
+#                  'Don\'t know', '', '', '',
+#                  'Friends and family','',''), after=0) %>%
+#     merge_cells(c(1:1),c(2:4)) %>% merge_cells(c(1:1),c(6:8)) %>%
+#     set_align(1, everywhere, 'center') %>%
+#     set_bottom_border(row=everywhere, col=everywhere, value=0) %>%
+#     set_bottom_border(row=2, col=everywhere, value=1) %>%
+#     set_bottom_border(row=where(know_tbl$names=='Latinx')+2,
+#                       col=everywhere, value=1) %>%
+#     set_top_border(row=everywhere, col=everywhere, value=0) %>%
+#     set_top_border(row=1, col=everywhere, value=1) %>%
+#     set_caption('Estimated coefficients predicting knowledge and acquaintances in selected multiethnic communities') %>%
+#     set_label('tab:knowledge') 
+# 
+# know_tbl
+# cat(to_latex(know_tbl), file=fname)
+# 
+# tbltxt <- readLines(fname)
+# tbltxt <- gsub('\\{table\\}', '{sidewaystable}', tbltxt)
+# tbltxt <- gsub('\\multicolumn\\{1\\}\\{c', '\\multicolumn{1}{R{6.25em}', tbltxt)
+# tbltxt <- gsub('\\\\centering\\s+([H|G|W|\\\\])','\\1',tbltxt)
+# writeLines(tbltxt, fname)
 
 ```
 
@@ -160,4 +215,12 @@ nc_tbl <- nc_tbl[
 nc_tbl[2,] <- c('',sapply(rep(c(1,2),3),function(x) paste0('(',x,')')))
 nc_tbl
 cat(to_latex(nc_tbl), file=fname)
+```
+
+
+```{r}
+writeLines(sapply(names(texcmds), function(x) paste0(
+    '\\newcommand{\\', x, '}{', texcmds[x], '}')
+    ), con='values_to_tex.tex')
+
 ```

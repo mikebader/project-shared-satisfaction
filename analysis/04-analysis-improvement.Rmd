@@ -3,46 +3,66 @@
 ```{r improvement-mean}
 mean_improved <- MIcombine(with(dcassvy, svymean(~better)))
 improved_byrace <- MIcombine(
-    with(dcassvy, svyby(~better, ~I(dem.race), svymean))) %>%
+    with(dcassvy, svyby(~better, dem.race, svymean))) %>%
     coef() %>% round(2)*100
 texcmds[['meanimproved']] <- round(coef(mean_improved), 2)[[1]]*100
 ```
 
 ```{r improvement-analysis, warning=FALSE, results='hide'}
+## Improvement Model 0: Only fixed effects (not reported)
 m0_bet <- with(dcassvy,
                svyglm(better ~ sample_tract), family=binomial)
 m0_bet <- MIcombine_aic(m0_bet)
 
+## Improvement Model 1: Race & Fixed Effects
 m1_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~', m1)), 
                       family=binomial))
+
+m1_bet_ame <- lapply(seq_along(m1_bet), get.margins, m1_bet) %>%
+    calculate.pvals() 
+ame_names <- paste0('betameone',c('api','black','latino'))
+texcmds[ame_names] <- round(abs(m1_bet_ame$AME_link$AMEmi),3)*100
+
 bet_pred_m1 <- MIpredict(m1_bet)
 bet_pred_m1$race <- levels(dcas$dem.race)
 bet_pred_m1$model <- 'Race only'
+
 m1_bet <- MIcombine_aic(m1_bet)
 
+## Improvement Model 2: Race & Demographic Controls (not reported)
 m2_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~', m2)),
                       family=binomial))
 m2_bet <- MIcombine_aic(m2_bet)
 
+## Satisfaction Model 3: Full Model
 m3_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~', m3)),
                       family=binomial))
+m3_bet_ame <- lapply(seq_along(m3_bet), get.margins, m3_bet) %>%
+    calculate.pvals()
+ame_names <- paste0('betamethr',c('api','black','latino'))
+texcmds[ame_names] <- round(abs(m3_bet_ame$AME_link$AMEmi),3)*100
+
+## Report values of Wald test of change in model fit for model 
+## not including race
 m3_bet_racewald <- lapply(m3_bet, regTermTest, test.terms=~dem.race, df=NULL)
 bet_wald_F <- summary(sapply(m3_bet_racewald, function(x) x$Ftest))
 bet_wald_p <- summary(sapply(m3_bet_racewald, function(x) x$p))
 texcmds[['betWaldF']] <- round(bet_wald_F['Mean'], 2)[[1]]
 texcmds[['betWaldp']] <- round(bet_wald_p['Mean'], 2)[[1]]
+
 bet_pred_m3 <- MIpredict(m3_bet)
 bet_pred_m3$race <- levels(dcas$dem.race)
 bet_pred_m3$model <- 'Race + controls'
+
 m3_bet <- MIcombine_aic(m3_bet)
 texcmds[['apibetter']] <- round(exp(coef(m3_bet)['dem.raceapi']),2)[[1]]
 texcmds[['nhbbetter']] <- round(exp(coef(m3_bet)['dem.raceblack']),2)[[1]]
 texcmds[['hspbetter']] <- round(exp(coef(m3_bet)['dem.racelatino']),2)[[1]]
 
-
+## Satisfaction Model 4: Full Model Without Race
 m4_bet <- with(dcassvy,
                svyglm(as.formula(paste('better ~ ', m4)),
                       family=binomial))
@@ -60,19 +80,10 @@ cat(to_latex(bet_tbl), file='tables/improvement.tex')
 ```
 
 ```{r plot-improvement}
-bet_pred <- rbind(bet_pred_m1, bet_pred_m3)
-bet_pred$model <- relevel(factor(bet_pred$model), ref='Race only')
-bet_pred$x <- c(seq(2,4.25,.75), seq(7,9.25,.75))
-bet_pred$x <- rep(1:4,2)
-bet_plt <- ggplot(bet_pred, aes(x=x, y=P)) + 
-    geom_point() +
-    geom_errorbar(aes(ymin=lci, ymax=uci), width=0.25) +
-    facet_grid(.~model) +
-    scale_x_continuous(breaks=sat_pred$x, label=sat_pred$race) +
-    scale_y_continuous(limits=c(0,1), breaks=seq(0,1,.2)) +
-    labs(y='Proportion', x='Race') +
-    theme(panel.spacing.x = unit(2.5,'lines'))
+bet_plt <- plot.predictions(bet_pred_m1, bet_pred_m3) +
+    theme_bw() + theme(legend.position='none')
+
 bet_plt
 ggsave('images/improvement.png', plot=bet_plt, 
-       height=3, width=4, units='in')
+       width=6.75, units='in')
 ```
