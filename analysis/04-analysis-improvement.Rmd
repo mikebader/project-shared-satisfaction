@@ -43,7 +43,8 @@ m3_bet <- with(dcassvy,
 m3_bet_ame <- lapply(seq_along(m3_bet), get.margins, m3_bet) %>%
     calculate.pvals()
 ame_names <- paste0('betamethree',c('api','black','latino'))
-texcmds[ame_names] <- round(abs(m3_bet_ame$AME_link$AMEmi),3)*100
+texcmds[ame_names] <- round(
+    abs(m3_bet_ame$AME_resp[c('api','black','latino')]),2)*100
 
 ## Report values of Wald test of change in model fit for model 
 ## not including race

@@ -155,7 +155,7 @@ texcmds[['conameonelatinowheaton']] <- round(
 texcmds[['conameoneblackwheaton']] <- round(
     m1_con_ame$wheaton$AME_resp[['black']], 2)*100
 texcmds[['conameoneblackwheatonp']] <- round(
-    m1_con_ame$wheaton$AME_link$pmi[2], 3)
+    m1_con_ame$wheaton$AME_link$pmi[2], 2)
 
 
 m3_con <- lapply(quad.nhoods, nhd.model, 'cons', m3_srch)
