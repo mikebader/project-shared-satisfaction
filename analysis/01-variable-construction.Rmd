@@ -1,48 +1,67 @@
 # Data
-```{r subset-data}
-rm(list=ls())
+
+Data for this manuscript come from the 2016 DC Area Survey. More information about the 2016 DC Area Survey can be found [here](http://bit.ly/dcas2016).
+
+```{r load-data}
 dataDIR <- '~/work/data/dcas/dcas2016/'
 load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
-texcmds <- list()
 
+```
+
+## Variable Construction
+
+### Respondents Living in Multiracial Neighborhoods
+
+The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable `quad` to represent these variables ('quad' comes from my [previous description](http://bit.ly/nhoodTrajPaper) of stable multiracial neighborhoods as 'quadrivial neighborhoods').
+
+**///////**
+
+**NOTE: NEED TO SUBSET DATA USING SURVEY COMMAND**
+
+**///////**
+
+```{r subset-data}
 dcas$quad <- dcas$neighborhood=='Global Neighborhood'
 table(dcas[,c('neighborhood','quad')])
 N_norace <- sum(is.na(dcas$dem.race) & dcas$quad==TRUE)
 dcas <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE,]
 dcas$sample_tract <- droplevels(dcas$sample_tract)
-# dcas$sample_tract <- relevel(dcas$sample_tract, ref="51059452600")
 N_quad <- length(dcas$studycase)
 N <- sum(!is.na(dcas$dem.race))
 texcmds[['N']] <- N
 ```
 
 
-```{r quad-all-comparison}
-source('dcarea/make-quad-nonquad-comparison-table.R')
-```
+### Dependent Variables
 
-```{r quad-table, echo=TRUE, include=TRUE}
-kable(quad_tbl, row.names = FALSE)
-```
-
-```{r dependent-variables}
+**Neighborhood Satisfaction.** Create neighborhood satisfaction variable (`satisfied`) to represent responses of "Extremely Satisfied" or "Very Satisfied". Check that the variable was created correctly.
+```{r variables-satisfied}
 dcas$satisfied <- dcas$nhd.satisfaction %in% c(
                        'Extremely satisfied','Very satisfied')*1
 table(dcas[, c('nhd.satisfaction','satisfied')])
-dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
-table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
 
+## Extremely satisfied (not used in the analysis)
+# dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
+# table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
+
+```
+
+**Neighborhood improvement.** Create variable (`better`) measuring whether respondent perceives that the neighborhood has improved. Include responses "Much better" and "Somewhat better". Check that variable was created correctly.
+```{r variables-better}
 dcas$better <- dcas$nhd.change %in% c(
                        'Much better', 'Somewhat better')*1
 table(dcas[, c('nhd.change','better')])
-dcas$much_better <- (dcas$nhd.change=='Much better')*1
-table(dcas[, c('nhd.change','much_better')])
+
+## Much better (not used in the analysis)
+# dcas$much_better <- (dcas$nhd.change=='Much better')*1
+# table(dcas[, c('nhd.change','much_better')])
+
 ```
 
 
 
 <!-- ## Preferences for Other Communities -->
-```{r rename-commvars}
+```{r rename-commvars, include=FALSE}
 ## Change names to have search dimension first and commname second
 ## Help on regex part: https://stackoverflow.com/questions/952275/regex-group-capture-in-r-with-multiple-capture-groups
 # search.vars <- grep('nhd\\.srch.+\\.', names(dcas), value=TRUE)
@@ -59,57 +78,113 @@ table(dcas[, c('nhd.change','much_better')])
 ```
 
 
+### Independent Variable
 
+**Race.** Set the reference level of the race variable (`dem.race`) to be whites.
 ```{r independent-variables}
-table(dcas$dem.race, useNA='always')
 dcas$dem.race <- relevel(dcas$dem.race, ref='white')
+table(dcas$dem.race, useNA='always')
+
 ```
 
 
+### Control Variables
 
+#### Demographic variables
 
+Create variables for demographic controls. 
 
-```{r demographic-variables}
+**Age.** The age variable (`age`) was calculated by subtracting birth year from 2016. Represents age on December 31, 2016. Center age at 50. 
 
+```{r demographic-variables-age, out.width='45%'}
 dcas$age <- dcas$dem.age - 50 ## Center at age 50
+qplot(dcas$age)
+```
+
+**Foreign born.** Variable (`forborn`) measuring whether respondent reported being born outside of the United States (reference=no).
+
+```{r demographic-variables-forborn}
 dcas$forborn <- dcas$dem.forborn
+table(dcas$forborn, useNA='always')
+```
+
+**Male.** Variable measures whether the respondent reported being male. The option "other" was offered to respondents. Two respondents reported other and were counted as missing on this variable.
+
+```{r demographic-variables-male}
 dcas$man <- dcas$dem.gender.mf=='Male'
+table(dcas[, c('dem.gender', 'man')], useNA='always')
+```
+
+**Kids.** Variable (`kids`) measures whether the respondent has any children under the age of 18 living at home. Recode unreasonable values to be missing. 
+```{r demographic-variables-kids}
 dcas$kids <- as.numeric(as.character(dcas$q2)) > 0
 dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
-dcas$married <- grepl("Now married", dcas$dem.marital.stat)
-table(dcas[,c('dem.marital.stat','married')]) ##Check recoding
+table(dcas[, c('q2', 'kids')], useNA='always')
 ```
 
-```{r economic-variables}
+**Married.** Variable (`married`) measures whether respondent is married or in a married-like relationship. 
+```{r demographic-variables-married}
+dcas$married <- grepl("Now married", dcas$dem.marital.stat)
+table(dcas[,c('dem.marital.stat','married')], useNA='always') ##Check recoding
+```
+
+#### Socioeconomic Variables
+
+**Educational attainment.** Create variable (`educ`) measuring educational attainment. Check variable was created correctly. 
+
+```{r economic-variables-educ}
 dcas$educ <- factor(dcas$dem.educ.attain, order=FALSE) %>% 
                 relevel(ref='H.S.')
-educ_dummies <- paste0('educ',1:5)
-dcas[,educ_dummies] <- lapply(1:5,
-        function(i) {unclass(dcas$dem.educ.attain)==i})
-for(i in 1:5) { ##Check recoding
-    print(table(dcas[,c('dem.educ.attain',paste0('educ',i))]))
-}
+table(dcas[, c('dem.educ.attain', 'educ')], useNA='always')
+# educ_dummies <- paste0('educ',1:5)
+# dcas[,educ_dummies] <- lapply(1:5,
+#         function(i) {unclass(dcas$dem.educ.attain)==i})
+# for(i in 1:5) { ##Check recoding
+#     print(table(dcas[,c('dem.educ.attain',paste0('educ',i))]))
+# }
 # educ_names <- levels(dcas$dem.educ.attain)
 # educ_names[1] <- paste0("\\emph{Educational Attainment}&&\\\\", educ_names[1])
+```
 
+**Income.** Create variable (`inc`) measuring income using four levels. 
+```{r economic-variables-inc}
 dcas$inc <- dcas$dem.income.cat4
-inc_dummies <- paste0('inc',1:4)
-dcas[,inc_dummies] <- lapply(1:4,
-        function(i) {unclass(dcas$dem.income.cat4)==i})
-for(i in 1:4) { ## Check recoding
-    print(table(dcas[,c('dem.income.cat4',paste0('inc',i))]))
-}
-texcmds[['miinc']] <- sum(is.na(dcas$dem.income.cat4))
-texcmds[['miedu']] <- sum(is.na(dcas$dem.educ.attain))
+table(dcas$inc, useNA='always')
+# inc_dummies <- paste0('inc',1:4)
+# dcas[,inc_dummies] <- lapply(1:4,
+#         function(i) {unclass(dcas$dem.income.cat4)==i})
+# for(i in 1:4) { ## Check recoding
+#     print(table(dcas[,c('dem.income.cat4',paste0('inc',i))]))
+# }
 # inc_names <- sanitize(levels(dcas$dem.income.cat4))
 # inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
 ```
 
-```{r nhood-variables}
+*Missingness on Socioeconomic Variables.* Record how many respondents were missing educational attaiment and income data. Reported on page 12 of the manuscript.
+
+```{r economic-variables-missing}
+texcmds[['miinc']] <- sum(is.na(dcas$dem.income.cat4))
+texcmds[['miedu']] <- sum(is.na(dcas$dem.educ.attain))
+```
+
+Variable   Missing
+---------- -----------------------
+Education  `r texcmds[['miedu']]`
+Income     `r texcmds[['miinc']]`
+---------- -----------------------
+
+#### Neighborhood Perception Variables
+
+**Years in the neighborhood.** Variable (`nhdyrs`) measures how long the respondent reported living in neighborhood. Center at 10 years and show histogram of values. 
+
+```{r nhood-variables-years, out.width='45%'}
 dcas$nhdyrs <- as.numeric(as.character(dcas$q4)) - 10 ## Center at 10 years
 dcas$nhdyrsc <- scale(dcas$nhdyrs, scale=FALSE)
 qplot(dcas$nhdyrsc)
+```
 
+**Perceived size of neighborhood.** Create three-category variable that measures perceived neighborhood size. Check that variable was created correctly. 
+```{r nhood-variables-nhdsize}
 dcas$nhdsize[unclass(dcas$nhd.size)%in%c(1,2)] <- '1-9 blocks'
 dcas$nhdsize[unclass(dcas$nhd.size)%in%c(3,4)] <- '10-50 blocks'
 dcas$nhdsize[unclass(dcas$nhd.size)==5] <- '>50 blocks'
@@ -118,3 +193,12 @@ dcas$nhdsize <- factor(dcas$nhdsize,
 dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
+
+```{r quad-all-comparison}
+# source('dcarea/make-quad-nonquad-comparison-table.R')
+```
+
+```{r quad-table, echo=TRUE, include=TRUE}
+# kable(quad_tbl, row.names = FALSE)
+```
+

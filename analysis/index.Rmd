@@ -1,11 +1,33 @@
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo=TRUE, include=FALSE, message=FALSE)
+---
+title: "Replication File and Supplemental Analyses for 'Neighborhood Satisfaction in Multiracial Neighborhoods'"
+author: "Michael Bader"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output:
+  bookdown::gitbook:
+    config:
+      toc:
+        collapse: subsubsection
+        scroll_highlight: yes
+  # bookdown::pdf_book:
+  #   keep_tex: yes
 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, include=TRUE, message=FALSE, warning=FALSE)
 ```
 
-```{r libraries, message=FALSE}
+
+# Set Up
+
+Clear all object out of R. 
+```{r rm, message=FALSE}
 rm(list=ls())
-print(R.version.string)
+```
+
+Load the libraries necessary for the analysis and presentation of data. 
+```{r libraries, message=FALSE}
 library(Amelia)
 library(broom)
 library(ggplot2)
@@ -16,5 +38,13 @@ library(mitools)
 library(survey)
 library(tidyverse)
 library(xtable)
+
+```
+
+**R Version.** The analyses were built with `r R.version.string`, as reported on page 13 of the manuscript.
+
+Create a list to hold results that will be reported to LaTeX later. 
+```{r tex-commands}
+texcmds <- list()
 ```
 
