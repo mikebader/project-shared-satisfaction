@@ -1,9 +1,0 @@
-
-```{r quad-all-comparison}
-# source('dcarea/make-quad-nonquad-comparison-table.R')
-```
-
-```{r quad-table, echo=TRUE, include=TRUE}
-# kable(quad_tbl, row.names = FALSE)
-```
-
