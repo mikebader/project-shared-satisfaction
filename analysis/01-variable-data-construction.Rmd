@@ -1,4 +1,4 @@
-# Data
+# Data Construction
 
 Data for this manuscript come from the 2016 DC Area Survey. More information about the 2016 DC Area Survey can be found [here](http://bit.ly/dcas2016).
 
@@ -8,11 +8,9 @@ load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
 
 ```
 
-## Variable Construction
+## Respondent Selection
 
-### Respondents Living in Multiracial Neighborhoods
-
-The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable `quad` to represent these variables ('quad' comes from my [previous description](http://bit.ly/nhoodTrajPaper) of stable multiracial neighborhoods as 'quadrivial neighborhoods').
+**Respondents Living in Multiracial Neighborhoods.** The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable `quad` to represent these variables ('quad' comes from my [previous description](http://bit.ly/nhoodTrajPaper) of stable multiracial neighborhoods as 'quadrivial neighborhoods').
 
 **///////**
 
@@ -32,6 +30,10 @@ texcmds[['N']] <- N
 ```
 
 
+## Variable Construction
+
+
+
 ### Dependent Variables
 
 **Neighborhood Satisfaction.** Create neighborhood satisfaction variable (`satisfied`) to represent responses of "Extremely Satisfied" or "Very Satisfied". Check that the variable was created correctly.
@@ -41,8 +43,8 @@ dcas$satisfied <- dcas$nhd.satisfaction %in% c(
 table(dcas[, c('nhd.satisfaction','satisfied')])
 
 ## Extremely satisfied (not used in the analysis)
-# dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
-# table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
+dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
+table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
 
 ```
 
@@ -53,12 +55,53 @@ dcas$better <- dcas$nhd.change %in% c(
 table(dcas[, c('nhd.change','better')])
 
 ## Much better (not used in the analysis)
-# dcas$much_better <- (dcas$nhd.change=='Much better')*1
-# table(dcas[, c('nhd.change','much_better')])
+dcas$much_better <- (dcas$nhd.change=='Much better')*1
+table(dcas[, c('nhd.change','much_better')])
 
 ```
 
+**Community Unfamiliarity and Perceptions.** 
 
+*Identify Communities for Inclusion.* Identify communities that meet threshold for inclusion based on racial compositions. Load preference-level dataset ("long" dataset with five dimensions per person), then limit to one observation per community.
+
+```{r variables-comms-id}
+load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
+racecomp <- paste0('pct', c('nhw','api','nhb','lat'))
+comms <- dcas_prefs[!duplicated(dcas_prefs$commname),
+                    c('commname', racecomp)]
+```
+
+Find communities that meet racial composition criteria. Save list of variable names for each dimension of those communities. Check inclusion criteria.
+```{r variables-comms-id2}
+quadcomms <- comms[
+    apply(comms[,c('pctnhw','pctapi','pctnhb','pctlat')]>=10, 1, all),
+    'commname']
+
+## List community names that meet criteria
+quadcomms   
+
+## Check that communities match criteria
+comms[comms$commname %in% quadcomms, ] 
+```
+
+*List of search dimension variables.* Create list of variable names measuring responses to each qualifing community for each dimension of study:
+
+1. Don't know anything about the community
+2. Have friends or family living in the community
+3. Would seriously consider moving to the community
+4. Would never consider moving to the community
+5. Lives in the community 
+
+```{r variables-comms-id3}
+## Create vector of variable names
+commvars <- c(paste0('nhd.srch.',quadcomms,'.dk'),
+              paste0('nhd.srch.',quadcomms,'.ff'),
+              paste0('nhd.srch.',quadcomms,'.cons'),
+              paste0('nhd.srch.',quadcomms,'.nc'),
+              paste0('nhd.srch.',quadcomms,'.live'))
+commvars
+
+```
 
 <!-- ## Preferences for Other Communities -->
 ```{r rename-commvars, include=FALSE}
@@ -194,11 +237,64 @@ dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
 table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
 ```
 
-```{r quad-all-comparison}
-# source('dcarea/make-quad-nonquad-comparison-table.R')
+## Data Imputation and Weighting
+
+Select variables to keep that will be used in analysis. Define vectors of identification and numeric ("nominal") variables that will be used for imputation. 
+```{r weights-variables}
+vars <- c(
+          'satisfied', 'better'
+          , 'extremely_satisfied', 'much_better'
+          , 'dem.race'
+          , 'age'
+          , 'forborn'
+          , 'man'
+          , 'kids'
+          , 'married'
+          , 'educ'
+          , 'nhdyrs'
+          , 'nhdsize'
+          , 'inc'
+)
+dcas$studycase <- as.character(dcas$studycase)
+idvars <- c('studycase','weight', 'sample_strata', 'sample_tract')
+nominals <- vars[!(vars %in% c('age', 'nhdyrs',
+                               'consider_num', 'notconsider_num'))]
+
 ```
 
-```{r quad-table, echo=TRUE, include=TRUE}
-# kable(quad_tbl, row.names = FALSE)
+Create five imputation datasets of survey-weighted data and assign to object `dcasssvy`. 
+```{r weights-assign}
+impute_weights <- function(dta){
+    set.seed(214518)
+    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
+                            p2s = F, idvars=idvars), envir=.GlobalEnv)
+    assign('dcassvy',
+           svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
+                     data=imputationList(dcasmi$imputations)),
+           envir=.GlobalEnv)
+}
+impute_weights(dcas[,c(vars, idvars, commvars)])
+
+```
+
+Re-level the tract identification number used for fixed effects to the reference tract is that which has the median level of satisfaction. Re-impute the data.[^reimpute]
+
+[^reimpute]: I'm not sure that the re-imputation is necessary since I could relevel the factor inside the variables of each design object.
+```{r weignts-median-tract}
+## Find tract with approximately median value of tract-level satisfaction
+tract_means <- MIcombine(
+    with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
+tract_means <- sort(tract_means)
+median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
+dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
+impute_weights(dcas[, c(idvars, vars, commvars)])
+
+```
+
+Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
+```{r save-data}
+save(dcassvy, vars, dcas, dcasmi, dataDIR, texcmds,
+     file = '../data/dcassvy.Rdata')
+
 ```
 

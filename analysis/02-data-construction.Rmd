@@ -1,54 +1,9 @@
-```{r weights}
-## Set up data for survey weights & multiple imputation
-vars <- c(
-          'satisfied', 'better'
-          , 'extremely_satisfied', 'much_better'
-          , 'dem.race'
-          , 'age'
-          , 'forborn'
-          , 'man'
-          , 'kids'
-          , 'married'
-          , 'educ'
-          , 'nhdyrs'
-          , 'nhdsize'
-          , 'inc'
-)
-load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
-racecomp <- paste0('pct', c('nhw','api','nhb','lat'))
-comms <- dcas_prefs[!duplicated(dcas_prefs$commname),
-                    c('commname', racecomp)]
-quadcomms <- comms[
-    apply(comms[,c('pctnhw','pctapi','pctnhb','pctlat')]>=10, 1, all),
-    'commname']
-quadcomms
-commvars <- c(paste0('nhd.srch.',quadcomms,'.dk'),
-              paste0('nhd.srch.',quadcomms,'.ff'),
-              paste0('nhd.srch.',quadcomms,'.cons'),
-              paste0('nhd.srch.',quadcomms,'.nc'),
-              paste0('nhd.srch.',quadcomms,'.live'))
 
-dcas$studycase <- as.character(dcas$studycase)
-idvars <- c('studycase','weight', 'sample_strata', 'sample_tract')
-nominals <- vars[!(vars %in% c('age', 'nhdyrs', 
-                               'consider_num', 'notconsider_num'))]
-impute_weights <- function(dta){
-    set.seed(214518)
-    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
-                            p2s = F, idvars=idvars), envir=.GlobalEnv)
-    assign('dcassvy', svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
-                                data=imputationList(dcasmi$imputations)),
-                                envir=.GlobalEnv)
-}
-impute_weights(dcas[,c(vars, idvars, commvars)])
-
-## Find tract with approximately median value of tract-level satisfaction
-tract_means <- MIcombine(
-    with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
-tract_means <- sort(tract_means)
-median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
-dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
-impute_weights(dcas[, c(idvars, vars, commvars)])
-save(vars, dcassvy, dcas, dcasmi, dataDIR, texcmds, 
-     file = '../data/dcassvy.Rdata')
+```{r quad-all-comparison}
+# source('dcarea/make-quad-nonquad-comparison-table.R')
 ```
+
+```{r quad-table, echo=TRUE, include=TRUE}
+# kable(quad_tbl, row.names = FALSE)
+```
+
