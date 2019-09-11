@@ -264,16 +264,16 @@ nominals <- vars[!(vars %in% c('age', 'nhdyrs',
 
 Create five imputation datasets of survey-weighted data and assign to object `dcasssvy`. 
 ```{r weights-assign}
-impute_weights <- function(dta){
-    set.seed(214518)
-    assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
-                            p2s = F, idvars=idvars), envir=.GlobalEnv)
-    assign('dcassvy',
-           svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
-                     data=imputationList(dcasmi$imputations)),
-           envir=.GlobalEnv)
-}
-impute_weights(dcas[,c(vars, idvars, commvars)])
+# impute_weights <- function(dta){
+#     set.seed(214518)
+#     assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
+#                             p2s = F, idvars=idvars), envir=.GlobalEnv)
+#     assign('dcassvy',
+#            svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
+#                      data=imputationList(dcasmi$imputations)),
+#            envir=.GlobalEnv)
+# }
+# impute_weights(dcas[,c(vars, idvars, commvars)])
 
 ```
 
@@ -282,19 +282,19 @@ Re-level the tract identification number used for fixed effects to the reference
 [^reimpute]: I'm not sure that the re-imputation is necessary since I could relevel the factor inside the variables of each design object.
 ```{r weignts-median-tract}
 ## Find tract with approximately median value of tract-level satisfaction
-tract_means <- MIcombine(
-    with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
-tract_means <- sort(tract_means)
-median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
-dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
-impute_weights(dcas[, c(idvars, vars, commvars)])
+# tract_means <- MIcombine(
+#     with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
+# tract_means <- sort(tract_means)
+# median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
+# dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
+# impute_weights(dcas[, c(idvars, vars, commvars)])
 
 ```
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
 ```{r save-data}
-save(dcassvy, vars, dcas, dcasmi, dataDIR, texcmds,
-     file = '../data/dcassvy.Rdata')
+# save(dcassvy, vars, dcas, dcasmi, dataDIR, texcmds,
+#      file = '../data/dcassvy.Rdata')
 
 ```
 
