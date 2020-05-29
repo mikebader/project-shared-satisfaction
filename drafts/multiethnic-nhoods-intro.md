@@ -74,6 +74,8 @@ Leveling hypothesis:
 : white, black, Latino, and Asian residents of multiracial neighborhoods will all have similarly high levels of satisfaction 
 
 
+
+
 # Notes
 
 Legewie and Schaeffer provide a synthesis of these two perspectives in their *contested boundary hypothesis*. They argue that ambiguity of racial boundaries increases social disorganization. The theory has not been tested on multiracial integration specifically. The novelty of multiracial neighborhoods suggest ambiguous social norms consistent with the contested boundaries hypothesis that would lead to disorganization and lower attachment to the neighborhood among residents.
