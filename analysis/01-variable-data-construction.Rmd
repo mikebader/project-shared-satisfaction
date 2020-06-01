@@ -91,15 +91,21 @@ table(dcas18[, c("nhdchgbak", "nhdchg")], useNA="always") ##Check variable
 
 ### Independent Variable
 
-**Race.** Set the reference level of the race variable to be whites.
+**Race.** Create a race variable measuring four-category, mutually exclusive racial categories. 
 
 ```{r independent-variables}
+fourraces <- c('white', 'asian', 'black', 'latino')
+
 dcas16 <- dcas16 %>%
     mutate(
         raceeth = recode_factor(dem.race, api = "asian"),
-        raceeth = relevel(raceeth, ref="white")
+        raceeth = relevel(raceeth, ref="white"),
+        raceeth_mi = is.na(raceeth),
+        anarace = raceeth %in% fourraces
     )
 table(dcas16[, c('dem.race', 'raceeth')], useNA='always') ##Check variable
+table(dcas16[, c('dem.race', 'raceeth_mi')], useNA="always")
+table(dcas16[, c('dem.race', 'anarace')], useNA="always")
 
 racelabs <- c(
     "White" = "white",
@@ -113,9 +119,13 @@ dcas18 <- dcas18 %>%
     mutate(
         raceethbak = raceeth,
         raceeth = recode_factor(raceeth, !!!racelabs),
-        raceeth = relevel(raceeth, ref="white")
+        raceeth = relevel(raceeth, ref="white"),
+        raceeth_mi = is.na(raceeth),
+        anarace = raceeth %in% fourraces
     )
 table(dcas18[, c('raceethbak', 'raceeth')], useNA="always") ##Check variable
+table(dcas18[, c('raceethbak', 'raceeth_mi')], useNA="always")
+table(dcas18[, c('raceethbak', 'anarace')], useNA="always")
 
 ```
 
@@ -332,17 +342,19 @@ dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medsatid)
 ```
 
 Create five imputation datasets of survey-weighted data and assign to object `dcasYRsvy`. 
+
 ```{r weights-assign}
 set.seed(214518)
-dcas16mi <- amelia(dcas16[, c(vars, idvars16, 'satisfied', 'better')], 
-                   m=5, noms=nominals, emburn=c(500, 500),
-                   p2s=FALSE, idvars=c(idvars16, 'satisfied', 'better'))
+idvars <- c('satisfied', 'better', 'anarace')
+dcas16mi <- amelia(dcas16[, c(vars, idvars, idvars16)], 
+                   m=5, noms=nominals, emburn=c(500, 500), p2s=FALSE, 
+                   idvars=c(idvars, idvars16))
 dcas16svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
                        data=imputationList(dcas16mi$imputations))
 
-dcas18mi <- amelia(dcas18[, c(vars, idvars18, 'satisfied', 'better')], 
-                   m=5, noms=nominals, emburn=c(500,500),
-                   p2s=FALSE, idvars=c(idvars18, 'satisfied', 'better'))
+dcas18mi <- amelia(dcas18[, c(vars, idvars, idvars18)], 
+                   m=5, noms=nominals, emburn=c(500,500), p2s=FALSE, 
+                   idvars=c(idvars, idvars18))
 dcas18svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
                        data=imputationList(dcas18mi$imputations))
 
