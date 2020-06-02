@@ -138,6 +138,163 @@ All models included a fixed effect, $\mathbf{\delta_j}$, for the neighborhood of
 
 All analyses accounted for missing data and the complex survey design. I used the `Amelia` package [@honaker_amelia_2011] to impute missing values in five datasets. I conducted all analyses using these five datasets weighting outcomes to account for the complex sample design using the `survey` library. I combined all results using Rubin's [-@rubin_multiple_2004] rules. All data and code used for the models presented here are available at \[redacted\].
 
+# Results
+
+## Hypotheses
+
+------------------------------------------------------------------------------------------------
+Theory                                          Between                                     Within
+
+------------------------------ ------------------------ ------------------------------------------
+Social disorganization          $\beta^M_r < \beta^A_r$    $\beta_w = \beta_a = \beta_b = \beta_l$
+
+\
+
+Racial stratification           $\beta^M_w < \beta^A_w$  $\beta_w < [\beta_a = \beta_b = \beta_l$]
+                                $\beta^M_a > \beta^A_a$
+                                $\beta^M_b > \beta^A_b$
+                                $\beta^M_l > \beta^A_l$
+
+\
+
+Neighborhood life course
+
+(without controls)              $\beta^M_r < \beta^A_r$  $\beta_w > [\beta_a = \beta_b = \beta_l$]
+
+(with controls)                 $\beta^M_r = \beta^A_r$   $\beta_w =  \beta_a = \beta_b = \beta_l$
+-----------------------------------------------------------------------------------------------
+
+Table: List of hypotheses for racial differences in neighborhood satisfaction between multiracial neighborhood residents and residents generally and within multiracial neighborhoods 
+
+\newpage
+
+## Satisfaction by Race among Multiracial Neighborhood Residents and Metropolitan Area Residents
+
+I plan to start by describing the unconditional level of satisfaction between residents of multiracial neighborhoods and all residents of the DC Area. The difference will be tested for significance with a two-sample t-test of the difference in means. 
+
+I expect to find that satisfaction in multiracial neighborhoods is *lower* for all residents and for white residents and *higher* for black and Latino residents (I'm not sure about Asian residents, hopefully by the time we talk, I will know!). 
+
+----------------------------------------------------
+             Multiracial     
+Race       Neighborhoods         DC Area  Difference         
+-------- --------------- --------------- -----------
+All                                               
+
+Asian                                               
+
+Black                                               
+
+Latino                                               
+
+White                                               
+----------------------------------------------------
+
+Table: Unconditional mean level of satisfaction among residents of multiracial neighborhoods compared to residents in entire DC area, by race
+
+\newpage
+
+After describing the unconditional levels, I plan to report conditional models that estimate $\beta$ for each race in multiracial neighborhoods and among residents in the DC-area generally. I plan to compare the betas from the multiracial neighborhood model and the DC area model using t-tests. I also plan to plot the average marginal mean values for each race among residents in multiracial neighborhoods and DC-area residents as a whole. 
+
+I need to be careful interpreting these results because the betas represent the difference from whites. I am fairly sure that it is the appropriate test, but it will be important to keep the interpretation of *inter*racial differences at the center of the interpretation.
+
+--------------------------------------------------------------
+                   Multiracial     
+Variable         Neighborhoods         DC Area  $\Delta\beta$         
+-------------- --------------- --------------- ---------------
+Asian              $\beta_a^M$     $\beta_a^A$              X  
+
+Black              $\beta_b^M$     $\beta_b^A$              X
+
+Latino             $\beta_l^M$     $\beta_l^A$              X
+
+Individual
+Demographics               Yes             Yes
+
+Neighborhood  
+Experience                 Yes             Yes
+
+N                            X               X
+
+AIC                          X               X
+
+$R^2$                        X               X
+--------------------------------------------------------------
+
+\newpage
+
+## Satisfaction by Race Among Residents of Multiracial Neighborhoods
+
+Mean unconditional satisfaction (similar to what I had already included in the paper)
+
+-----------------------------------------------------------
+                    Asian      Black    Latino      White
+------------------ ------- ---------- ---------- ----------
+Mean satisfaction     %          %         %          %
+
+*Difference*
+
+Asian                       $\Delta$   $\Delta$   $\Delta$
+
+Black                                  $\Delta$   $\Delta$
+
+Latino                                            $\Delta$
+-----------------------------------------------------------
+
+Table: Mean satisfaction level by race within multiracial neighborhoods
+
+\newpage
+
+Conditional neighborhood satisfaction -- this table was already included in the original paper. I find that there are no significant racial differences and that adding race does not improve the model fit
+
+--------------------------------------------------------------
+Variable               Model 1         Model 2         Model 3        
+-------------- --------------- --------------- ---------------
+Race                       Yes             Yes               
+
+Individual
+Demographics               Yes             Yes             Yes
+
+Neighborhood  
+Experience                                 Yes             Yes
+
+Neighborhood               Yes             Yes             Yes
+fixed
+effects
+
+N                            X               X               X
+
+AIC                          X               X               X
+
+$R^2$                        X               X               X
+--------------------------------------------------------------
+
+Table: Regression coefficients of satisfaction among multiracial neighborhood residents
+
+\newpage
+
+## Robustness: Perceptions of Change
+
+I think that it would make sense to add the analysis about perceptions of change by race within multiracial neighborhoods as a "robustness check" for the leveling theory. The results confirm the expectation that people of color perceive the neighborhood to have gotten better over the past five years while white people mostly think that it has stayed about the same. Notable that most whites *do not think* that the neighborhood has gotten worse (contra the racial stratification/defended community theories).
+
+# Conclusions
+
+* Multiracial neighborhoods seem to level out satisfaction
+    * Whites in multiracial neighborhoods report being less satisfied than white residents generally, *but*
+    * White residents are similarly satisfied as their neighbors of color
+    * Inverse is also true: people of color living in multiracial neighborhoods are more satisfied than counterparts generally, and equally happy as white residents in multiracial neighborhoods
+* Evidence is supported by perceptions of change
+    * Whites think that the neighborhood has stayed about the same, meaning that theories of defended neighborhood or whites likely to think the neighborhood is deteriorating are "left behind"
+    * People of color think that their neighborhoods have improved
+* Calls for a new model for approaching multiracial neighborhoods that is not based on racial animosity, but mutual tolerance
+* *Practical implications:* Beyond the theoretical importance to sociological conceptions of race and place, neighborhood satisfaction *within* multiracial neighborhoods has practical implications
+    * Confirms demographic evidence that whites are not fleeing integrated neighborhoods, but will require continuing to attract white residents so that they do not simply age out of the neighborhood
+    * Offers opportunity to market multiracial neighborhoods to area residents of all races and promote more equal level of satisfaction. Knowing that white residents of multiracial neighborhoods are overwhelmingly satisfied can help in this effort
+    * Recent evidence suggests that white residents are curious about integrated neighborhoods. This paper provides evidence that they are available and that white residents are happy living in them. 
+* Limitations: 
+    * Unique aspects of the DC area
+    * Need more evidence about change over time rather than point-in-time comparisons
+    * Clustered sample to get within- and between-neighborhood variation would be helpful in the future
+    * Equal satisfaction does not automatically mean equal opportunity or outcomes
 
 
 # Notes
