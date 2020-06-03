@@ -341,12 +341,13 @@ dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medsatid)
 
 ```
 
-Create five imputation datasets of survey-weighted data and assign to object `dcasYRsvy`. 
+Create five imputation datasets of survey-weighted data and assign to object `dcas<YR>svy`. For the DCAS 2016 data, include only respondents who live in multiracial neighborhoods in the multiple imputation.  
 
 ```{r weights-assign}
 set.seed(214518)
 idvars <- c('satisfied', 'better', 'anarace')
-dcas16mi <- amelia(dcas16[, c(vars, idvars, idvars16)], 
+dcas16mi <- amelia(dcas16[dcas16$neighborhood=="Global Neighborhood", 
+                          c(vars, idvars, idvars16)], 
                    m=5, noms=nominals, emburn=c(500, 500), p2s=FALSE, 
                    idvars=c(idvars, idvars16))
 dcas16svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
