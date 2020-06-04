@@ -258,6 +258,18 @@ Education  `r texcmds[['miedu16']]`  `r texcmds[['miedu18']]`
 Income     `r texcmds[['miinc16']]`  `r texcmds[['miinc18']]`
 ---------- ------------------------- -------------------------
 
+**Housing tenure.** Create indicator for whether respondent owns their home. 
+
+```{r tenure}
+dcas16 <- dcas16 %>%
+    mutate(own = hh.own)
+table(dcas16[, c("hh.own", "own")], useNA="always")
+
+dcas18 <- dcas18 %>%
+    mutate(own = ifelse(is.na(tenure), NA, tenure=="Own"))
+table(dcas18[, c("tenure", "own")], useNA="always")
+
+```
 #### Neighborhood Experience Variables
 
 **Years in the neighborhood.** Variable (`nhdyrs`) measures how long the respondent reported living in neighborhood.  
@@ -307,6 +319,7 @@ vars <- c(
           , 'kids'
           , 'married'
           , 'educ'
+          , 'own'
           , 'nhdyrs'
           , 'nhdsize'
           # , 'inc'
