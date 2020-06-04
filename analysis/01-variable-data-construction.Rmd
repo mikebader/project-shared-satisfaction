@@ -279,7 +279,7 @@ dcas16$nhdyrs <- as.numeric(as.character(dcas16$q4))
 qplot(dcas16$nhdyrs, binwidth=5)
 
 dcas18$nhdyrs <- dcas18$yrsnhd
-qplot(dcas18$nhdyrs) #uh-oh
+qplot(dcas18$nhdyrs)
 
 ```
 
