@@ -153,10 +153,7 @@ dcas16$forborn <- dcas16$dem.forborn
 table(dcas16[, c("dem.forborn", "forborn")], useNA='always') ##Check variable
 
 dcas18 <- dcas18 %>%
-    mutate(
-        forborn = ifelse(is.na(usborn), NA,
-                         usborn %in% c("United States", "Puerto Rico"))
-    )
+    mutate(forborn = ifelse(is.na(usborn), NA, usborn=="Another country"))
 table(dcas18[, c("usborn", "forborn")], useNA="always") ##Check variable
 
 ```
