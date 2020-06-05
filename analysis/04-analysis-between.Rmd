@@ -256,11 +256,12 @@ Compare the predicted values of percent of multiracial neighborhood residents sa
 varnames <- str_match_all(m3, "\\w+")[[1]][-1]
 pred316 <- MIpredict(m316, at="intercept", vars = varnames)
 pred318 <- MIpredict(m318, at="intercept", vars = varnames)
-bn_pred_tbl <- tibble(racelabs, pred316$p*100, pred318$p*100, 
+bn_pred_tbl <- tibble(levels(pred316$raceeth), pred316$p*100, pred318$p*100, 
                       (pred316$p - pred318$p)*100)
 names(bn_pred_tbl) <- c("Race", "Multiracial", "DC area", "Difference")
 kable(bn_pred_tbl, digits=1)
 
+bn_pred_tbl
 ```
 
 Plot the predicted values at the intercept to show the difference in the predicted probability of neighborhood satisfaction between residents of multiracial neighborhoods and all DC-area  residents.  
