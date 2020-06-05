@@ -162,14 +162,14 @@ descriptive.table(
     caption = paste("Means and standard deviations of independent and",
                     "control variables, DCAS2016 multiracial",
                     "neighborhood sample"),
-    lab     = "descriptives16"
+    lab     = "tab:descriptives16"
 )
 descriptive.table(
     table   = descriptive_tbls[["d18"]],
     fname   = 'tables/descriptives_dcas18.tex',
     caption = paste("Means and standard deviations of independent and",
                     "control variables, DCAS2018 sample"),
-    lab     = "descriptives18"
+    lab     = "tab:descriptives18"
 )
 
                     
