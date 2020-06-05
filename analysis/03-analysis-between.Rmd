@@ -1,0 +1,463 @@
+# Satisfaction in Multiethnic Neighborhoods Compared to DC-Area Population
+
+```{r bn-functions}
+source('report_models.R')
+source('make_predictions.R')
+
+```
+
+## Descriptive analysis of satisfaction by race
+
+Summarize percent of residents satisfied living in their neighborhoods for a) respondents of the DCAS 2016 that live in multiracial neighborhoods, and b) respondents of the DCAS 2018 that live throughout the DC area. 
+```{r bn-descriptive}
+racelabs <- c("Asian", "Black", "Latino", "White")
+racelevs <- c("all", "asian", "black", "latino", "white")
+racedfs <- list(
+    dcas16svy,
+    subset(dcas16svy, raceeth=="asian"),
+    subset(dcas16svy, raceeth=="black"),
+    subset(dcas16svy, raceeth=="latino"),
+    subset(dcas16svy, raceeth=="white")
+)
+desc16 <- lapply(racedfs, function(df){
+    res <- with(df, svymean(~satisfied)) %>% MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(mean16=coef(res)*100, se16=sqrt(vcov(res)[1,1])*100, n16 = n)
+}) %>%
+    bind_rows() %>%
+    mutate(race = racelevs)
+
+racedfs <- list(
+    dcas18svy,
+    subset(dcas18svy, raceeth=="asian"),
+    subset(dcas18svy, raceeth=="black"),
+    subset(dcas18svy, raceeth=="latino"),
+    subset(dcas18svy, raceeth=="white")
+)
+desc18 <- lapply(racedfs, function(df){
+    res <- with(df, svymean(~satisfied)) %>% MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(mean18=coef(res)*100, se18=sqrt(vcov(res)[1,1])*100, n18 = n)
+}) %>%
+    bind_rows() %>%
+    mutate(race = racelevs) 
+```
+
+Calculate the differences in the percent of residents satisfied in multiracial neighborhoods and the percent of all DC-area satisfied with their neighborhoods, both overall and by race. Calculate the standard error for the difference and the p-value for differences by race. The formatted results are saved in the file `tables/between_descriptive.tex`. 
+
+```{r bn-descriptive-table}
+desc_cap <- paste(
+    "Unconditional mean level of satisfaction among residents of", 
+    "multiracial neighborhoods compared to residents in entire DC area,",
+    "by race"
+)
+desc_tbl <- desc16 %>%
+    inner_join(desc18, by="race") %>%
+    select(race, mean16, se16, n16, mean18, se18, n18) %>%
+    mutate(
+        diff = mean16 - mean18,
+        sediff = sqrt(se16^2 + se18^2),
+        df = (se16^2 + se18^2) / ( ((se16^2)/(n16-1)) + ((se18^2)/(n18-1)) ),
+        p = pt(abs(diff/sediff), df=df, lower.tail = FALSE)*2,
+        star = ifelse(p<0.001, "***", 
+                      ifelse(p<0.01, "** ", 
+                             ifelse(p<0.05,"*  ", "   ")))
+    )
+kable(desc_tbl, "html", caption = desc_cap, 
+      digits = c(1,1,1,0,1,1,0,1,1,0,4,1)) %>% 
+    scroll_box(width = "100%") 
+
+```
+
+```{r bn-descriptive-latex, echo=FALSE, include=FALSE}
+fname <- 'tables/between_descriptive.tex'
+parens <- function(x) paste0("(", x, ")")
+desc_xt <- desc_tbl %>% 
+    # mutate(diff = paste0(round(diff, 1), star)) %>%
+    select(race, mean16, se16, mean18, se18, diff, star, sediff) %>%
+    mutate_at(
+        vars(mean16, se16, mean18, se18, diff, sediff), 
+        formatC, digits = 1, format="f"
+    ) %>%
+    mutate_at(vars(starts_with("se")), parens) %>%
+    mutate(
+        race = c("All residents", "Asian", "Black", "Latino", "White")
+    ) 
+colnames(desc_xt) <- c("", "Mean", "SE", "Mean", "SE", "Difference", "", "SE")
+xtable(desc_xt,
+       caption = desc_cap,
+       align = c('l', 'l', rep("R{5em}", 5), "l", "R{5em}"),
+       label = "tab:descbn"
+) %>%
+    print.xtable(
+        booktabs = TRUE,
+        floating.environment = 'sidewaystable',
+        caption.placement = 'top',
+        include.rownames = FALSE,
+        file = fname,
+        sanitize.text.function = identity,
+        timestamp = ''
+    )
+
+colsets <- paste(
+    "& \\multicolumn{2}{p{1.5in}}{\\centering Multiracial Neighborhood Residents}",
+    "& \\multicolumn{2}{p{1.5in}}{\\centering DC-Area Residents}",
+    "& & \\\\"
+)
+tbltxt <- readLines(fname)
+ruleline <- grep('toprule', tbltxt)
+tbltxt <- c(tbltxt[1:ruleline], colsets, tbltxt[(ruleline+1):length(tbltxt)])
+writeLines(tbltxt, fname)
+
+```
+
+## Multivariable influence of race on neighborhood satisfaction
+
+Center all variables on their DC-area-wide values (estimated using the DCAS 2018 data) in order to create comparable regression values across the two data sets, Subtract the mean of the weighted DCAS 2018 variables from the corresponding variables in both the DCAS 2016 (multiracial neighborhoods) and DCAS 2018 (DC-area) data. This sets the intercept across the two data sets at a corresponding value that represents a white resident with DC-area-wide mean values on all other measures. 
+
+```{r bn-scale-variables}
+vars <- c("age", "forborn", "man", "kids", "married", "own", "nhdyrs")
+mu18 <- lapply(vars, function(var){
+    fm <- as.formula(paste("~", var))
+    mu <- coef(MIcombine(with(dcas18svy, svymean(fm, na.rm=TRUE))))
+    if(length(mu)==1) return(mu[[1]])
+    return(mu[[grep("TRUE$", names(mu))]])
+})
+names(mu18) <- vars
+educ <- coef(MIcombine(with(dcas18svy, svymean(~educ, na.rm=TRUE))))
+mu18[paste0("educ", 1:5)] <- educ
+nhdsize <- coef(MIcombine(with(dcas18svy, svymean(~nhdsize, na.rm=TRUE))))
+mu18[paste0("nhdsize", 1:3)] <- nhdsize
+
+
+svy.center <- function(df) {
+    df %>% update(
+        agec       = age - mu18[["age"]],
+        forbornc   = as.integer(forborn) - mu18[["forborn"]],
+        manc       = as.integer(man) - mu18[["man"]],
+        kidsc      = as.integer(kids) - mu18[["kids"]],
+        marriedc   = as.integer(married) - mu18[["married"]],
+        educall    = model.matrix(~educ),
+        educ1c     = educall[, 2] - mu18[["educ1"]],
+        educ3c     = educall[, 3] - mu18[["educ3"]],
+        educ4c     = educall[, 4] - mu18[["educ4"]],
+        educ5c     = educall[, 5] - mu18[["educ5"]],
+        educall    = 1,
+        ownc       = as.integer(own) - mu18[["own"]],
+        nhdyrsc    = nhdyrs - mu18[["nhdyrs"]],
+        nhdsizeall = model.matrix(~nhdsize),
+        nhdsize2c  = nhdsizeall[, 2] - mu18[["nhdsize2"]],
+        nhdsize3c  = nhdsizeall[, 3] - mu18[["nhdsize3"]],
+        nhdsizeall = 1
+    ) 
+}
+dcas16svy <- svy.center(dcas16svy)
+dcas18svy <- svy.center(dcas18svy)
+
+```
+
+Developed the model for each DCAS in a series of three steps to understand what is occurring in the data. The three are: 
+
+1. Race-only
+2. Race and individual demographic characteristics (age, foreign-born, gender, children present, marital status, and education)
+3. Race, individual demographic characteristics, and neighborhood experience (home ownership, years in the neighborhood, and perceived neighborhood size)
+
+```{r bn-regression-development}
+m1 <- "raceeth"
+m2 <- paste(m1, "+ agec + forbornc + manc + kidsc + marriedc"
+            ,"+ educ1c + educ3c + educ4c + educ5c"
+            )
+m3 <- paste(m2, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
+
+regression_labels <- c('Asian','Black','Latinx',
+                       'Age','Foreign Born','Male',
+                       'Children Present', 'Married',
+                       levels(dcas16$dem.educ.attain)[c(1,3:5)],
+                       # levels(dcas$dem.income.cat4)[c(1,3:4)],
+                       'Home owner',
+                       'Years in neighborhood',
+                       '10-50 blocks', '>50 blocks')
+```
+
+### Multiracial Neighborhood Residents (DAS 2016)
+
+Conduct the analyses for the three models for residents living in multiracial neighborhoods. Parameter estimates for the three models are reported below.
+
+```{r bn-regression-2016, warning=FALSE}
+## Multiracial Neighborhood Residents
+## Note: "non-integer #successes" warnings suppressed
+m116 <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m1)), family=binomial)
+    )
+
+m216 <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m2)), family=binomial)
+    )
+
+m316 <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m3)), family=binomial)
+    )
+
+bn2016_tbl <- report_models(
+    MIcombine_aic(m116), MIcombine_aic(m216), MIcombine_aic(m316),
+    reglabels = regression_labels
+) 
+bn2016_tbl
+
+```
+
+### DC-Area Residents (DCAS 2018)
+
+Conduct the analyses for the three models for all residents of the DC area. Parameter estimates for the three models are reported below.
+
+```{r bn-regression-2018, warning=FALSE}
+## DC-Area Residents
+## Note: "non-integer #successes" warnings suppressed
+m118 <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m1)), family=binomial)
+    )
+
+m218 <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m2)), family=binomial)
+    )
+
+m318 <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m3)), family=binomial)
+    )
+
+bn2018_tbl <- report_models(
+    MIcombine_aic(m118), MIcombine_aic(m218), MIcombine_aic(m318),
+    reglabels = regression_labels
+) 
+bn2018_tbl
+```
+
+## Comparison of Residents in Multiracial Neighborhoods and DC Area
+
+Create a table with the that compares the estimates of both residents in multiracial neighborhoods and residents of the DC-area from the full models (third models) above. 
+
+```{r bn-regression-table}
+bn_tbl_cap <- paste(
+    "Logistic regression coefficients and standard errors predicted",
+    "from models estimating neighborhood satisfaction among residents", 
+    "of mulitracial neighborhoods and among residents of the entire DC area"
+)
+bn_tbl <- report_models(
+    MIcombine_aic(m316), MIcombine_aic(m318),
+    caption = bn_tbl_cap,
+    label = "tab:between",
+    reglabels = regression_labels,
+    use.headers = TRUE
+) %>%
+    set_bottom_border(1, everything(), TRUE)
+bn_tbl[1, 2:3] <- c("Multiracial", "DC area")
+cat(to_latex(bn_tbl), file='tables/between.tex')
+bn_tbl
+
+```
+
+```{r bn-table-latex, echo=FALSE, include=FALSE}
+
+```
+
+Compare the predicted values of percent of multiracial neighborhood residents satisfied to the percent of DC-area residents satisfied with their neighborhood by race. Calculate predicted values of satisfaction at the intercept, which represents the weighted mean values of variables from the DCAS 2018 data. 
+
+```{r bn-predicted-values}
+varnames <- str_match_all(m3, "\\w+")[[1]][-1]
+pred316 <- MIpredict(m316, at="intercept", vars = varnames)
+pred318 <- MIpredict(m318, at="intercept", vars = varnames)
+bn_pred_tbl <- tibble(racelabs, pred316$p*100, pred318$p*100, 
+                      (pred316$p - pred318$p)*100)
+names(bn_pred_tbl) <- c("Race", "Multiracial", "DC area", "Difference")
+kable(bn_pred_tbl, digits=1)
+
+```
+
+Plot the predicted values at the intercept to show the difference in the predicted probability of neighborhood satisfaction between residents of multiracial neighborhoods and all DC-area  residents.  
+
+```{r bn-prediction-plt}
+pred316$samp <- "Multiracial neighborhoods"
+pred318$samp <- "DC area"
+
+dodge_wd <- 0.25
+raceordlevs <- c("black", "latino", "asian", "white")
+bn_pred_long <- bind_rows(pred316, pred318) %>%
+    mutate(race = ordered(raceeth, levels=raceordlevs))
+bn_pred_plt <-ggplot(bn_pred_long, aes(
+    x=race, y=p, ymax=uci, ymin=lci, 
+    group=samp, color=samp, shape=samp
+)) +
+    geom_point(size=2.15, position=position_dodge(dodge_wd)) +
+    geom_linerange(size=.5, position=position_dodge(dodge_wd)) +
+    scale_color_manual(values = c("#888888", "#222222")) +
+    scale_x_discrete(
+        labels=gsub("^(\\w)", "\\U\\1", raceordlevs, perl=TRUE)
+    ) +
+    scale_y_continuous(
+        limits=c(.45, 1), breaks=seq(.5, 1.0, .1)
+    ) +
+    labs(
+        x = NULL,
+        y = "Probability",
+        shape = NULL, color = NULL
+    ) +
+    theme_minimal() +
+    theme(
+        legend.position = "bottom",
+        panel.grid.major.x = element_blank()
+    )
+
+bn_pred_plt_cap <- paste(
+    "Predicted probability of neighborhood satisfaction among residents of",
+    "multiracial neighborhoods and the DC area"
+)
+```
+
+```{r bn-pred-plt, echo=FALSE, fig.cap=bn_pred_plt_cap}
+bn_pred_plt
+ggsave("images/predicted_between.png", plot = bn_pred_plt,
+       width=6.75, units='in')
+```
+```{r bn-margins}
+# 
+# prediction(m316$imp1, at=list(raceeth=c("asian", "black", "latino", "white"))) %>% summary()
+# margins(m316$imp1, variables="raceeth", design=dcas16svy$designs[[1]]) %>% summary()
+# 
+# prediction(m318$imp1, at=list(raceeth=c("asian", "black", "latino", "white"))) %>% summary()
+# margins(m318$imp1, variables="raceeth", design=dcas18svy$designs[[1]]) %>% summary()
+
+```
+
+```{r define-models}
+m1 <- 'dem.race + sample_tract '
+m2 <- paste0(m1, '+ age + forborn + man + kids + married + educ')
+m3 <- paste0(m2, '+ nhdyrs + nhdsize')
+m4 <- sub('dem\\.race \\+ ','',m3)
+```
+
+```{r tract-clustering}
+# ## Describe clustering of respondents within tracts
+# tract_Ns <- sapply(unique(dcas$sample_tract),
+#                    function(x){nrow(dcas[dcas$sample_tract==x,])})
+# num_quads <- length(tract_Ns)
+# texcmds[['oneresp']] <- sum(tract_Ns==1)
+# texcmds[['medNpertract']] <- median(tract_Ns[tract_Ns>1])
+# texcmds[['maxNpertract']] <- max(tract_Ns)
+# tract_Nfreq <- as.data.frame(table(tract_Ns))
+# tract_Ns_hist <- ggplot(tract_Nfreq, aes(x=Freq)) +
+#     geom_histogram(binwidth=1) +
+#     scale_x_continuous(breaks=1:19, labels=1:19) +
+#     labs(title="Distribution of respondents per tract",
+#          subtitle="Respondents living in quadrivial tracts, 2016 DCAS")
+# ggsave('images/distribution-of-tract-sample-sizes.png',plot=tract_Ns_hist,
+#        height=3, width=4, units='in')
+```
+
+```{r satisfied-mean}
+# mean_satisfied <- MIcombine(with(dcassvy,svymean(~satisfied)))
+# texcmds[['meansatisfied']] <- round(coef(mean_satisfied),2)[[1]]*100
+# satisfied_byrace <- MIcombine(
+#     with(dcassvy,svyby(~satisfied, ~I(dem.race), svymean))) %>%
+#     coef() %>% round(2)*100
+# texcmds[['apisatisfied']] <- round(satisfied_byrace[['api']])
+# texcmds[['nhbsatisfied']] <- round(satisfied_byrace[['black']])
+# texcmds[['hspsatisfied']] <- round(satisfied_byrace[['latino']])
+# texcmds[['nhwsatisfied']] <- round(satisfied_byrace[['white']])
+```
+
+
+```{r satisfied-analysis, warning=FALSE, results='hide'}
+# ## Satisfaction Model 0: Only fixed effects (not reported)
+# m0_sat <- with(dcassvy,
+#                svyglm(satisfied ~ sample_tract), family=binomial)
+# m0_sat <- MIcombine_aic(m0_sat)
+# 
+# ## Satisfaction Model 1: Race & Fixed Effects
+# m1_sat <- with(dcassvy,
+#                svyglm(as.formula(paste('satisfied ~',m1)), family=binomial))
+# m1_sat_ame <- lapply(seq_along(m1_sat), get.margins, m1_sat) %>%
+#     calculate.pvals()
+# ame_names <- paste0('satameone',c('api','black','latino'))
+# texcmds[ame_names] <- round(abs(m1_sat_ame$AME_link$AMEmi),3)*100
+# 
+# sat_pred_m1 <- MIpredict(m1_sat)
+# sat_pred_m1$race <- levels(dcas$dem.race)
+# sat_pred_m1$model <- 'Race only'
+# texcmds[['satmaxdiffone']] <- round(
+#     max(sat_pred_m1$p) - min(sat_pred_m1$p), 2)*100
+# 
+# m1_sat <- MIcombine_aic(m1_sat)
+# 
+# ## Satisfaction Model 2: Race & Demographic Controls (not reported)
+# m2_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m2)),
+#                                family=binomial))
+# m2_sat <- MIcombine_aic(m2_sat)
+# 
+# ## Satisfaction Model 3: Full Model
+# m3_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m3)),
+#                                family=binomial))
+# m3_sat_ame <- lapply(seq_along(m3_sat), get.margins, m3_sat) %>%
+#     calculate.pvals()
+# ame_names <- paste0('satamethree',c('api','black','latino'))
+# texcmds[ame_names] <- round(abs(m3_sat_ame$AME_link$AMEmi),3)*100
+# 
+# ## Report values of Wald test of change in model fit for model
+# ## not including race
+# m3_sat_racewald <- lapply(m3_sat, regTermTest, test.terms=~dem.race, df=NULL)
+# sat_wald_F <- summary(sapply(m3_sat_racewald, function(x) x$Ftest))
+# sat_wald_p <- summary(sapply(m3_sat_racewald, function(x) x$p))
+# texcmds[['satWaldF']] <- round(sat_wald_F['Mean'], 2)[[1]]
+# texcmds[['satWaldpMin']] <- round(sat_wald_p['Min.'], 2)[[1]]
+# texcmds[['satWaldpMax']] <- round(sat_wald_p['Max.'], 2)[[1]]
+# 
+# sat_pred_m3 <- MIpredict(m3_sat)
+# sat_pred_m3$race <- levels(dcas$dem.race)
+# sat_pred_m3$model <- 'Race + controls'
+# texcmds[['satmaxdiffthree']] <- round(
+#     max(sat_pred_m3$p) - min(sat_pred_m3$p), 2)*100
+# 
+# m3_sat <- MIcombine_aic(m3_sat)
+# texcmds[['satnhdsize']] <- round(exp(coef(m3_sat)['nhdsize10-50 blocks']),2)[[1]]
+# 
+# ## Satisfaction Model 4: Full Model Without Race
+# m4_sat <- with(dcassvy, svyglm(as.formula(paste('satisfied ~', m4)),
+#                                 family=binomial))
+# m4_sat <- MIcombine_aic(m4_sat)
+
+```
+
+```{r report-satisfaction-results, echo=TRUE, include=TRUE}
+# regression_labels <- c('Asian','Black','Latinx',
+#                        'Age','Foreign Born','Male',
+#                        'Children Present', 'Married',
+#                        levels(dcas$dem.educ.attain)[c(1,3:5)],
+#                        # levels(dcas$dem.income.cat4)[c(1,3:4)],
+#                        'Years in neighborhood',
+#                        '10-50 blocks', '>50 blocks')
+# sat_tbl <- report_models(m1_sat, m3_sat, m4_sat, reglabels=regression_labels,
+#                          caption=paste0('Estimated coefficients predicting ',
+#                                         ' neighborhood satisfaction'),
+#                          label='tab:satisfaction')
+# sat_tbl
+# cat(to_latex(sat_tbl), file='tables/satisfaction.tex')
+```
+
+```{r plot-satisfaction}
+
+# sat_plt <- plot.predictions(sat_pred_m1, sat_pred_m3) +
+#     theme_bw() + theme(legend.position='none')
+# 
+# sat_plt
+# ggsave('images/satisfied.png', plot=sat_plt,
+#        width=6.75, units='in')
+```
+
+
+```{r ame-satisfaction}
+
+
+# diff_m1 <- max(sat_pred_m1['p']) - min(sat_pred_m1['p'])
+# texcmds[['maxdiffone']] <- round(diff_m1,2)*100
+# diff_m3 <- max(sat_pred_m3['p']) - min(sat_pred_m3['p'])
+# texcmds[['maxdiffthree']] <- round(diff_m3,2)*100
+```

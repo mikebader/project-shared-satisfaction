@@ -7,14 +7,15 @@
 %\usepackage{fancyvrb}
 %\usepackage{array}
 %\usepackage{caption}
-%\usepackage{graphicx}
+\usepackage{graphicx}
 %\usepackage{siunitx}
 %\usepackage[table]{xcolor}
-%\usepackage{multirow}
+\usepackage{multirow}
 \usepackage{hhline}
 \usepackage{calc}
 \usepackage{tabularx}
 \usepackage{rotating}
+\usepackage{threeparttable}
 \title{Analysis for Satisfaction \& Stability in Multiethnic Neighborhoods Paper}
 \date{\today}
 \begin{document}
@@ -24,21 +25,25 @@
 
 \input{../analysis/tables/nhood_descriptives.tex}
 
-\input{../analysis/tables/descriptives.tex}
+\input{../analysis/tables/descriptives_dcas16.tex}
 
-\input{../analysis/tables/satisfaction.tex}
+\input{../analysis/tables/descriptives_dcas18.tex}
 
-\input{../analysis/tables/improvement.tex}
+\input{../analysis/tables/between_descriptive.tex}
 
-\input{../analysis/tables/knowledge.tex}
-
-\input{../analysis/tables/consider.tex}
-
-\input{../analysis/tables/notconsider.tex}
-
+\input{../analysis/tables/between.tex}
 
 \clearpage
 \section{Figures}
+
+\begin{figure}[h!]
+\begin{minipage}{\textwidth}
+\centering
+\caption{Predicted probability of neighborhood satisfaction among residents of multiracial neighborhoods and the DC area}
+\includegraphics[width=5in]{../analysis/images/predicted_between.png}
+\footnotetext{\emph{Note:} Predicted at mean values of variables of entire DC area in 2018.}
+\end{minipage}
+\end{figure}
 
 \begin{figure}[h!]
 \centering
