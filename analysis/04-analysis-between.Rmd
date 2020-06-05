@@ -1,11 +1,5 @@
 # Satisfaction in Multiethnic Neighborhoods Compared to DC-Area Population
 
-```{r bn-functions}
-source('report_models.R')
-source('make_predictions.R')
-
-```
-
 ## Descriptive analysis of satisfaction by race
 
 Summarize percent of residents satisfied living in their neighborhoods for a) respondents of the DCAS 2016 that live in multiracial neighborhoods, and b) respondents of the DCAS 2018 that live throughout the DC area. 
