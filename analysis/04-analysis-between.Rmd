@@ -37,7 +37,7 @@ desc18 <- lapply(racedfs, function(df){
     mutate(race = racelevs) 
 ```
 
-Calculate the differences in the percent of residents satisfied in multiracial neighborhoods and the percent of all DC-area satisfied with their neighborhoods, both overall and by race. Calculate the standard error for the difference and the p-value for differences by race. The formatted results are saved in the file `tables/between_descriptive.tex`. 
+Calculate the differences in the percent of residents satisfied in multiracial neighborhoods and the percent of all DC-area satisfied with their neighborhoods, both overall and by race. Calculate the standard error for the difference and the p-value for differences by race. The formatted results are saved in the file `tables/between_descriptives.tex`. 
 
 ```{r bn-descriptive-table}
 desc_cap <- paste(
@@ -64,7 +64,7 @@ kable(desc_tbl, "html", caption = desc_cap,
 ```
 
 ```{r bn-descriptive-latex, echo=FALSE, include=FALSE}
-fname <- 'tables/between_descriptive.tex'
+fname <- 'tables/between_descriptives.tex'
 parens <- function(x) paste0("(", x, ")")
 desc_xt <- desc_tbl %>% 
     # mutate(diff = paste0(round(diff, 1), star)) %>%
@@ -307,4 +307,9 @@ bn_pred_plt_cap <- paste(
 bn_pred_plt
 ggsave("images/predicted_between.png", plot = bn_pred_plt,
        width=6.75, units='in')
+```
+
+```{r wn-survey-bak, include=FALSE, echo=FALSE}
+dcas16svybak <- dcas16svy
+
 ```
