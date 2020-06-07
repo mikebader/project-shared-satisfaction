@@ -16,7 +16,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo=TRUE, include=TRUE, message=FALSE, cache = FALSE)
-options('huxtable.bookdown'=TRUE)
 ```
 
 
