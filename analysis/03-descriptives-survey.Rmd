@@ -13,6 +13,7 @@ texcmds[['Rversion']] <- paste(R.version$major, R.version$minor, sep='.')
 source('broom_mi.R')
 source('report_models.R')
 source('make_predictions.R')
+source('marginal_effects.R')
 
 ```
 

@@ -27,7 +27,8 @@ dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medtrt)
 onlyone <- nrow(mutrtall) - nrow(mutrt)
 onlyonelist <- mutrtall$sample_tract[mutrtall$N==1]
 dcas16svy <- subset(dcas16svy, !(sample_tract %in% onlyonelist))
-
+dcas16svy <- update(
+    dcas16svy, sample_tract = relevel(factor(sample_tract), ref=medtrt))
 ```
 
 The reference level for `sample_tract` was set to tract ``r medtrt``, in which `r round(medtrtval, 1)`% of residents reported being satisfied. 
@@ -87,12 +88,14 @@ descwn_tbl <- bind_rows(
     descwn$mean16[-1] %>% set_names(racelevs[-1]), ## Percent satisfied in group
     as_tibble(diffmat)                             ## Diff. matrix
 ) %>%
-    add_column(all = c(musat, muraces - musat), .before = 1) %>%
+    add_column(all = c(musat, muraces - musat), .before = 1)
+names(descwn_tbl) <- c("All", "Asian", "Black", "Latino", "White")
+descwn_tbl<- descwn_tbl %>%
     mutate_all(round, 1) %>%
     huxtable() %>%
-    insert_row(c("All", "Asian", "Black", "Latino", "White")) %>%
+    # insert_row(c("All", "Asian", "Black", "Latino", "White")) %>%
     insert_row(rep(NA, 5), after=2) %>%
-    insert_column(c("", "Percent satisfied", "Difference", 
+    insert_column(c("Group", "Percent satisfied", "Difference", 
                     "Asian", "Black", "Latino", "White")) %>%
     set_number_format(everywhere, everywhere, "%5.1f") 
 descwn_tbl
@@ -100,10 +103,19 @@ descwn_tbl
 ```
 
 ```{r wn-desc-latex, include=FALSE, echo=FALSE}
+strfmt <- function(x) {ifelse(
+    !is.na(as.numeric(x)),
+    as.character(formatC(as.numeric(x), digits=1, format="f")),
+    ""
+)}
 descwn_xt <- descwn_tbl[-1,]
-colnames(descwn_xt) <- c("", "All", "Asian", "Black", "Latino", "White")
-xtable(
-    descwn_xt,
+names(descwn_xt) <- descwn_tbl[1,]
+descwn_xt <- descwn_xt %>%
+    mutate_at(vars(-Group), strfmt)%>%
+    mutate_all(~sub("NA","", .)) %>%
+    setNames(c("", descwn_tbl[1,-1]))
+
+xtable(descwn_xt,
     align = c("l", "l", rep("R{4em}", 5)),
     caption =paste("Unconditional mean level of satisfaction and", 
                    "differences by race among residents of multiracial",
@@ -175,50 +187,57 @@ statrow <- nrow(wn_tbl)-3
 wn_tbl <- insert_row(
     wn_tbl, c("Tract fixed effects", rep("X", 4)),after=statrow) %>%
     set_top_border(statrow+1, everywhere, TRUE) %>%
-    set_top_border(statrow+2, everywhere, FALSE)
+    set_top_border(statrow+2, everywhere, FALSE) %>% 
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+cat(to_latex(wn_tbl), file="tables/within.tex")
 wn_tbl
 
 ```
 
-```{r wn-predicted-values}
-varnames <- str_match_all(m3, "\\w+")[[1]][-1:-2]
-pred1wn <- MIpredict(m1wn, at="intercept", vars = varnames)
-pred3wn <- MIpredict(m3wn, at="intercept", vars = varnames)
+## Marginal Effect of Race on Neighborhood Satisfaction
 
-wn_pred_tbl <- pred1wn %>%
-    select(raceeth, p) %>%
-    inner_join(pred3wn %>% select(raceeth, p), by="raceeth") %>%
-    arrange(raceeth)
-names(wn_pred_tbl) <- c("Race", "Unadjusted", "Adjusted")
-wn_pred_tbl
+Calculate the marginal effect of race on neighborhood satisfaction using white residents as the reference group. The function `MImargins()` is defined in the file `marginal_effects.R`. The function combines the standard errors of marginal effects from the multiply imputed datasets using Rubin's rules (following this [algorithm][]).
+
+[algorithm]: https://stats.idre.ucla.edu/wp-content/uploads/2016/02/multipleimputation.pdf
+
+```{r wn-mfx}
+## Calculate partial effects of race
+m1wn_mfx <- MImargins(m1wn, param="margins")
+m3wn_mfx <- MImargins(m3wn, param="margins")
+
+## Record marginal effects and standard errors in table and report
+mfxwn <- inner_join(m1wn_mfx, m3wn_mfx, by="raceeth", 
+                    suffix=c(".Unadjusted", ".Adjusted")) 
+
+mfxwn_tbl <- mfxwn %>%
+    mutate_at(vars(starts_with("val")), ~paste0(" ", round(.,3), " ")) %>%
+    mutate_at(vars(starts_with("SE")), ~paste0("(", round(.,3), ")"))
+kable(mfxwn_tbl, digits=3)
 
 ```
 
-```{r wn-prediction-plt}
-pred1wn$model <- "Unadjusted"
-pred3wn$model <- "Adjusted"
-
-wn_pred_long <- bind_rows(pred1wn, pred3wn) %>%
-    mutate(
-        race = ordered(raceeth, levels=raceordlevs),
-        model = relevel(factor(model), ref="Unadjusted")
-        )
-wn_pred_plt <-ggplot(wn_pred_long, aes(
-    x=race, y=p, ymax=uci, ymin=lci, 
-    group=model, color=model, shape=model
-)) +
-    geom_point(size=2.15, position=position_dodge(dodge_wd)) +
+```{r wn-mfx-make-plt}
+## Plot marginal effects and standard errors
+mfxwn_long <- bind_rows(m1wn_mfx, m3wn_mfx) %>%
+    mutate(model=relevel(factor(rep(c("Unadjusted", "Adjusted"), each=3)),
+                         ref="Unadjusted"))
+dodge_wd <- 0.25
+wn_mfx_plt <- ggplot(mfxwn_long, 
+       aes(x=raceeth, y=val, ymin=val-1.96*SE, ymax=val+1.96*SE,
+           group=model, color=model, shape=model)) +
+    geom_point(position=position_dodge(width=dodge_wd), size=2.15) +
     geom_linerange(size=.5, position=position_dodge(dodge_wd)) +
+    geom_hline(yintercept=0, color="#666666") +
     scale_color_manual(values = c("#888888", "#222222")) +
     scale_x_discrete(
-        labels=gsub("^(\\w)", "\\U\\1", raceordlevs, perl=TRUE)
+        labels=gsub("^(\\w)", "\\U\\1", mfxwn_long$raceeth, perl=TRUE)
     ) +
-    scale_y_continuous(
-        limits=c(.45, 1), breaks=seq(.5, 1.0, .1)
-    ) +
+    scale_y_continuous(limits=c(-.21, .21)) +
+    # scale_shape_discrete(labels=c("No controls", "With controls")) +
     labs(
         x = NULL,
-        y = "Probability",
+        y = "Marginal effect",
         shape = NULL, color = NULL
     ) +
     theme_minimal() +
@@ -226,5 +245,87 @@ wn_pred_plt <-ggplot(wn_pred_long, aes(
         legend.position = "bottom",
         panel.grid.major.x = element_blank()
     )
-wn_pred_plt
+
+wn_mfx_plt_cap <- paste(
+    "Marginal effects of race on being satisfied in multiracial",
+    "neighborhoods compared to white residents of multiracial neighborhoods"
+)
+```
+
+```{r wn-mfx-plt, echo=FALSE, fig.cap=wn_mfx_plt_cap}
+wn_mfx_plt
+ggsave("images/marginal_effects_within.png", plot = wn_mfx_plt,
+       width=6.75, units='in')
+```
+
+```{r wn-marginal-effects}
+# mfxm1wn <- lapply(seq_along(m1wn), get.margins, m1wn) 
+# nhwlink <- log(
+#     mfxm1wn[["pred"]][["white"]] / (1 - mfxm1wn[["pred"]][["white"]])
+#     )
+# amem1wn <- mfxm1wn$AME_link %>%
+#     mutate(
+#         race = levels(dcas16$raceeth)[-1],
+#         eta = nhwlink + AMEmi,
+#         pred = plogis(eta)
+#         # ame = plogis(eta) - plogis(nhwlink),
+#         # lci = plogis(eta - 1.96*sqrt(Vmi)) - plogis(eta),
+#         # uci = plogis(eta + 1.96*sqrt(Vmi)) - plogis(eta)
+#         
+#     )
+# ggplot(amem1wn, aes(x=race, y=AMEmi, ymin=lci, ymax))
+# 
+# 
+# amem1wn_plt <- ggplot(amem1wn, aes(x=))
+# mfxm3wn <- lapply(seq_along(m3wn), get.margins, m3wn) %>%
+#     calculate.pvals()
+# 
+# ```
+# ```{r wn-predicted-values}
+# varnames <- str_match_all(m3, "\\w+")[[1]][-1:-2]
+# pred1wn <- MIpredict(m1wn, at="intercept", vars = varnames)
+# pred3wn <- MIpredict(m3wn, at="intercept", vars = varnames)
+# 
+# wn_pred_tbl <- pred1wn %>%
+#     select(raceeth, p) %>%
+#     inner_join(pred3wn %>% select(raceeth, p), by="raceeth") %>%
+#     arrange(raceeth)
+# names(wn_pred_tbl) <- c("Race", "Unadjusted", "Adjusted")
+# wn_pred_tbl
+
+```
+
+```{r wn-prediction-plt}
+# pred1wn$model <- "Unadjusted"
+# pred3wn$model <- "Adjusted"
+# 
+# wn_pred_long <- bind_rows(pred1wn, pred3wn) %>%
+#     mutate(
+#         race = ordered(raceeth, levels=raceordlevs),
+#         model = relevel(factor(model), ref="Unadjusted")
+#         )
+# wn_pred_plt <-ggplot(wn_pred_long, aes(
+#     x=race, y=p, ymax=uci, ymin=lci, 
+#     group=model, color=model, shape=model
+# )) +
+#     geom_point(size=2.15, position=position_dodge(dodge_wd)) +
+#     geom_linerange(size=.5, position=position_dodge(dodge_wd)) +
+#     scale_color_manual(values = c("#888888", "#222222")) +
+#     scale_x_discrete(
+#         labels=gsub("^(\\w)", "\\U\\1", raceordlevs, perl=TRUE)
+#     ) +
+#     scale_y_continuous(
+#         limits=c(.45, 1), breaks=seq(.5, 1.0, .1)
+#     ) +
+#     labs(
+#         x = NULL,
+#         y = "Probability",
+#         shape = NULL, color = NULL
+#     ) +
+#     theme_minimal() +
+#     theme(
+#         legend.position = "bottom",
+#         panel.grid.major.x = element_blank()
+#     )
+# wn_pred_plt
 ```
