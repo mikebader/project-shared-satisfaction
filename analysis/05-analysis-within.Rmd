@@ -258,6 +258,30 @@ ggsave("images/marginal_effects_within.png", plot = wn_mfx_plt,
        width=6.75, units='in')
 ```
 
+## Wald Statistics of Model Fit
+
+Report the value of Wald tests measuring the change in model fit for the full model (Model 3) compared to a model without race covariates (Model 4). 
+
+```{r wn-wald-test}
+racewn_wald <- lapply(m3wn, regTermTest, test.terms=~raceeth, df=NULL)
+racewn_wald_tbl <- tibble(
+    val = c(
+        sapply(racewn_wald, function(x) x$Ftest),
+        sapply(racewn_wald, function(x) x$p)
+    ),
+    stat = rep(c("F test", "p"), each=5),
+    i = rep(1:5,2)
+) %>%
+    pivot_wider(id_cols = "stat", values_from="val", names_from="i", 
+                names_prefix="imp")
+
+racewn_wald_tbl$mean <- apply(racewn_wald_tbl[, 2:6], 1, mean)
+racewn_wald_tbl$min <- apply(racewn_wald_tbl[, 2:6], 1, min)
+racewn_wald_tbl$max <- apply(racewn_wald_tbl[, 2:6], 1, max)
+kable(racewn_wald_tbl, digits=3)
+
+```
+
 ```{r wn-marginal-effects}
 # mfxm1wn <- lapply(seq_along(m1wn), get.margins, m1wn) 
 # nhwlink <- log(
