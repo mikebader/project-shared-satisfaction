@@ -1,6 +1,4 @@
-# Descriptive Analysis
-
-## Descriptive Statistics of Multiracial Neighborhood Population
+# Description of DC-Area & Multiracial Neighborhood Populations
 
 The following provides information about the DC Area cited in the manuscript. It includes code that creates Table 1 that compares demographic characteristics of multracial neighborhoods in the DC Area to all neighborhoods in the DC Area. Data come from the IPUMS National Historical Geographic Information System ([NHGIS][]).[^nhgis-cite]
 
@@ -9,7 +7,7 @@ The following provides information about the DC Area cited in the manuscript. It
 [^nhgis-cite]: Steven Manson, Jonathan Schroeder, David Van Riper, and Steven Ruggles. IPUMS National Historical Geographic Information System: Version 13.0 [Database]. Minneapolis: University of Minnesota. 2018. http://doi.org/10.18128/D050.V13.0
 
 Set up environment for analyzing data from the Census. Note the difference between `DATADIR` created here and `dataDIR` created in [Data Construction]. The data files are separated by category and are stored in separate directories, whose names are stored in `vartypes`. 
-```{r nhd-descriptives-setup}
+```{r dcarea-setup}
 DIR <- '~/work/projects/multiethnic_nhoods/'
 DATADIR <- '~/work/data/nhgis/DCArea/tracts/2010/tabular/'
 
@@ -37,7 +35,7 @@ meansd <- function(var) {
 ```
 
 Load data from the ACS 2011-2015 and the 1980 Census to analyze.
-```{r nhd-descriptives-data}
+```{r dcarea-data}
 ## Load and join data from different categories of variables from 2015 ACS
 dcarea <- lapply(vartypes, dcarea.data) %>%
     reduce(left_join, by='GISJOIN') %>%
@@ -50,20 +48,24 @@ dcarea80 <- read.csv(fname)
 
 ```
 
-### Racial Composition 
+## DC-area characteristics 
 
-**Racial composition in 1980.** Calculate proportion of DC-area population made up each racial group in 1980.
+Racial composition in 1980. 
 
-```{r nhd-descriptives-race-1980}
+: Calculate proportion of DC-area population made up each racial group in 1980.
+
+```{r dcarea-race-1980}
 dcarea80 <- sapply(dcarea80[,c('totpop', 'nhw','nhb','hsp','api')], sum)
 prace80 <- round(sapply(dcarea80[2:5], function(x) x/dcarea80[1]),3)*100
-kable(prace80,
-      caption='Percentage of DC-area residents in each racial group, 1980 Census')
+kable(prace80)
 
 ```
 
-**Racial composition in 2015.** Calculate proportion of DC-area population made up of each racial group in 2015.
-```{r nhd-descriptives-race-2015}
+Racial composition in 2015. 
+
+: Calculate proportion of DC-area population made up of each racial group in 2015.
+
+```{r dcarea-race-2015}
 n.hsp <- sum(dcarea$hsp15)
 n.api <- sum(dcarea$api15)
 n.nhw <- sum(dcarea$nhw15)
@@ -78,21 +80,22 @@ p.nhb <- n.nhb/n.totpop
 dcarea.race <- data.frame(
     race=c('Latinx','Asian','Non-Hispanic white', 'Non-Hispanic black'),
     vals=round(c(p.hsp, p.api, p.nhw, p.nhb),3)*100)
-kable(dcarea.race,
-      caption='Percent of DC-area made up of each racial group, 2011-2015 ACS')
+kable(dcarea.race)
 
 ```
 
-### Foreign Born
-Calculate percentage of residents that are foreign-born in DC area in 2015 (referenced on page 8 of the manuscript). 
-```{r nhd-descriptives-forborn}
+Foreign Born
+
+: Calculate percentage of residents that are foreign-born in DC area in 2015 (referenced on page 8 of the manuscript). 
+```{r dcarea-forborn}
 sum(dcarea$fbpop15)/sum(dcarea$totpop15)
 
 ```
 
-### Countries of orgin
-Report largest three countries of origin in the DC area. Load data and keep only tracts in the DC area. 
-```{r nhd-descriptives-origin-1}
+Countries of orgin.
+
+: Report largest three countries of origin in the DC area. Load data and keep only tracts in the DC area. 
+```{r dcarea-origin-1}
 ## Analyzes foreign-born population to find top three nations of origin
 ## among foreign-born population in the DC area
 
@@ -108,7 +111,7 @@ dc.fborn <- select.dcarea(fborn)
 ```
 
 Create list of variable names that define regions, not countries and keep variables not in the list of regions (which define countries). 
-```{r nhd-descriptives-origin-2}
+```{r dcarea-origin-2}
 region.vars <- c(
     'ADU4E001', 'ADU4E002', 'ADU4E003', 'ADU4E004', 'ADU4E005',
     'ADU4E013', 'ADU4E021', 'ADU4E028',
@@ -126,8 +129,7 @@ dc.fborn <- dc.fborn[, nonregion.vars]
 
 Sum total population across DC-area tracts by each country of origin, then rank and report the top three countries. The codes (variable names) for the countries can be found in the file `analysis/dcarea/nhgis0011_ds216_20155_2015_tract_E_codebook.txt`. Report the top three DC-area countries of origin (reported by variable name).
 
-
-```{r nhd-descriptives-origin3}
+```{r dcarea-origin3}
 country.sums <- sapply(dc.fborn[, grep('^ADU4', names(dc.fborn), value=TRUE)],
                        function(x) sum(as.numeric(x)))
 
@@ -135,15 +137,14 @@ country.sums <- sapply(dc.fborn[, grep('^ADU4', names(dc.fborn), value=TRUE)],
 country.rank <- sort(country.sums, decreasing=TRUE)
 
 # Report countries of origin by variable name
-kable(head(country.rank, 3),
-      caption="Three largest sending countries in Washington, DC area, 2011-2015 ACS (reported by variable name)")
+kable(head(country.rank, 3))
 
 ```
 
-### Educational Attainment among Foreign-Born Residents
+Educational Attainment among Foreign-Born Residents
 
-Report the percentage of U.S. and DC-area residents with BA or graduate degrees by foreign-born status. 
-```{r nhd-descriptives-educforborn}
+: Report the percentage of U.S. and DC-area residents with BA or graduate degrees by foreign-born status. 
+```{r dcarea-educforborn}
 ## Source file with function to construct variables for DC area
 source('dcarea/dcarea_functions.R')
 
@@ -164,23 +165,24 @@ fbeduc.comp <- data.frame(degree=c('BA', 'MA+'),
                           DC=round(c(dc.fbba, dc.fbgr),3)*100,
                           US=round(c(us.fbba, us.fbgr),3)*100)
 
-kable(fbeduc.comp,
-      caption='Percent of foreign-born residents in DC area and US with college degrees')
+kable(fbeduc.comp)
 ```
 
-### Population Living in Quadrivial Neighborhoods
+## Multiracial neighborhood characteristics
 
-Report the number of people living in multiracial neighborhoods in 2015. 
-```{r nhd-descriptives-quadpop}
+Population living in multiracial neighborhoods
+
+: Report the number of people living in multiracial neighborhoods in 2015. 
+```{r dcarea-quadpop}
 (quadpop <- sum(dcarea[dcarea$quad15==TRUE, 'totpop15'], na.rm=TRUE))
 
 ```
 
-### Comparison of Multiracial to All Neighborhoods
+Comparison of multiracial to all DC-area neighborhoods.
 
-Construct table comparing characteristics of the population living in DC-area multiracial neighborhoods to the characteristics of all DC-area neighborhoods. Code creates Table 1 in the manuscript. 
+: Construct table comparing characteristics of the population living in DC-area multiracial neighborhoods to the characteristics of all DC-area neighborhoods. Code creates Table 1 in the manuscript. Save the comparison table to `tables/nhood_descriptives.tex`.
 
-```{r nhd-descriptives-comparison}
+```{r dcarea-comparison}
 ## Construct variables for analytic table, and keep only those variables
 dcarea <- dcarea %>% mutate(
     ## Children present in HH
@@ -248,12 +250,11 @@ kable(tbl,
 
 ```
 
-Write file to LaTeX, including additional formatting. 
-```{r nhd-descriptives-comparison-latex}
+```{r dcarea-comparison-latex, echo=FALSE, include=FALSE}
 ## Write table to file
 fname <- 'tables/nhood_descriptives.tex'
 quad_tbl <- xtable(tbl,
-                   caption='Means and standard deviations of tract-level variables in multiethnic and quadrivial neighborhoods in the DC Area',
+                   caption='Means and standard deviations of tract-level variables in multiracial neighborhoods in the DC Area',
                    align=c('l','p{2in}','R{4em}','R{4em}','p{1em}','R{4em}','R{4em}'),
                    label='tab:nhddescriptives')
 print.xtable(quad_tbl,
@@ -271,12 +272,12 @@ writeLines(tbltxt, fname)
 
 ```
 
-### Location of Multiracial Neighborhoods in DC Area
+Location of multiracial neighborhoods in the DC area
 
-Rank counties by the number of multiracial neighborhoods included in their jurisdictions. Multiracial neighborhoods were those in which Asians, blacks, Latinxs, and whites all made up at least 10% of the neighborhood populaiton *and* no group represents a majority.
+: Rank counties by the number of multiracial neighborhoods included in their jurisdictions. Multiracial neighborhoods were those in which Asians, blacks, Latinxs, and whites all made up at least 10% of the neighborhood populaiton *and* no group represents a majority.
 
-Construct variables measuring multiracial neighborhoods, both those included using the criteria and those excluded for not meeting the criterion that no group be a majority (reported on page 9 of the manuscript). 
-```{r nhd-descriptives-inclusion}
+    Construct variables measuring multiracial neighborhoods, both those included using the criteria and those excluded for not meeting the criterion that no group be a majority. 
+```{r dcarea-inclusion}
 racevars <- paste0('race.',c('papi','pnhb','phsp','pnhw'))
 dcarea$othmulti <- apply(sapply(dcarea[, racevars],
                                 function(x) !is.na(x) & x>=10), 1, all)
@@ -299,30 +300,32 @@ N_excluded <- sum(excl_juris[,2])
 
 ## Breakdown of multiethnic neighborhoods by county
 multi_tbl <-table(dcarea[, c('county', 'quad15')])
-kable(sort(multi_tbl[,2], decreasing=TRUE),
-      caption='Number of multiracial neighborhoods in each jurisdiction')
+kable(sort(multi_tbl[,2], decreasing=TRUE))
 
 ```
+
+## Diverse neighborhoods excluded for having a majority race
 
 There were `r N_excluded` neighborhoods that did not meet the criterion that no racial group be a majority. 
 
-**Excluded for having a white majority:**
-```{r nhd-descriptives-exclusion-white}
+*Excluded for having a white majority*
+
+```{r dcarea-exclusion-white}
 dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.pnhw>50,
-       c('county', racevars)]
-
+       c('county', racevars, 'GISJOIN')]
 ```
 
-**Excluded for having a black majority:**
-```{r nhd-descriptives-exclusion-black}
+*Excluded for having a black majority*
+
+```{r dcarea-exclusion-black}
 dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.pnhb>50,
-       c('county', racevars)]
-
+       c('county', racevars, 'GISJOIN')]
 ```
 
-**Excluded for having a Latinx majority:**
-```{r nhd-descriptives-exclusion-latino}
+*Excluded for having a Latino majority:*
+
+```{r dcarea-exclusion-latino}
 dcarea[!is.na(dcarea$exclmulti) & dcarea$exclmulti==TRUE & dcarea$race.phsp>50,
-       c('county', racevars)]
+       c('county', racevars, 'GISJOIN')]
 
 ```

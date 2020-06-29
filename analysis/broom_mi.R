@@ -1,3 +1,12 @@
+MIcombine_aic <- function(m) { ## Combines imputations, including AIC
+    mi <- MIcombine(m)
+    if(m[[1]]$aic) {
+        aics <- sapply(m, function(x) x$aic)
+        mi$aic <- list(mean=mean(aics), var=var(aics))
+    }
+    return(mi)
+}
+
 tidy.MIresult <- function(x, conf_int = FALSE, conf_level = 0.95) {
     output <- as.data.frame(cbind(x$coefficients,
                                   sqrt(diag(x$variance)),
@@ -19,17 +28,14 @@ tidy.MIresult <- function(x, conf_int = FALSE, conf_level = 0.95) {
     as_tibble(output)
 }
 
+nobs.MIresult <- function(x) {
+    svydta <- get(as.character(x$call[[1]])[2])
+    return(nrow(svydta$designs[[1]]))
+}
+
 glance.MIresult <- function(x) {
-    output <- data_frame(r.squared=NA, adj.r.squared=NA, sigma=NA)
+    output <- data_frame(AIC = x$aic$mean, aic_v = x$aic$var,
+                         N = nobs(x))
     class(output) <- "data.frame"
     output
 }
-
-nobs.MIresult <- function() {
-    NULL
-}
-
-print('source(broom_mi.R) run successfully')
-# tidy(m1, conf_int=TRUE)
-# glance(m1)
-# huxreg(m1, statistics=c(''))

@@ -1,32 +1,38 @@
 # Data Construction
 
-Data for this manuscript come from the 2016 DC Area Survey. More information about the 2016 DC Area Survey can be found [here](http://bit.ly/dcas2016).
+Data for this manuscript come from the 2016 and 2018 DC Area Surveys. More information about the 2016 DC Area Survey can be found [here](http://bit.ly/dcas2016) and the 2018 DC Area Survey can be found [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3567219).
 
 ```{r load-data}
-dataDIR <- '~/work/data/dcas/dcas2016/'
-load(paste0(dataDIR,'Dataset/R/DCAS_2016_weighted.Rdata'))
+dataDIR <- '~/work/data/dcas/'
+load(paste0(dataDIR,'dcas2016/Dataset/R/DCAS_2016_weighted.Rdata'))
+dcas16 <- dcas
+
+load(paste0(dataDIR,'dcas2018/dataset/DCAreaSurvey2018.Rdata'))
+dcas18 <- dcas
+rm(dcas)
 
 ```
 
 ## Respondent Selection
 
-**Respondents Living in Multiracial Neighborhoods.** The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable `quad` to represent these variables ('quad' comes from my [previous description](http://bit.ly/nhoodTrajPaper) of stable multiracial neighborhoods as 'quadrivial neighborhoods').
-
-**///////**
-
-**NOTE: NEED TO SUBSET DATA USING SURVEY COMMAND**
-
-**///////**
+**Respondents Living in Multiracial Neighborhoods (DCAS 2016).** The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable `quad` to represent these variables ('quad' comes from my [previous description](http://bit.ly/nhoodTrajPaper) of stable multiracial neighborhoods as 'quadrivial neighborhoods'). 
 
 ```{r subset-data}
-dcas$quad <- dcas$neighborhood=='Global Neighborhood'
-table(dcas[,c('neighborhood','quad')])
-N_norace <- sum(is.na(dcas$dem.race) & dcas$quad==TRUE)
-dcas <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE,]
-dcas$sample_tract <- droplevels(dcas$sample_tract)
-N_quad <- length(dcas$studycase)
-N <- sum(!is.na(dcas$dem.race))
-texcmds[['N']] <- N
+dcas16$quad <- dcas16$neighborhood=='Global Neighborhood'
+table(dcas16[,c('neighborhood','quad')]) ##Check variable
+dcas16$sample_tract <- droplevels(dcas16$sample_tract)
+
+```
+
+```{r subset-data-bak}
+# dcas16$quad <- dcas16$neighborhood=='Global Neighborhood'
+# table(dcas16[,c('neighborhood','quad')])
+# N_norace <- sum(is.na(dcas$dem.race) & dcas$quad==TRUE)
+# dcas <- dcas[!is.na(dcas$dem.race) & dcas$quad==TRUE,]
+# dcas$sample_tract <- droplevels(dcas$sample_tract)
+# N_quad <- length(dcas$studycase)
+# N <- sum(!is.na(dcas$dem.race))
+# texcmds[['N']] <- N
 ```
 
 
@@ -38,95 +44,88 @@ texcmds[['N']] <- N
 
 **Neighborhood Satisfaction.** Create neighborhood satisfaction variable (`satisfied`) to represent responses of "Extremely Satisfied" or "Very Satisfied". Check that the variable was created correctly.
 ```{r variables-satisfied}
-dcas$satisfied <- dcas$nhd.satisfaction %in% c(
+dcas16$satisfied <- dcas16$nhd.satisfaction %in% c(
                        'Extremely satisfied','Very satisfied')*1
-table(dcas[, c('nhd.satisfaction','satisfied')])
+dcas16$nhdsat <- dcas16$nhd.satisfaction
+table(dcas16[, c('nhd.satisfaction','satisfied')]) ##Check variable
+table(dcas16[, c('nhd.satisfaction','nhdsat')]) ##Check variable
 
-## Extremely satisfied (not used in the analysis)
-dcas$extremely_satisfied <- as.numeric(dcas$nhd.satisfaction=='Extremely satisfied')*1
-table(dcas[, c('nhd.satisfaction','extremely_satisfied')])
-
+dcas18$satisfied <- dcas18$nhdsat %in% c('Extremely', 'Very')*1
+table(dcas18[, c('nhdsat', 'satisfied')]) ##Checkvariable
 ```
+
 
 **Neighborhood improvement.** Create variable (`better`) measuring whether respondent perceives that the neighborhood has improved. Include responses "Much better" and "Somewhat better". Check that variable was created correctly.
 ```{r variables-better}
-dcas$better <- dcas$nhd.change %in% c(
-                       'Much better', 'Somewhat better')*1
-table(dcas[, c('nhd.change','better')])
+betterlabs <- c("Much better", "Somewhat better")
+changelabs <- c(
+    "Much worse" = "Worse",
+    "Somewhat worse" = "Worse",
+    "About the same" = "Same",
+    "Somewhat better" = "Better",
+    "Much better" = "Better"
+)
+dcas16 <- dcas16 %>%
+    mutate(
+        better = ifelse(
+            is.na(nhd.change), NA, 
+            dcas16$nhd.change %in% betterlabs),
+        nhdchg = recode_factor(nhd.change, !!!changelabs)
+    )
+table(dcas16[, c("nhd.change", "better")], useNA="always") ##Check variable
+table(dcas16[, c("nhd.change", "nhdchg")], useNA="always") ##Check variable
 
-## Much better (not used in the analysis)
-dcas$much_better <- (dcas$nhd.change=='Much better')*1
-table(dcas[, c('nhd.change','much_better')])
 
-```
-
-**Community Unfamiliarity and Perceptions.** 
-
-*Identify Communities for Inclusion.* Identify communities that meet threshold for inclusion based on racial compositions. Load preference-level dataset ("long" dataset with five dimensions per person), then limit to one observation per community.
-
-```{r variables-comms-id}
-load(paste0(dataDIR, 'dataset/R/DCAS_2016_PreferenceLevel.Rdata'))
-racecomp <- paste0('pct', c('nhw','api','nhb','lat'))
-comms <- dcas_prefs[!duplicated(dcas_prefs$commname),
-                    c('commname', racecomp)]
-```
-
-Find communities that meet racial composition criteria. Save list of variable names for each dimension of those communities. Check inclusion criteria.
-```{r variables-comms-id2}
-quadcomms <- comms[
-    apply(comms[,c('pctnhw','pctapi','pctnhb','pctlat')]>=10, 1, all),
-    'commname']
-
-## List community names that meet criteria
-quadcomms   
-
-## Check that communities match criteria
-comms[comms$commname %in% quadcomms, ] 
-```
-
-*List of search dimension variables.* Create list of variable names measuring responses to each qualifing community for each dimension of study:
-
-1. Don't know anything about the community
-2. Have friends or family living in the community
-3. Would seriously consider moving to the community
-4. Would never consider moving to the community
-5. Lives in the community 
-
-```{r variables-comms-id3}
-## Create vector of variable names
-commvars <- c(paste0('nhd.srch.',quadcomms,'.dk'),
-              paste0('nhd.srch.',quadcomms,'.ff'),
-              paste0('nhd.srch.',quadcomms,'.cons'),
-              paste0('nhd.srch.',quadcomms,'.nc'),
-              paste0('nhd.srch.',quadcomms,'.live'))
-commvars
+dcas18 <- dcas18 %>%
+    mutate(
+        nhdchgbak = nhdchg,
+        better = ifelse(
+            is.na(nhdchgbak), NA, 
+            nhdchgbak %in% betterlabs),
+        nhdchg = recode_factor(nhdchgbak, !!!changelabs)
+    )
+table(dcas18[, c("nhdchgbak", "better")], useNA="always") ##Check variable
+table(dcas18[, c("nhdchgbak", "nhdchg")], useNA="always") ##Check variable
 
 ```
-
-<!-- ## Preferences for Other Communities -->
-```{r rename-commvars, include=FALSE}
-## Change names to have search dimension first and commname second
-## Help on regex part: https://stackoverflow.com/questions/952275/regex-group-capture-in-r-with-multiple-capture-groups
-# search.vars <- grep('nhd\\.srch.+\\.', names(dcas), value=TRUE)
-# new_search_matches <- regmatches(
-#     search.vars, regexec('nhd\\.srch\\.(.+)\\.(.+)$', search.vars))
-# new_search_names <- sapply(new_search_matches, function(x){
-#     paste(rev(x[2:3]), collapse='_')})
-# names(dcas)[names(dcas)%in%search.vars] <- new_search_names
-# 
-# dcas$consider_num <- rowSums(dcas[grep('^cons_', names(dcas))])
-# dcas$consider_any <- dcas$consider_num > 0
-# dcas$notconsider_num <- rowSums(dcas[grep('^nc_', names(dcas))])
-# dcas$notconsider_any <- dcas$notconsider_num >0
-```
-
 
 ### Independent Variable
 
-**Race.** Set the reference level of the race variable (`dem.race`) to be whites.
+**Race.** Create a race variable measuring four-category, mutually exclusive racial categories. 
+
 ```{r independent-variables}
-dcas$dem.race <- relevel(dcas$dem.race, ref='white')
-table(dcas$dem.race, useNA='always')
+fourraces <- c('white', 'asian', 'black', 'latino')
+
+dcas16 <- dcas16 %>%
+    mutate(
+        raceeth = recode_factor(dem.race, api = "asian"),
+        raceeth = relevel(raceeth, ref="white"),
+        raceeth_mi = is.na(raceeth),
+        anarace = raceeth %in% fourraces
+    )
+table(dcas16[, c('dem.race', 'raceeth')], useNA='always') ##Check variable
+table(dcas16[, c('dem.race', 'raceeth_mi')], useNA="always")
+table(dcas16[, c('dem.race', 'anarace')], useNA="always")
+
+racelabs <- c(
+    "White" = "white",
+    "Asian/Pac. Islander" = "asian",
+    "Black" = "black",
+    "Latinx" = "latino",
+    "Native American" = "other",
+    "Other" = "other"
+)
+dcas18 <- dcas18 %>%
+    mutate(
+        raceethbak = raceeth,
+        raceeth = recode_factor(raceeth, !!!racelabs),
+        raceeth = relevel(raceeth, ref="white"),
+        raceeth_mi = is.na(raceeth),
+        anarace = raceeth %in% fourraces
+    )
+table(dcas18[, c('raceethbak', 'raceeth')], useNA="always") ##Check variable
+table(dcas18[, c('raceethbak', 'raceeth_mi')], useNA="always")
+table(dcas18[, c('raceethbak', 'anarace')], useNA="always")
 
 ```
 
@@ -140,35 +139,60 @@ Create variables for demographic controls.
 **Age.** The age variable (`age`) was calculated by subtracting birth year from 2016. Represents age on December 31, 2016. Center age at 50. 
 
 ```{r demographic-variables-age, out.width='45%'}
-dcas$age <- dcas$dem.age - 50 ## Center at age 50
-qplot(dcas$age)
+dcas16$age <- dcas16$dem.age - 50 ## Center at age 50
+qplot(dcas16$age, labs=c(title="2016"))
+
+dcas18$age <- dcas18$age - 50
+qplot(dcas18$age, labs=c(title="2018"))
 ```
 
 **Foreign born.** Variable (`forborn`) measuring whether respondent reported being born outside of the United States (reference=no).
 
 ```{r demographic-variables-forborn}
-dcas$forborn <- dcas$dem.forborn
-table(dcas$forborn, useNA='always')
+dcas16$forborn <- dcas16$dem.forborn
+table(dcas16[, c("dem.forborn", "forborn")], useNA='always') ##Check variable
+
+dcas18 <- dcas18 %>%
+    mutate(forborn = ifelse(is.na(usborn), NA, usborn=="Another country"))
+table(dcas18[, c("usborn", "forborn")], useNA="always") ##Check variable
+
 ```
 
-**Male.** Variable measures whether the respondent reported being male. The option "other" was offered to respondents. Two respondents reported other and were counted as missing on this variable.
+**Male.** Variable measures whether the respondent reported being male. The option "other" was offered to respondents. Two respondents in 2016 and five respondents in 2018 reported other and were counted as missing on this variable.
 
 ```{r demographic-variables-male}
-dcas$man <- dcas$dem.gender.mf=='Male'
-table(dcas[, c('dem.gender', 'man')], useNA='always')
+dcas16$man <- dcas16$dem.gender.mf=='Male'
+table(dcas16[, c('dem.gender', 'man')], useNA='always')
+
+dcas18 <- dcas18 %>%
+    mutate(man = recode_factor(
+        gender, Male=TRUE, Female=FALSE, `In another way`=NA
+    ))
+table(dcas18[, c("gender","man")], useNA="always") 
+
 ```
 
 **Kids.** Variable (`kids`) measures whether the respondent has any children under the age of 18 living at home. Recode unreasonable values to be missing. 
 ```{r demographic-variables-kids}
-dcas$kids <- as.numeric(as.character(dcas$q2)) > 0
-dcas$kids[as.numeric(as.character(dcas$q2)) > 90] <- NA
-table(dcas[, c('q2', 'kids')], useNA='always')
+dcas16$kids <- as.numeric(as.character(dcas16$q2)) > 0
+dcas16$kids[as.numeric(as.character(dcas16$q2)) > 90] <- NA
+table(dcas16[, c('q2', 'kids')], useNA='always')
+
+dcas18$kidsbak <- dcas18$kids
+dcas18$kids <- ifelse(!is.na(dcas18$kidsbak), dcas18$kidsbak>0, NA)
+table(dcas18[, c('kidsbak', 'kids')], useNA="always")
+
 ```
 
 **Married.** Variable (`married`) measures whether respondent is married or in a married-like relationship. 
 ```{r demographic-variables-married}
-dcas$married <- grepl("Now married", dcas$dem.marital.stat)
-table(dcas[,c('dem.marital.stat','married')], useNA='always') ##Check recoding
+dcas16$married <- grepl("Now married", dcas16$dem.marital.stat)
+table(dcas16[,c('dem.marital.stat','married')], useNA='always') ##Check recoding
+
+dcas18$marriedbak <- dcas18$married
+dcas18$married <- dcas18$marriedbak == "Married"
+table(dcas18[, c("marriedbak", "married")], useNA="always") ##Check variable
+
 ```
 
 #### Socioeconomic Variables
@@ -176,23 +200,34 @@ table(dcas[,c('dem.marital.stat','married')], useNA='always') ##Check recoding
 **Educational attainment.** Create variable (`educ`) measuring educational attainment. Check variable was created correctly. 
 
 ```{r economic-variables-educ}
-dcas$educ <- factor(dcas$dem.educ.attain, order=FALSE) %>% 
+dcas16$educ <- factor(dcas16$dem.educ.attain, order=FALSE) %>% 
                 relevel(ref='H.S.')
-table(dcas[, c('dem.educ.attain', 'educ')], useNA='always')
-# educ_dummies <- paste0('educ',1:5)
-# dcas[,educ_dummies] <- lapply(1:5,
-#         function(i) {unclass(dcas$dem.educ.attain)==i})
-# for(i in 1:5) { ##Check recoding
-#     print(table(dcas[,c('dem.educ.attain',paste0('educ',i))]))
-# }
-# educ_names <- levels(dcas$dem.educ.attain)
-# educ_names[1] <- paste0("\\emph{Educational Attainment}&&\\\\", educ_names[1])
+table(dcas16[, c('dem.educ.attain', 'educ')], useNA='always')
+
+educlabs <- c(
+    "Less than HS" = "<H.S.",
+    "Did not finish HS" = "<H.S.",
+    "HS diploma or GED" = "H.S.",
+    "Some college, no degree" = "Some college, no B.A.",
+    "Associate\'s degree" = "Some college, no B.A.",
+    "Bachelor\'s degree" = "B.A.",
+    "Advanced degree" = "M.A.+"
+)
+
+dcas18 <- dcas18 %>%
+    mutate(
+        educbak = educ,
+        educ = recode_factor(educbak, !!!educlabs),
+        educ = relevel(educ, ref="H.S.")
+    )
+table(dcas18[, c("educbak", "educ")], useNA="always")
+
 ```
 
 **Income.** Create variable (`inc`) measuring income using four levels. 
 ```{r economic-variables-inc}
-dcas$inc <- dcas$dem.income.cat4
-table(dcas$inc, useNA='always')
+# dcas16$inc <- dcas16$dem.income.cat4
+# table(dcas16$inc, useNA='always')
 # inc_dummies <- paste0('inc',1:4)
 # dcas[,inc_dummies] <- lapply(1:4,
 #         function(i) {unclass(dcas$dem.income.cat4)==i})
@@ -201,100 +236,151 @@ table(dcas$inc, useNA='always')
 # }
 # inc_names <- sanitize(levels(dcas$dem.income.cat4))
 # inc_names[1] <- paste0("\\emph{Income}&&\\\\", inc_names[1])
+
+# table(dcas18$income, useNA="always")
+
 ```
 
-*Missingness on Socioeconomic Variables.* Record how many respondents were missing educational attaiment and income data. Reported on page 12 of the manuscript.
+*Missingness on Socioeconomic Variables.* Record how many respondents were missing educational attaiment and income data. 
 
 ```{r economic-variables-missing}
-texcmds[['miinc']] <- sum(is.na(dcas$dem.income.cat4))
-texcmds[['miedu']] <- sum(is.na(dcas$dem.educ.attain))
+texcmds[['miinc16']] <- sum(is.na(dcas16$dem.income.cat4))
+texcmds[['miedu16']] <- sum(is.na(dcas16$dem.educ.attain))
+
+texcmds[['miinc18']] <- sum(is.na(dcas18$income))
+texcmds[['miedu18']] <- sum(is.na(dcas18$educ))
+
 ```
 
-Variable   Missing
----------- -----------------------
-Education  `r texcmds[['miedu']]`
-Income     `r texcmds[['miinc']]`
----------- -----------------------
+Variable   Missing 2016              Missing 2018
+---------- ------------------------- -------------------------
+Education  `r texcmds[['miedu16']]`  `r texcmds[['miedu18']]`
+Income     `r texcmds[['miinc16']]`  `r texcmds[['miinc18']]`
+---------- ------------------------- -------------------------
 
-#### Neighborhood Perception Variables
+**Housing tenure.** Create indicator for whether respondent owns their home. 
 
-**Years in the neighborhood.** Variable (`nhdyrs`) measures how long the respondent reported living in neighborhood. Center at 10 years and show histogram of values. 
+```{r tenure}
+dcas16 <- dcas16 %>%
+    mutate(own = hh.own)
+table(dcas16[, c("hh.own", "own")], useNA="always")
+
+dcas18 <- dcas18 %>%
+    mutate(own = ifelse(is.na(tenure), NA, tenure=="Own"))
+table(dcas18[, c("tenure", "own")], useNA="always")
+
+```
+#### Neighborhood Experience Variables
+
+**Years in the neighborhood.** Variable (`nhdyrs`) measures how long the respondent reported living in neighborhood.  
 
 ```{r nhood-variables-years, out.width='45%'}
-dcas$nhdyrs <- as.numeric(as.character(dcas$q4)) - 10 ## Center at 10 years
-dcas$nhdyrsc <- scale(dcas$nhdyrs, scale=FALSE)
-qplot(dcas$nhdyrsc)
+dcas16$nhdyrs <- as.numeric(as.character(dcas16$q4)) 
+qplot(dcas16$nhdyrs, binwidth=5)
+
+dcas18$nhdyrs <- dcas18$yrsnhd
+qplot(dcas18$nhdyrs)
+
 ```
 
 **Perceived size of neighborhood.** Create three-category variable that measures perceived neighborhood size. Check that variable was created correctly. 
 ```{r nhood-variables-nhdsize}
-dcas$nhdsize[unclass(dcas$nhd.size)%in%c(1,2)] <- '1-9 blocks'
-dcas$nhdsize[unclass(dcas$nhd.size)%in%c(3,4)] <- '10-50 blocks'
-dcas$nhdsize[unclass(dcas$nhd.size)==5] <- '>50 blocks'
-dcas$nhdsize <- factor(dcas$nhdsize, 
-                        levels=c('1-9 blocks', '10-50 blocks', '>50 blocks'))
-dcas$nhdsize <- relevel(dcas$nhdsize, ref='1-9 blocks')
-table(dcas[,c('nhd.size', 'nhdsize')], useNA='always') ## Check recoding
+sizelabs <- c(
+    `1 to 4 blocks` = "1-9 blocks",
+    `5 to 9 blocks` = "1-9 blocks",
+    `10 to 25 blocks` = "10-50 blocks",
+    `25 to 50 blocks` = "10-50 blocks",
+    `More than 50 blocks` = ">50 blocks"
+)
+dcas16 = mutate(dcas16, nhdsize = recode_factor(nhd.size, !!!sizelabs))
+table(dcas16[, c('nhd.size', 'nhdsize')], useNA="always") ## Check variable
+
+names(sizelabs) <- gsub(" to ", "-", names(sizelabs))
+dcas18 <- dcas18 %>%
+    mutate(
+        nhdsizebak = nhdsize, 
+        nhdsize = recode_factor(nhdsize, !!!sizelabs)
+    )
+table(dcas18[, c('nhdsizebak','nhdsize')], useNA="always") #Check variable
+
 ```
 
 ## Data Imputation and Weighting
 
-Select variables to keep that will be used in analysis. Define vectors of identification and numeric ("nominal") variables that will be used for imputation. 
+Select variables to keep that will be used in analysis. Define vectors of identification and numeric variables that will be used for imputation. 
 ```{r weights-variables}
 vars <- c(
-          'satisfied', 'better'
-          , 'extremely_satisfied', 'much_better'
-          , 'dem.race'
+          # 'satisfied', 'better',
+          'nhdsat', 'nhdchg'
+          , 'raceeth'
           , 'age'
           , 'forborn'
           , 'man'
           , 'kids'
           , 'married'
           , 'educ'
+          , 'own'
           , 'nhdyrs'
           , 'nhdsize'
-          , 'inc'
+          # , 'inc'
 )
-dcas$studycase <- as.character(dcas$studycase)
-idvars <- c('studycase','weight', 'sample_strata', 'sample_tract')
-nominals <- vars[!(vars %in% c('age', 'nhdyrs',
-                               'consider_num', 'notconsider_num'))]
+dcas16 <- dcas16 %>%
+    mutate(
+        rid = as.character(studycase),
+        strata = sample_strata
+    )
+dcas16$rid <- as.character(dcas16$studycase)
+idvars16 <- c('rid','weight', 'strata', 'sample_tract')
+nominals <- vars[!(vars %in% c('age', 'nhdyrs'))]
+
+dcas18$rid <- as.character(dcas18$rid)
+idvars18 <- c("rid", "weight", "strata")
+```
+
+Re-level the tract identification number used for fixed effects to the reference tract is that which has the median level of satisfaction. 
+
+```{r weights-median-tract}
+satmu <- dcas16 %>%
+    select(sample_tract, satisfied) %>%
+    group_by(sample_tract) %>%
+    summarize(meansat = mean(satisfied, na.rm=TRUE)) %>%
+    arrange(meansat) 
+medsatid <- satmu$sample_tract[round(nrow(satmu)/2)] %>% as.character()
+dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medsatid)
+# levels(dcas16$sample_tract) ## Not run: Check referencing
 
 ```
 
-Create five imputation datasets of survey-weighted data and assign to object `dcasssvy`. 
+Create five imputation datasets of survey-weighted data and assign to object `dcas<YR>svy`. For the DCAS 2016 data, include only respondents who live in multiracial neighborhoods in the multiple imputation.  
+
 ```{r weights-assign}
-# impute_weights <- function(dta){
-#     set.seed(214518)
-#     assign('dcasmi', amelia(dta, m=5, noms=nominals, emburn=c(500 , 500),
-#                             p2s = F, idvars=idvars), envir=.GlobalEnv)
-#     assign('dcassvy',
-#            svydesign(id=~studycase,strata=~sample_strata, weights=~weight,
-#                      data=imputationList(dcasmi$imputations)),
-#            envir=.GlobalEnv)
-# }
-# impute_weights(dcas[,c(vars, idvars, commvars)])
+set.seed(214518)
+idvars <- c('satisfied', 'better', 'anarace')
+dcas16 <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
+    mutate(sample_tract=factor(sample_tract))
+dcas16mi <- amelia(dcas16[dcas16$neighborhood=="Global Neighborhood", 
+                          c(vars, idvars, idvars16)], 
+                   m=5, noms=nominals, emburn=c(500, 500), p2s=FALSE, 
+                   idvars=c(idvars, idvars16))
+dcas16svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
+                       data=imputationList(dcas16mi$imputations))
+
+dcas18mi <- amelia(dcas18[, c(vars, idvars, idvars18)], 
+                   m=5, noms=nominals, emburn=c(500,500), p2s=FALSE, 
+                   idvars=c(idvars, idvars18))
+dcas18svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
+                       data=imputationList(dcas18mi$imputations))
+
 
 ```
 
-Re-level the tract identification number used for fixed effects to the reference tract is that which has the median level of satisfaction. Re-impute the data.[^reimpute]
-
-[^reimpute]: I'm not sure that the re-imputation is necessary since I could relevel the factor inside the variables of each design object.
-```{r weignts-median-tract}
-## Find tract with approximately median value of tract-level satisfaction
-# tract_means <- MIcombine(
-#     with(dcassvy, svyby(~satisfied, ~sample_tract, svymean)))$coefficients
-# tract_means <- sort(tract_means)
-# median_tract_id <- names(tract_means)[round(length(tract_means)/2)]
-# dcas$sample_tract <- relevel(dcas$sample_tract, ref=median_tract_id)
-# impute_weights(dcas[, c(idvars, vars, commvars)])
-
-```
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
 ```{r save-data}
-# save(dcassvy, vars, dcas, dcasmi, dataDIR, texcmds,
-#      file = '../data/dcassvy.Rdata')
+save(vars, dataDIR, texcmds,
+     dcas16svy, dcas16, dcas16mi, 
+     dcas18svy, dcas18, dcas18mi,
+     file = '../data/dcassvy.Rdata')
 
 ```
 
