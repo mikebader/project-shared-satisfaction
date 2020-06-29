@@ -222,53 +222,20 @@ $R^2$                        X               X
 
 \newpage
 
-## Satisfaction by Race Among Residents of Multiracial Neighborhoods
+## Interracial Variation within Multiracial Neighborhoods
+Within neighborhood variation helps discern the process of multiracial integration and the prospects for long-term, stable integration. Large interracial differences in satisfaction could increase the propensity of dissatisfied groups, whites in particular, to move out, and could increase racial tensions and neighborhood strife within the neighborhood. I use the 2016 DCAS sample of residents living in multiracial neighborhoods to measure interracial variation within multiracial neighborhoods. 
 
-Mean unconditional satisfaction (similar to what I had already included in the paper)
+I found that little variation exists *within* multiraical neighborhoods. Table \@ref(tab:descwn) reports the percentage of residents who expressed satisfaction living in multiracial neighborhoods by racial group as well as differences among groups. The first column shows that a large majority of residents, 71.3 percent, were satisfied living in multiracial neighborhoods. It further shows few differences by race. Latino residents had the largest deviation from the overall mean of only 3.7 percentage points. The largest difference between any two groups was only 6.2 percent (between Latino and black residents).  
 
------------------------------------------------------------
-                    Asian      Black    Latino      White
------------------- ------- ---------- ---------- ----------
-Mean satisfaction     %          %         %          %
+Regression analyses further confirmed the lack of interracial variation in neighborhood satisfaction. Table \@ref{tab:within} reports the results estimating four models. All four models included a fixed effect for the neighborhood (tract) of residence. Including the fixed effects allows the estimates to be interpreted as racial differences among residents living *in the same neighborhood*. There were five respondents per neighborhood at the median and a maximum of twenty. Nine neighborhoods had only a single respondent, and the nine respondents from these neighborhoods were dropped from the analysis. 
 
-*Difference*
+The first model included only race and the neighborhood fixed effects. The parameter estimates confirm that there are only minimal differences by race. The average marginal effect measuring the difference in the probability of being satisfied compared to white residents of multiracial neighborhoods was -0.8 percent for Asian residents, 5.3 percent for black residents, and 3.1 percent for Latino residents. The marginal effects and 95 percent confidence intervals of this model unadjusted for demographic and neighborhood characteristics are shown in Figure \@ref{fig:within}.
 
-Asian                       $\Delta$   $\Delta$   $\Delta$
+Adjusting for other characteristics increases interracial variation, but only by a very modest amount. The parameter estimates measuring the difference of Asian, black, and Latino residents from white residents all increased, as did the average marginal effects (also plotted in Figure \@ref{fig:within}). The estimated average marginal effect measuring the difference in probability of being satisfied compared to whites increased to 0.6 percent among Asian residents, 6.0 percent among black residents, and 6.7 percent among Latino residents. 
 
-Black                                  $\Delta$   $\Delta$
+The final row of Table \@ref{tab:within} shows further evidence against interracial differences in neighborhood satisfaction among residents of multiracial neighborhoods. The last row reports the Akaike information criterion (AIC), a measure that balances a model’s parsimony with its goodness of fit to the data \citep{akaike_new_1974}. Lower values indicate better fit, and the results show that the data fit a model without race (reported in the fourth column) better than a model including race (reported in the third column). Wald-F statistics across all imputed datasets confirm that the data fit the model without race better than the model with race.
 
-Latino                                            $\Delta$
------------------------------------------------------------
 
-Table: Mean satisfaction level by race within multiracial neighborhoods
-
-\newpage
-
-Conditional neighborhood satisfaction -- this table was already included in the original paper. I find that there are no significant racial differences and that adding race does not improve the model fit
-
---------------------------------------------------------------
-Variable               Model 1         Model 2         Model 3        
--------------- --------------- --------------- ---------------
-Race                       Yes             Yes               
-
-Individual
-Demographics               Yes             Yes             Yes
-
-Neighborhood  
-Experience                                 Yes             Yes
-
-Neighborhood               Yes             Yes             Yes
-fixed
-effects
-
-N                            X               X               X
-
-AIC                          X               X               X
-
-$R^2$                        X               X               X
---------------------------------------------------------------
-
-Table: Regression coefficients of satisfaction among multiracial neighborhood residents
 
 \newpage
 
@@ -286,6 +253,7 @@ I think that it would make sense to add the analysis about perceptions of change
     * Whites think that the neighborhood has stayed about the same, meaning that theories of defended neighborhood or whites likely to think the neighborhood is deteriorating are "left behind"
     * People of color think that their neighborhoods have improved
 * Calls for a new model for approaching multiracial neighborhoods that is not based on racial animosity, but mutual tolerance
+    * Importance of boundaries, especially "fuzzy" boundaries might not apply in the case of multiracial integration?
 * *Practical implications:* Beyond the theoretical importance to sociological conceptions of race and place, neighborhood satisfaction *within* multiracial neighborhoods has practical implications
     * Confirms demographic evidence that whites are not fleeing integrated neighborhoods, but will require continuing to attract white residents so that they do not simply age out of the neighborhood
     * Offers opportunity to market multiracial neighborhoods to area residents of all races and promote more equal level of satisfaction. Knowing that white residents of multiracial neighborhoods are overwhelmingly satisfied can help in this effort
