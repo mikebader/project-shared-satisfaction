@@ -14,18 +14,16 @@ ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
 ## Neighborhood Change Analysis
 ### Multinomial Logistic Regression of Neighborhood Change Questions
 ```{r improvement-analysis-multinomial}
-svy <- update(svy, nhd.change3 = recode_factor(dcas$nhd.change, "Much better"="Better", "Somewhat better"="Better", "About the same" = "Same", "Somewhat worse" = "Worse", "Much worse" = "Worse")) %>%
-    update(nhd.change3 = relevel(nhd.change3, ref = "Same"))
-
-des <- as.svrepdesign(svy, type="bootstrap" , replicates=250)
-m3m_bet <- svymultinom(as.formula(paste('nhd.change3 ~', m1)),
+library(svrepmisc)
+des <- as.svrepdesign(svy$designs[[1]], type="bootstrap" , replicates=250)
+m3m_bet <- svymultinom(as.formula(paste('nhd.change3 ~', m3)),
                        design = des)
 tbl <- tidy(m3m_bet)[1:8,] %>%
     mutate(star = if_else(p.value < .001, '***',
                           if_else(p.value < .01, '**',
                                   if_else(p.value < 0.05, '*', ''))))
 vals <- function(i) {
-    c(sprintf("%5.3f", tbl[i,2])), sprintf("(%5.3f)", tbl[i,3]))
+    c(sprintf("%5.3f", tbl[i,2]), sprintf("(%5.3f)", tbl[i,3]))
 }
 
 df <- tibble(
