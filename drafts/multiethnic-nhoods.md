@@ -99,15 +99,10 @@ Multiracial neighborhoods included in the 2016 DCAS sampling frame met two crite
 
 [^one-criterion]: Eighteen neighborhoods met the first inclusion criterion but not the second. Of those eighteen, fifteen were neighborhoods that had a white majority; six were located in Fairfax County, Virginia (including one in Fairfax city), five in Montgomery County, Maryland, and two each in D.C. and Arlington County, Virginia. Two neighborhoods had a black majority, one each in Montgomery County and Prince George's County, and only one neighborhood, in Montgomery County, had a Latinx majority. **MOVE TO APPENDIX?**
 
-Table **1 *{tab:nhddescriptives}*** contains a comparison of multiracial neighborhoods to all neighborhoods in the DC area. Whites make up about a third of multiracial neighborhoods, on average, while Latinxs make up about a quarter. Blacks and Asians make up 22 and 18 percent of residents, respectively. Immigration represented the largest deviation of multiracial neighborhoods from DC-area neighborhoods overall. Immigrants make up two of every five residents in multiracial neighborhoods, compared to just under one of every four residents in neighborhoods overall. Residents of multiracial neighborhoods had slightly lower educational attainment than neighborhoods overall. One in four residents of multiracial neighborhoods, however, had a bachelor's degree and one in five had a post-graduate degree. Married households and those with children comprised a larger share of households in multiracial neighborhoods compared to DC area neighborhoods overall.
+Table \ref{tab:nhddescriptives} contains a comparison of multiracial neighborhoods to all neighborhoods in the DC area. Whites make up about a third of multiracial neighborhoods, on average, while Latinxs make up about a quarter. Blacks and Asians make up 22 and 18 percent of residents, respectively. Immigration represented the largest deviation of multiracial neighborhoods from DC-area neighborhoods overall. Immigrants make up two of every five residents in multiracial neighborhoods, compared to just under one of every four residents in neighborhoods overall. Residents of multiracial neighborhoods had slightly lower educational attainment than neighborhoods overall. One in four residents of multiracial neighborhoods, however, had a bachelor's degree and one in five had a post-graduate degree. Married households and those with children comprised a larger share of households in multiracial neighborhoods compared to DC area neighborhoods overall.
 
--------------------------------------------------------------
+\input{../analysis/tables/nhood_descriptives.tex}
 
------------------------------------- ------ --- --------- ---
-
-
-Table: Means and standard deviations of tract-level variables 
-in multiethnic and quadrivial neighborhoods in the DC Area (#tab:nhooddesc)
 
 ## Dependent Variable
 
@@ -233,7 +228,7 @@ The first model included only race and the neighborhood fixed effects. The param
 
 Adjusting for other characteristics increases interracial variation, but only by a very modest amount. The parameter estimates measuring the difference of Asian, black, and Latino residents from white residents all increased, as did the average marginal effects (also plotted in Figure \@ref{fig:within}). The estimated average marginal effect measuring the difference in probability of being satisfied compared to whites increased to 0.6 percent among Asian residents, 6.0 percent among black residents, and 6.7 percent among Latino residents. 
 
-The final row of Table \ref{tab:within} shows further evidence against interracial differences in neighborhood satisfaction among residents of multiracial neighborhoods. The last row reports the Akaike information criterion (AIC), a measure that balances a model’s parsimony with its goodness of fit to the data \citep{akaike_new_1974}. Lower values indicate better fit, and the results show that the data fit a model without race (reported in the fourth column) better than a model including race (reported in the third column). Wald-F statistics across all imputed datasets confirm that the data fit the model without race better than the model with race.
+The final row of Table \ref{tab:within} shows further evidence against interracial differences in neighborhood satisfaction among residents of multiracial neighborhoods. The last row reports the Akaike information criterion (AIC), a measure that balances a model’s parsimony with its goodness of fit to the data @akaike_new_1974. Lower values indicate better fit, and the results show that the data fit a model without race (reported in the fourth column) better than a model including race (reported in the third column). Wald-F statistics across all imputed datasets confirm that the data fit the model without race better than the model with race.
 
 
 ## Robustness: Racial Differences in Perceptions of Neighborhood Change
@@ -300,3 +295,6 @@ Legewie and Schaeffer provide a synthesis of these two perspectives in their *co
 
 #. Practical Relevance: The analysis carries practical implications beyond the theoretical intervention. 
     * Whites are satisfied living in multiracial neighborhoods
+
+\clearpage
+# References
