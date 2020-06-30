@@ -245,6 +245,27 @@ The significant interracial variation persisted after controlling for other char
 
 [^multinomial]: A multinomial model supported the absence of racial variation in negative evaluations of neighborhood change.
 
+## Racial Variation Between Residents of Multiracial Neighborhoods and Other Metropolitan Residents
+
+The analyses above provide sound evidence for a small amount of interracial variation in the satisfaction expressed by residents of multiracial neighborhoods. The results leave open the possibility, however, that residents living in multiracial neighborhoods are less satisfied than other DC-area residents. To study this possibility, which is central to the social disorganization theory, I used data for a companion DC Area Survey conducted in 2018 among a representative sample of all residents residing in the DC area jurisdictions. The 2018 DCAS drew a sample of **TK** households stratified by jurisdiction and resulted in 989 respondents who reported being Asian, black, Latino, or white. **{TK: other methodological details}**. Table \ref{tab:nhddescriptives} reports the descriptive statistics of respondents in the 2018 DCAS. 
+
+\input{../analysis/tables/descriptives_dcas18.tex}
+
+Table \ref{tab:descbn} shows neighborhood satisfaction among residents of the DC area. Among residents of the entire DC area, 78.3 percent were satisfied in their neighborhoods. Consistent with the social disorganization hypothesis, this was 7.6 percentage points higher than satisfaction felt among residents of multiracial neighborhoods ($p<0.05$ from a two-sample t-test). 
+
+\input{../analysis/tables/between_descriptives.tex}
+
+Table \ref{tab:descbn} also shows that the lower satisfaction levels could be largely attributed to white residents. White residents of multiracial neighborhoods were 16.2 percent less likely to be satisfied with their neighborhoods than white residents in the DC area ($p{<}0.001$). Asian residents of multiracial neighborhoods were also less likely to be satisfied than DC-area Asian residents, but the difference was insufficiently large to be confident that it did not arise from sampling error ($p{=}0.200$). Black and multiracial neighborhood residents were 2.1 percentage points less likely to be satisfied than black DC-area residents generally, while Latinos were nearly equally likely to be satisfied living in multiracial neighborhoods as elsewhere in the DC area. 
+
+This pattern held after controlling for other demographic and neighborhood characteristics. Figure @fig:between shows the predicted value of neighborhood satisfaction for different racial groups from separate models estimated for the multiracial neighborhood and the complete DC-area sample. I calculated the predicted value at the mean value of each control variable at the mean value of each variable in the metropolitan-wide (i.e., DCAS 2018) sample.[^MEM] The plot shows a clear difference in satisfaction between white multiracial neighborhood residents and white residents in the DC area, but only small differences for other groups. The share of Asian residents of multiracial neighborhoods satisfied in multiracial neighborhoods was only 3.5 percentage points lower than the share of satisfied DC-area Asian residents. Almost no difference existed between black residents of multiracial neighborhoods and black residents overall. Latino residents of multiracial neighborhoods were *more likely* to be satisfied than Latinos overall after controlling for individual characteristics. 
+
+![Predicted probability of neighborhood satisfaction among residents of multiracial neighborhoods and the DC area](../analysis/images/predicted_between.png){#fig:between}
+
+[^MEM]: **Do I need an explanation for why I use this value rather than the marginal effects? If so, should it go in the text or in a footnote?**
+
+These results cast doubt on the universality of the social disorganization theory. Black and Latino residents of multiracial neighborhoods were equally and more satisfied than their counterparts elsewhere in the metropolitan area. Even among Asians, the difference between multiracial neighborhood residents and metropolitan residents generally was small after controlling for individual characteristics. Only among whites did living in a multiracial neighborhood predict lower levels of satisfaction. 
+
+These results provide some support for the racial stratification theory. But, the support---like the support from perceptions of neighborhood change---was tepid. Rather than showing large gains in neighborhood satisfaction among people of color, as place-based racial stratification models would predict, rates of neighborhood satisfaction are generally the same. These final results provide evidence that multiracial neighborhoods serve to level rates of neighborhood satisfaction by brining the level of neighborhood satisfaction expressed by whites in line with the rates of satisfaction expressed by other groups. 
 
 
 # Conclusions
