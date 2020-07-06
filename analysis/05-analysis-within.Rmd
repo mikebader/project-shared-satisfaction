@@ -172,8 +172,7 @@ m4wn <- with(dcas16svy, svyglm(
     )
 
 wn_tbl <- report_models(
-    MIcombine_aic(m1wn), MIcombine_aic(m2wn), 
-    MIcombine_aic(m3wn), MIcombine_aic(m4wn),
+    MIcombine_aic(m1wn), MIcombine_aic(m3wn), MIcombine_aic(m4wn),
     caption = paste(
         "Logistic regression coefficients and standard errors predicted",
         "from models estimating neighborhood satisfaction among residents", 
@@ -185,7 +184,7 @@ wn_tbl <- report_models(
 )
 statrow <- nrow(wn_tbl)-3
 wn_tbl <- insert_row(
-    wn_tbl, c("Tract fixed effects", rep("X", 4)),after=statrow) %>%
+    wn_tbl, c("Tract fixed effects", rep("X", 3)),after=statrow) %>%
     set_top_border(statrow+1, everywhere, TRUE) %>%
     set_top_border(statrow+2, everywhere, FALSE) %>% 
     set_top_padding(0) %>%
@@ -257,6 +256,14 @@ wn_mfx_plt_cap <- paste(
 wn_mfx_plt
 ggsave("images/marginal_effects_within.png", plot = wn_mfx_plt,
        width=6.75, units='in')
+```
+
+## Partial Predicted Probabilities
+
+```{r wn-pmarg}
+m3wn_prd <- MImargins(m3wn, param="predicted")
+kable(m3wn_prd)
+
 ```
 
 ## Wald Statistics of Model Fit
