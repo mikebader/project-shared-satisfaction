@@ -248,7 +248,8 @@ bn_tbl <- report_models(
     set_bottom_border(1, everything(), TRUE)
 
 bn_tbl[1, 2:3] <- c("Multiracial", "DC area")
-cat(to_latex(bn_tbl), file='tables/between.tex')
+gsub("```(.+\\n)?", "", raw_latex(to_latex(bn_tbl)), perl=TRUE) %>%
+    cat(file="tables/between.tex")
 bn_tbl
 
 ```

@@ -190,7 +190,8 @@ wn_tbl <- insert_row(
     set_top_border(statrow+2, everywhere, FALSE) %>% 
     set_top_padding(0) %>%
     set_bottom_padding(0)
-cat(to_latex(wn_tbl), file="tables/within.tex")
+gsub("```(.+\\n)?", "", to_latex(wn_tbl), perl=TRUE) %>% 
+    cat(file="tables/within.tex")
 wn_tbl
 
 ```
