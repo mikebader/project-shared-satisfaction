@@ -20,19 +20,173 @@ bibliography: /Users/bader/work/projects/multiethnic_nhoods/drafts/bib/multiethn
 csl: /Users/bader/work/Bibs/csl/american-sociological-review.csl
 ---
 
-Multiracial neighborhoods shared among Asian, Black, Latino, and white neighbors have become common in U.S. metropolitan areas since the 1980s. @logan_global_2011 estimated that 38 percent of neighborhoods in 2010 were what they termed "global neighborhoods." Similarly, @bader_fragmented_2016 found stable multiracial integration, what they called "quadrivial neighborhoods," represented between eight and twenty percent of neighborhoods in the metropolitan areas of the four largest US cities. That multiracial neighborhoods now make up an appreciable number of metropolitan neighborhoods after barely existing three decades ago reflects a change in the relationship between between race and metropolitan space. 
+Multiracial neighborhoods shared among Asian, Black, Latino, and white neighbors emerged in appreciable numbers since the 1980s. Evidence suggests that multiracial neighborhoods might be becoming even more common in major metropolitan areas. The emergence of multiracial neighborhoods from undetectable to relatively common in the span of three decades reflects changes to the relationship between race and space in US metropolitan areas. 
 
-Empirically, however, evidence shows that residents of integrated neighborhoods experience less neighborhood satisfaction than residents of other neighborhoods. Lower neighborhood satisfaction can decrease attachment residents feel to their neighbors and neighborhoods, reduce a sense of collective efficacy, and ultimately lead people to move out [@connerly_comparing_1985; @woldoff_effects_2002]. The reason for lower satisfaction has been the subject of debate. Racial stratification theories predict that white residents with resources will flee integrating neighborhoods, leaving the most disgruntled white residents in integrated neighborhoods. Social disorganization theories posit that racial differences reduce social capital and trust that lead to lower satisfaction. These theories predict low levels of satisfaction among all racial groups living in multiracial neighborhoods. Finally, neighborhood lifecourse theories argue that neighborhood change leads to dissatisfaction, and heterogeneity acts as a proxy of this underlying change. 
+Nearly all theories of urban change would not have predicted the emergence and increasing numbers of multiracial neighborhoods. [Likely to experience succession]. A second literature shows higher dissatisfaction among residents of racially integrated neighborhoods. 
 
-All three sets of theories are change-based theories of integration. They argue that racial integration creates dissatisfaction, destabilizes neighborhood relations, and ultimately lead to neighborhood change. This paper presents evidence in favor of an alternative hypothesis: *multiracial* integration leads residents of all races feel sufficiently satisfied living in their neighborhoods to provide a basis for *stable* racial integration. I test this alternative hypothesis using data from a representative sample of residents living in multiracial neighborhoods in the Washington, DC area. I find that residents of all racial groups are similarly satisfied living in multiracial neighborhoods. I further find that, compared to metropolitan residents overall, only whites show a lower level of neighborhood satisfaction in multiracial neighborhoods. 
+This article focuses on the second of these literatures. 
+
+I argue that multiracial neighborhoods end up leveling satisfaction between whites and other groups.  Most whites who live in multiracial neighborhoods are satisfied, but they are less satisfied than counterparts elsewhere in the same metropolitan area. 
+
+
+
+
+<!-- Multiracial neighborhoods shared among Asian, Black, Latino, and white neighbors have become common in U.S. metropolitan areas since the 1980s. 
+
+That multiracial neighborhoods now make up an appreciable number of metropolitan neighborhoods after barely existing three decades ago reflects a change in the relationship between between race and metropolitan space. 
+
+Empirically, however, evidence shows that residents of integrated neighborhoods experience less neighborhood satisfaction than residents of other neighborhoods. Lower neighborhood satisfaction can decrease attachment residents feel to their neighbors and neighborhoods, reduce a sense of collective efficacy, and ultimately lead people to move out [@connerly_comparing_1985; @woldoff_effects_2002]. Most theories of integration predict that race imposes such a strong social division that it undermines relationships among neighbors and decreases neighborhood satisfaction. Racial integration, as a result, destabilizes neighborhoods and exists as only a temporary state. 
+
+A growing body of evidence suggests that multiracially integrated neighborhoods might be different. 
+
+The reason for lower satisfaction has been the subject of debate. Racial stratification theories predict that white residents with resources will flee integrating neighborhoods, leaving the most disgruntled white residents in integrated neighborhoods. Social disorganization theories posit that racial differences reduce social capital and trust that lead to lower satisfaction. These theories predict low levels of satisfaction among all racial groups living in multiracial neighborhoods. Finally, neighborhood lifecourse theories argue that neighborhood change leads to dissatisfaction, and heterogeneity acts as a proxy of this underlying change. 
+
+All three sets of theories are change-based theories of integration. They argue that racial integration creates dissatisfaction, destabilizes neighborhood relations, and ultimately lead to neighborhood change. This paper presents evidence in favor of an alternative hypothesis: *multiracial* integration leads residents of all races feel sufficiently satisfied living in their neighborhoods to provide a basis for *stable* racial integration. I test this alternative hypothesis using data from a representative sample of residents living in multiracial neighborhoods in the Washington, DC area. I find that residents of all racial groups are similarly satisfied living in multiracial neighborhoods. I further find that, compared to metropolitan residents overall, only whites show a lower level of neighborhood satisfaction in multiracial neighborhoods.  -->
 
 **[NEED CONCISE STATEMENT OF SIGNIFICANCE HERE]**
+
+
+# Race as a Disintegrating Social Force
+
+The most dominant theories of neighborhood change predict lower satisfaction in multiracial neighborhoods than in other types of neighborhoods. These theories rest on the foundational notion that racial organizes society to such a strong degree that racial differences undermine social cohesion \needcite . The origins of these theories go back to the Chicago School, who developed the theory of invasion-succession to explain why neighborhoods change. Ethnic groups evolved to conform to the needs of one ethnic group. Competition over the use of space and other resources occurs after the entry, or "invasion," by another group and the exit, or "succession" of the incumbent group.[^black-belt]
+
+It bears mentioning that the original Chicago School sociologists did not have such a developed theory for *racial* differences. They slashed through the rings with a zone labeled "Black Belt," graphically and symbolically removing the need for explaining its existence in the remainder of their model.
+
+## Social Disorganization
+
+Social disorganization theories built on this foundation and argued that racial integration destabilizes neighborhoods. Interested in explaining crime and deviance, social disorganization theorists developed the hypothesis that structural conditions that undermine cohesion present opportunities for deviance to emerge [@sampson_community_1989; @perkins_participation_1990]. Race, being such a strong social force in American society, undermined cohesion between racial groups, leading to increased deviance and lower satisfaction [c.f., @putnam_e_2007]. \needcite
+
+Researchers have consistently found evidence that higher levels of diversity lead to lower levels of neighborhood satisfaction. The erosion of social cohesion further exacerbated interracial differences and contributed to white flight [@taub_paths_1984]. Research on patterns of change from the 1950s to the 1980s showed that that the entry of Black residents into white neighborhoods led whites to flee and the neighborhood to turnover rapidly [@duncan_negro_1957; @taeuber_negroes_1965; @bader_fragmented_2016]. More contemporary evidence from a variety of sources, however, continue to support the hypothesis that racial diversity undermines social cohesion, lowers neighborhood satisfaction, and increases violence [@hipp_specifying_2009; @legewie_contested_2016; @green_defended_1998]. 
+
+Robert Putnam argued that the United States was following a trend found throughout Western countries. Cultural differences between groups reduced the interpersonal bonds that neighbors felt, leading to fewer institutions that support social capital among locals. The disintegration of ties as racial or ethnic diversity increased, he argued, was consistent across racial and ethnic groups. 
+
+Some evidence contradicts the assertions that racial integration universally decreases cohesion. In a review of the literature van der Meer and Tolsma -@van_der_meer_ethnic_2014 found that the association only existed in the US, and even then, was limited largely to white sentiments. Abascal and Baldassarri -@abascal_love_2015 found that the larger number of whites in multiracial neighborhoods and their lower satisfaction in those neighborhoods created the illusion that integration caused dissatisfaction. Instead, white antipathy toward integration acted as the mechanism to create dissatisfaction. 
+
+## Uniqueness of White Aversions to Integration
+
+Evidence that whites react differently to racial integration than other racial groups receives support from other two other literatures. The first literature derives from the defended neighborhood hypothesis [@suttles_social_1972]. The hypothesis derives from the idea that community members band together to defend their neighborhoods against outside threats. In the context of race relations throughout most of American history, the defense included guarding against non-white residents moving into neighborhoods [@sugrue_origins_1996] \needcite. Racialized perceptions of places led whites to perceive neighborhoods with fewer whites as less desirable and less safe than those with more whites \needcite[Swaroop; Quillian and Pager; Sampson and Raudenbush]. If the defenses failed, the most well-to-do whites would leave \needcite. The "limited liability" view of neighborhoods [@janowitz_community_1967] means that the most disgruntled whites would remain, frustrated by both their dissatisfaction with integration and indignation that wealthier whites were able to leave. Lower demand among metropolitan whites for homes in the neighborhood decreases home values and may further frustrate incumbent white residents \needcite.
+
+Evidence for the uniqueness of white dissatisfaction also comes from research on racial residential preferences. This body of work shows a correlation between the white share of residents in neighborhoods and the percentage of whites who express a preference for those neighborhoods. Research has shown the strong influence of racial composition using a variety of methods including experimental designs, stated preferences for specific neighborhoods, and drawing ideal neighborhood compositions \needcite[Emerson; Krysan; Charles]. That whites also reveal these same preferences when moving further confirms the influence of whiter racial compositions on white preferences and satisfaction. People of color, in contrast, prefer neighborhoods with a wider diversity of residents. While they show some preference for own-race neighbors, the preferences are small compared to those expressed by whites. Among some subgroups, people of color show a greater preference and more satisfaction as the share of white neighbors increases \needcite[Greif; Bader and Krysan]. 
+
+# Diversity as Collective Identity
+
+A small but growing body of research studies find that multiracial neighborhoods develop cohesion around the notion of diversity. These studies do not base their research on the dual-race model of the Chicago School. Instead, they examine multiracial neighborhoods as a distinct type of racial integration. Lumley-Sapanksi and Fowler -@lumley-sapanski_planning_2017 showed residents of all races were satisfied living in a "hyperdiverse" neighborhood in Seattle. Groups compromised with one another, getting some, but not all, of what they desired in order to maintain neighborhood diversity. Similarly, Spitz -@spitz_segregated_2015 finds that neighborhood residents value diversity in a multiracial neighborhood in Milwaukee. In both cases, residents were willing to trade off their optimal neighborhood conditions to sustain racial diversity. This was true even if residents lacked strong interpersonal bonds that bridged racial groups. These more recent studies echo Maly's -@maly_beyond_2005 argument that collective identities develop around racial diversity in integrated neighborhoods that help different groups feel satisfied living in multiracial neighborhoods [see also, @nyden_neighborhood_1998]. 
+
+Recent studies of racial preferences show a growing appreciation for diverse neighborhoods among whites. In interviews of white parents in two different cities, Darrah-Okikie and colleagues found that parents valued diversity of their neighborhoods when searching for housing. Similarly, using survey data, Krysan and colleagues showed that multiracial neighborhoods were the most desired type of neighborhood across racial groups. The white participants in the study were, however, averse to living in neighborhoods integrated only with black or Latino residents [@bader_community_2015].
+
+Finally, demographic analyses reveal a substantial number of multiracial neighborhoods emerging in the 1980s, many of which persist over several decades. Logan and Zhang identified neighborhoods based on a presence of Asian, Black, Latino, and white residents commensurate with their metropolitan composition. They termed those neighborhoods where all four groups were present "global neighborhoods" based on the common roots with the rise of "global cities" based on finance and international flows of trade \needcite[Sassen]. They estimated that 38 percent of neighborhoods in 2010 were global neighborhoods [@logan_global_2011]. Bader and Warkentien -@bader_fragmented_2016 used a model-based approach of classifying neighborhoods. They found that "quadrivial neighborhoods," those with stable or slow change in the percentage of Asian, Black, Latino, and white residents over four decades, made up between eight and twenty percent of neighborhoods in the metropolitan areas of the four largest US cities. 
+
+# Satisfaction with Multiracial Neighborhoods
+
+The relative novelty of multiracial neighborhoods, and their poor fit in traditional theories of racial change, leaves room to improve our knowledge about satisfaction with multiracial neighborhoods. Evidence from recent studies of multiracial neighborhoods leads to the question, are residents satisfied living in multiracial neighborhoods? If yes, then theories of metropolitan race and space should be updated to explain satisfaction. An affirmative answer also implies a toehold that policymakers could use to develop programs to foster greater integration. 
+
+Existing studies do not fully answer the question for one of three reasons. First, data come from periods when multiracial neighborhoods only just started emerging. For example, Hipp's -@hipp_specifying_2009 study, the most comprehensive study of neighborhood satisfaction in the US, used data as far back as 1987 to draw the conclusion that integration leads to dissatisfaction. The number of multiracial neighborhoods would have been exceedingly small and the neighborhoods were most likely unique. Relatedly, the second problem arises from inductive studies of multiracial neighborhoods since they study specific neighborhoods, often ones that explicitly developed around the shared value of diversity. Finally, the stated preferences for diverse neighbors expressed by whites might be more aspirational than actual. Havekes and colleagues showed that whites tended to restrict their searches to whiter neighborhoods at every stage of the search. Even so, it leaves the question whether whites who end up living in multiracial neighborhoods due to moves by people of color find satisfaction in neighborhoods that integrate around them.
+
+This study provides evidence to answer the question, "are residents satisfied in multiracial neighborhoods?," based on three analyses. First, I studied whether residents of multiracial neighborhoods were less satisfied with their neighborhoods than same-race counterparts in the larger metropolitan area. I tested whether Putnam's hypothesis of general discontentment or whether Abascal and Baldassare's hypothesis of discontentment being limited to whites held. Second, I studied satisfaction rates in multiracial neighborhoods, and I compared satisfaction rates among residents of multiracial neighborhoods. I examined whether a majority of residents were satisfied living in multiracial neighborhoods. I also tested whether residents identifying as different races have similar levels of satisfaction as more recent inductive research suggests, or whether whites are less satisfied than their neighbors of color as the defended neighborhood hypothesis suggests. Third, I studied whether whites were dissatisfied with neighborhood changes to test whether the whites in multiracial neighborhoods felt left behind, as the defended neighborhood hypothesis would also predict.
+
+
+
+
+
+
+
+
+
+
+
+## Social Disorganization and Constrict Hypotheses
+
+Current theories predict lower satisfaction in multiracial neighborhoods than other types of neighborhoods. 
+
+#. Race organizes society to such a strong degree that residents identifying with different races share so little in common with one another that racial integration undermines shared interests and reduces neighborhood cohesion. 
+#. Putnam argues that America looks like the rest of the world in this regard
+#. Other evidence, however, argues that the effect of multiracial integration seems limited to the US, and even in the US limited to whites.
+
+## Whites "Left Behind"
+
+One "mechanism" of lower segregation is that whites who remain in neighborhoods are especially unhappy.
+
+#. The lower satisfaction among whites comes from those "left behind" as the neighborhood changed around them. Potentially the *most* disgruntled because they feel animosity toward people of color who enter the neighborhood and more well-to-do whites that were able to leave.
+#. A large body of research on racial preferences also shows that whites overwhelmingly state preferences for neighborhoods with large proportions of whites (and are more satisfied). 
+
+# Emergent Research
+
+Emerging research on multiracial neighborhoods challenges these traditional theories of racial integration. 
+
+#. Studies of specific integrated neighborhoods show a general acceptance of multiracial integration. The value of integration is high enough that they are willing to forgo other amenities to keep integration.
+#. A literature drawing on broader samples shows a value placed on *multiracial* integration
+: Preferences for diverse neighborhoods might be more aspirational than actual. Havekes and colleagues showed that whites tended to restrict their searches to whiter neighborhoods at every stage of the search. Even so, it leaves the question whether whites who end up living in multiracial neighborhoods find satisfaction in those neighborhoods. Studies of racial preferences generally ask about what people would want, not their level of satisfaction living in multiracial neighborhoods and do not answer the question of satisfaction. 
+
+#. Revealed preferences show that many diverse neighborhoods remain integrated, show revealed preferences for divers neighborhoods in the face of trade-offs
+
+## Empirical Questions
+
+#. Are residents living in multiracial neighborhoods less satisfied living in multiracial neighborhoods than other residents are living in their neighborhoods? If so, are differences consistent by race?
+#. Are whites (or any other racial group) who live in multiracial neighborhoods less satisfied than their neighbors who identify as different races? 
+#. Are white (or any other racial group) residents of mulitracial neighborhoods dissatisfied with the direction of their neighborhood?
+
+
+
+
+
+
 
 # Neighborhood Satisfaction in Racially Integrated Neighborhoods
 
 Hard-won successes of the Civil Rights Movement during the 1960s made today's multiracial integration possible. The Fair Housing Act outlawed discrimination in real estate. While its impact was neither immediate nor universal, the Act provided a legal mechanism to challenge blatant forms of racial discrimination. Immigration reform reflected another success of the Civil Rights Movement that increased increased the diversity of the American populace through immigration from Latin America and Asia [@denton_patterns_1991; @frey_latino_1996; @singer_rise_2004]. Finally, the Civil Rights Movement helped to change white attitudes toward Blacks specifically and people of color generally [@schuman_racial_1997; @newport_u.s._2013]. 
 
 Despite the progress evident in the legacy of these laws and decreasing racial animosity, the US remains a segregated nation [@logan_persistence_2011; @madden_paradox_2018]. Where integration has taken root, it has germinated in formerly all-white neighborhoods as people of color have moved in [@logan_global_2010]. While some neighborhoods subsequently transitioned to have no whites, many others remained racially integrated [@bader_fragmented_2016; @wright_instability_2018]. Formerly all-white neighborhoods that underwent *multiracial* integration have been more likely to remain integrated compared to neighborhoods shared among only two groups [@logan_global_2010; @logan_global_2011]. 
+
+Demographic analyses of neighborhood change show that multiracial neighborhoods started appearing in the 1980s. Logan and Zhang identified neighborhoods based on a presence of Asian, Black, Latino, and white residents commensurate with their metropolitan composition. They termed those neighborhoods where all four groups were present "global neighborhoods" based on the common roots with the rise of "global cities" based on finance and international flows of trade \needcite[Sassen]. They estimated that 38 percent of neighborhoods in 2010 were global neighborhoods [@logan_global_2011]. Bader and Warkentien -@bader_fragmented_2016 used a model-based approach of classifying neighborhoods. They found that "quadrivial neighborhoods," those with stable or slow change in the percentage of Asian, Black, Latino, and white residents over four decades, made up between eight and twenty percent of neighborhoods in the metropolitan areas of the four largest US cities. 
+
+A growing number of qualitative studies provide further evidence of stable integration. Lumley-Sapanksi and Fowler -@lumley-sapanski_planning_2017 showed residents of all races were satisfied living in a "hyperdiverse" neighborhood in Seattle. Groups compromised with one another, getting some, but not all, of what they desired in order to maintain neighborhood diversity. Similarly, Spitz -@spitz_segregated_2015 finds that neighborhood residents value diversity in a multiracial neighborhood in Milwaukee. In both cases, residents were willing to trade off their optimal neighborhood conditions to sustain racial diversity. This was true even if residents lacked strong interpersonal bonds that bridged racial groups. These more recent studies echo Maly's -@maly_beyond_2005 argument that collective identities develop around racial diversity in integrated neighborhoods that help different groups feel satisfied living in multiracial neighborhoods [see also, @nyden_neighborhood_1998]. 
+
+The novelty of multiracial neighborhoods is a product of the changing significance of race in the United States. *Multiracial* integration only became possible on a large scale after the immigration reform policies passed in 1965 had time to take effect. The restrictionist immigration policies that preceded reform left race relations for most of the twentieth century to be defined as those between black and white residents. Race relations consisted of explicit white animosity and the subordination of black residents by individual and institutional actors. 
+
+
+
+
+
+, especially after World War II when white ethnics feared losing their newfound racial status. The period was also a time of suburban expansion that provided destinations where whites could flee [@jackson_crabgrass_1985; @boustan_was_2010], and political-economic power that had not yet shifted from the heavily unionized manufacturing sector of the Northeast and Midwest to service-sector economies on the coasts and across the Sunbelt [@sugrue_origins_1996]. 
+
+
+
+
+In short, it's unclear whether the same conditions hold that link racial integration to neighborhood dissatisfaction and racial transition. 
+
+## The Precariousness of Integration
+
+
+
+ findings all echoed what Friedman [-@friedman_declines_2008] had found: *multiracial* neighborhoods were more likely than black\slash white neighborhoods to remain integrated over time. 
+
+
+Researchers hoping to explain patterns of multiracial integration have a dearth of theoretical models from which to draw. Almost all theories of racial integration are based on evidence of integration among black and white residents in the middle of the 20th century. These theoretical models assume that race exerts such a large influence over social life that racial differences between incumbents and newcomers exacerbate the proposed processes and cause inevitable tension.
+
+
+Despite their differences, the three classes of theories above all imply that neighborhood change is fraught and expect tension between newcomers and incumbents. Race 
+
+
+These qualitative studies reveal a meaningful shortcoming of dominant theories. Namely, that interracial integration initiates inevitable racial change because race imposes such a strong barrier to social cohesion. The qualitative studies offer an alternative theory that *multiracial* diversity offers a new collective identity that helps to maintain residential stability. Neighbors have similar levels of satisfaction regardless of racial group. A collective identity forged around neighborhood diversity is strong enough that residents forgo some desirable amenities to maintain that identity. 
+
+
+Existing evidence already challenges the conclusion that integration leads to fraught neighbor relations, neighborhood dissatisfaction, and, ultimately, neighborhood racial transition. 
+
+
+
+
+Friedman's work, as well as the later confirmations, showed that most theories of integration have been based on two-group models of racial integration 
+
+Using a different method of classifying neighborhoods, 
+
+
+ represented 
+
+Demographic studies of integration provide further support for shared neighborhood satisfaction among residents of multiracial neighborhoods. Residents of all races appear to remain in neighborhoods that experience multiracial integration. The sustained integration is in contrast to neighborhoods shared between two groups, especially Black and white residents, that to not tend to remain integrated over time. 
+
+
+
+Qualitative studies of 
 
 ## Change-Based Theories of Racial Integration
 
@@ -54,11 +208,13 @@ Despite their differences, the three classes of theories above all imply that ne
 
 Evidence that racial change inherently destabilizes neighborhoods and leads to dissatisfaction and instability has been based on the specific historical context of race in the United States. The original Chicago School authors were observing massive waves of immigration from Europe and migration from the South that created unprecedented growth in American cities. Restrictionist immigration policies left race relations for most of the twentieth century to be defined by the subjugation of Blacks by whites. This period of explicit white animosity based in part on the fear among white ethnics of losing newfound racial status, suburban expansion that provided destinations where whites could flee [@jackson_crabgrass_1985; @boustan_was_2010], and political-economic power that had not yet shifted from the heavily unionized manufacturing sector of the Northeast and Midwest to service-sector economies on the coasts and across the Sunbelt [@sugrue_origins_1996]. In short, it's unclear whether the same conditions hold that link racial integration to neighborhood dissatisfaction and racial transition. 
 
-Existing evidence already challenges the conclusion that integration leads to fraught neighbor relations, neighborhood dissatisfaction, and, ultimately, neighborhood racial transition. Lumley-Sapanksi and Fowler -@lumley-sapanski_planning_2017 showed residents of all races were satisfied living in a "hyperdiverse" neighborhood in Seattle. Groups compromised with one another, getting some, but not all, of what they desired in order to maintain neighborhood diversity. Similarly, Spitz -@spitz_segregated_2015 finds that neighborhood residents value diversity in a multiracial neighborhood in Milwaukee. In both cases, residents were willing to trade off their optimal neighborhood conditions to sustain racial diversity. This was true even if residents lacked strong interpersonal bonds that bridged racial groups. These more recent studies echo Maly's -@maly_beyond_2005 argument that collective identities develop around racial diversity in integrated neighborhoods that help different groups feel satisfied living in multiracial neighborhoods [see also, @nyden_neighborhood_1998]. 
 
-These qualitative studies reveal a meaningful shortcoming of dominant theories. Namely, that interracial integration initiates inevitable racial change because race imposes such a strong barrier to social cohesion. The qualitative studies offer an alternative theory that *multiracial* diversity offers a new collective identity that helps to maintain residential stability. Neighbors have similar levels of satisfaction regardless of racial group. A collective identity forged around neighborhood diversity is strong enough that residents forgo some desirable amenities to maintain that identity. 
 
-Demographic studies of integration provide further support for shared neighborhood satisfaction among residents of multiracial neighborhoods. Residents of all races appear to remain in neighborhoods that experience multiracial integration. The sustained integration is in contrast to neighborhoods shared between two groups, especially Black and white residents, that to not tend to remain integrated over time. 
+
+
+
+
+
 
 The combination of these two lines of research evince the possibility that multiracial neighborhoods inspire widespread satisfaction based on a collective identity of neighborhood diversity. It is possible, however, that some residents, especially whites, remain in neighborhoods out of necessity not desire. The qualitative studies cited above show that whites are satisfied in urban and older suburban settings, but do not capture the breadth of multiracial neighborhoods across metropolitan areas. I test the theory that residents are sufficiently satisfied living in multiracial neighborhoods to provide the basis for stable integration. I use data from a sample representing all residents of multiracial neighborhoods in the Washington, DC area to test what I will call the multiracial satisfaction hypothesis: 
 
