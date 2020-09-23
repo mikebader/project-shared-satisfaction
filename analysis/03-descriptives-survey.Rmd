@@ -162,16 +162,37 @@ descriptive.table(
     fname   = 'tables/descriptives_dcas16.tex',
     caption = paste("Means and standard deviations of independent and",
                     "control variables, DCAS2016 multiracial",
-                    "neighborhood sample"),
+                    "neighborhood sample (N=", nrow(dcas16svy$designs$imp1),
+                    ")"),
     lab     = "tab:descriptives16"
 )
 descriptive.table(
     table   = descriptive_tbls[["d18"]],
     fname   = 'tables/descriptives_dcas18.tex',
     caption = paste("Means and standard deviations of independent and",
-                    "control variables, DCAS2018 sample"),
+                    "control variables, DCAS2018 sample  (N=",
+                    nrow(dcas18svy$designs$imp1),")"),
     lab     = "tab:descriptives18"
 )
 
                     
 ```
+
+Missingness of education and income in 2016 and 2018.
+
+: 
+    ```{r surveys-missing}
+    mi16 <- apply(sapply(dcas16[, c("educ", "dem.income.cat4")], is.na), 2, sum)
+    mi18 <- apply(sapply(dcas18[, c("educ", "income")], is.na), 2, sum)
+    
+    tibble(
+        year = c("2016", "2018"),
+        educ_mi = c(mi16[1], mi18[1]),
+        educ_pct = round(c(mi16[1]/nrow(dcas16), mi18[1]/nrow(dcas18))*100, 1),
+        inc_mi = c(mi16[2], mi18[2]),
+        inc_pct = round(c(mi16[2]/nrow(dcas16), mi18[2]/nrow(dcas18))*100, 1)
+    )
+
+    ```
+
+    
