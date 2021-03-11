@@ -1,5 +1,6 @@
 ---
 title: Shared Satisfaction among Residents Living in Multiracial Neighborhoods
+date: September 2020
 author:  Michael D.`\`{=latex} M.`\`{=latex} Bader
 shorttitle: Shared Satisfaction in Multiracial Neighborhoods
 abstract: |
@@ -245,26 +246,32 @@ Finally, the DC area suggests that studies of *suburban* integration should also
 
 This article finds that a large share of residents are satisfied living in multiracial neighborhoods and, more importantly, that Asian, Black, Latino, and white residents express satisfaction in equal proportions. This study contributes to a growing literature that shows that residents across races share similar levels of satisfaction in multiracial neighborhoods. It does so using a study representative of residents in multiracial neighborhoods that allows the claim to be more general than past studies allowed. Multiracial neighborhoods, especially those in the suburbs, should be studied more frequently to explain the contemporary relationship between race and place. In doing so, studies will likely break with traditional theories of racial change in ways that may promote racial equity.
 
+\clearpage 
+
+# References
+
+::: {#refs}
+:::
 
 \clearpage
 
 # Tables
 
-\input{../../../analysis/tables/theory.tex}\clearpage
+\input{../analysis/tables/theory.tex}\clearpage
 
-\input{../../../analysis/tables/descriptives_dcas16.tex}\clearpage
+\input{../analysis/tables/descriptives_dcas16.tex}\clearpage
 
-\input{../../../analysis/tables/nhood_descriptives.tex}\clearpage
+\input{../analysis/tables/nhood_descriptives.tex}\clearpage
 
-\input{../../../analysis/tables/descriptives_dcas18.tex}\clearpage
+\input{../analysis/tables/descriptives_dcas18.tex}\clearpage
 
-\input{../../../analysis/tables/within_descriptives.tex}\clearpage
+\input{../analysis/tables/within_descriptives.tex}\clearpage
 
-\input{../../../analysis/tables/within.tex}\clearpage
+\input{../analysis/tables/within.tex}\clearpage
 
-\input{../../../analysis/tables/between_descriptives.tex}\clearpage
+\input{../analysis/tables/between_descriptives.tex}\clearpage
 
-\input{../../../analysis/tables/change.tex}\clearpage
+\input{../analysis/tables/change.tex}\clearpage
 
 
 
@@ -274,7 +281,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Map of sampled tracts in 2016 DC Area Survey}
 \label{fig:map}
-\includegraphics[width=6in]{../../../analysis/images/DCASCommunityMap.png}
+\includegraphics[width=6in]{../analysis/images/DCASCommunityMap.png}
 \end{figure}
 
 \clearpage
@@ -282,7 +289,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Marginal effects of race on being satisfied in multiracial neighborhoods compared to white residents of multiracial neighborhoods}
 \label{fig:within}
-\includegraphics[width=6in]{../../../analysis/images/marginal_effects_within.png}
+\includegraphics[width=6in]{../analysis/images/marginal_effects_within.png}
 \end{figure}
 
 \clearpage
@@ -290,7 +297,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Predicted probability of neighborhood satisfaction among residents of multiracial neighborhoods and the DC area}
 \label{fig:between}
-\includegraphics[width=6in]{../../../analysis/images/predicted_between.png}
+\includegraphics[width=6in]{../analysis/images/predicted_between.png}
 \end{figure}
 
 \clearpage
@@ -298,9 +305,5 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Percent of respondents who report how neighborhood has changed in past five years by race}
 \label{fig:change}
-\includegraphics[width=6in]{../../../analysis/images/nhood_change.png}
+\includegraphics[width=6in]{../analysis/images/nhood_change.png}
 \end{figure}
-
-\clearpage
-
-# References
