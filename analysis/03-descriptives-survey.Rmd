@@ -195,4 +195,21 @@ Missingness of education and income in 2016 and 2018.
 
     ```
 
-    
+## Assign labels to be used throughout analyses
+
+```{r assign-labels}    
+## Race labels and variable levels
+racelabs <- c("Asian", "Black", "Latino", "White")
+racelevs <- c("all", "asian", "black", "latino", "white")
+
+## Labels for regression tables
+regression_labels <- c('Asian','Black','Latinx',
+                       'Age','Foreign Born','Male',
+                       'Children Present', 'Married',
+                       levels(dcas16$dem.educ.attain)[c(1,3:5)],
+                       # levels(dcas$dem.income.cat4)[c(1,3:4)],
+                       'Home owner',
+                       'Years in neighborhood',
+                       '10-50 blocks', '>50 blocks')
+
+```

@@ -3,7 +3,7 @@ rmd_files: [
     "02-descriptives-dcarea.Rmd",
     "01-variable-data-construction.Rmd",
     "03-descriptives-survey.Rmd",
-    "04-analysis-between.Rmd",
     "05-analysis-within.Rmd",
+    "04-analysis-between.Rmd",
     "06-robustness-change.Rmd"
     ]

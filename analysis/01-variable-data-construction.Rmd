@@ -439,6 +439,51 @@ dcas18svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
 
 ```
 
+## Center Variables
+Center all variables on their DC-area-wide values (estimated using the DCAS 2018 data) in order to create comparable regression values across the two data sets, Subtract the mean of the weighted DCAS 2018 variables from the corresponding variables in both the DCAS 2016 (multiracial neighborhoods) and DCAS 2018 (DC-area) data. This sets the intercept across the two data sets at a corresponding value that represents a white resident with DC-area-wide mean values on all other measures. 
+
+```{r scale-variables}
+vars <- c("age", "forborn", "man", "kids", "married", "own", "nhdyrs")
+mu18 <- lapply(vars, function(var){
+    fm <- as.formula(paste("~", var))
+    mu <- coef(MIcombine(with(dcas18svy, svymean(fm, na.rm=TRUE))))
+    if(length(mu)==1) return(mu[[1]])
+    return(mu[[grep("TRUE$", names(mu))]])
+})
+names(mu18) <- vars
+educ <- coef(MIcombine(with(dcas18svy, svymean(~educ, na.rm=TRUE))))
+mu18[paste0("educ", 1:5)] <- educ
+nhdsize <- coef(MIcombine(with(dcas18svy, svymean(~nhdsize, na.rm=TRUE))))
+mu18[paste0("nhdsize", 1:3)] <- nhdsize
+
+
+svy.center <- function(df) {
+    df %>% update(
+        agec       = age - mu18[["age"]],
+        forbornc   = as.integer(forborn) - mu18[["forborn"]],
+        manc       = as.integer(man) - mu18[["man"]],
+        kidsc      = as.integer(kids) - mu18[["kids"]],
+        marriedc   = as.integer(married) - mu18[["married"]],
+        educall    = model.matrix(~educ),
+        educ1c     = educall[, 2] - mu18[["educ1"]],
+        educ3c     = educall[, 3] - mu18[["educ3"]],
+        educ4c     = educall[, 4] - mu18[["educ4"]],
+        educ5c     = educall[, 5] - mu18[["educ5"]],
+        educall    = 1,
+        ownc       = as.integer(own) - mu18[["own"]],
+        nhdyrsc    = nhdyrs - mu18[["nhdyrs"]],
+        nhdsizeall = model.matrix(~nhdsize),
+        nhdsize2c  = nhdsizeall[, 2] - mu18[["nhdsize2"]],
+        nhdsize3c  = nhdsizeall[, 3] - mu18[["nhdsize3"]],
+        nhdsizeall = 1
+    ) 
+}
+dcas16svy <- svy.center(dcas16svy)
+dcas18svy <- svy.center(dcas18svy)
+
+```
+
+## Save Data
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
 ```{r save-data}
