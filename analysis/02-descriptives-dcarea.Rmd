@@ -224,7 +224,7 @@ dcarea <- dcarea %>% mutate(
     race.pnhw = pnhw15 * 100
 ) %>%
     select(GISJOIN, totpop15, pchildpres, pfborn, pmarried, mdage15,
-           starts_with('peduc'), starts_with('race'), quad15)
+           starts_with('peduc'), starts_with('race'), quad15, nhw15)
 
 ## CONSTRUCT TABLE
 ## Define list of variables in desired display order

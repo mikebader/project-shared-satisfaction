@@ -305,6 +305,69 @@ table(dcas18[, c('nhdsizebak','nhdsize')], useNA="always") #Check variable
 
 ```
 
+## Add Neighborhood Context onto Survey Data
+
+Create variables containing neighborhood racial composition types by Census tract. These will be used to analyze data by different racial compositions in 2015. 
+
+```{r racial-composition-types}
+dcarea <- dcarea %>%
+    mutate(
+        w = race.pnhw >= 10,
+        b = race.pnhb >= 10,
+        l = race.phsp >= 10,
+        a = race.papi >= 10,
+        q = quad15 == TRUE,
+
+        nhdtype = '',
+        nhdtype = ifelse(w, 'w', nhdtype),
+        nhdtype = ifelse(b, paste0(nhdtype,'b'), nhdtype),
+        nhdtype = ifelse(l, paste0(nhdtype,'l'), nhdtype),
+        nhdtype = ifelse(a, paste0(nhdtype,'a'), nhdtype),
+        nhdtype = ifelse(race.pnhw > 50, 'w', nhdtype),
+        nhdtype = ifelse(race.pnhb > 50, 'b', nhdtype),
+        nhdtype = ifelse(race.phsp > 50, 'l', nhdtype),
+        nhdtype = ifelse(race.papi > 50, 'a', nhdtype),
+        nhdtype = ifelse(quad15, 'quad', nhdtype),
+        
+        wtype = ifelse(nhdtype=='quad', 'quad', ''),
+        wtype = ifelse(nhdtype=='w', 'white', wtype),
+        wtype = ifelse(wtype=='' & grepl('w\\w{1}$', nhdtype), 'white-1', wtype),
+        wtype = ifelse(wtype=='' & grepl('w\\w{2}$', nhdtype), 'white-2', wtype),
+        wtype = ifelse(wtype=='', 'non-white', wtype)
+    )
+```
+
+Append the LTDB 2000 values of Census characteristics and the 2015 values of ACS characterisitcs to each of the DCAS dataframes. The code below constructs a variable, `lntotchg`, that equals the natural log of the change in the non-Hispanic white population from 2000 to 2015. This creates a linearly scaled variable that measures change in the white population that accounts for the size of neighborhoods. 
+The 2018 DCAS requires an additional step of appending a list of block-groups for each respondent and then merging based on tracts of sampled respondents.
+
+```{r nhood-context}
+## Load LTDB 2000 and merge into DC Area neighborhood tract-level dataset
+ltdb <- read_csv('../data/ltdb_std_2000_fullcount.csv',
+                 col_types = cols(TRTID10 = 'c')) %>%
+    rename_with(tolower) 
+
+nhoods <- dcarea %>%
+    mutate(trtid10 = sub('G(\\d{2})0(\\d{3})0(\\d{6})', '\\1\\2\\3', GISJOIN)) %>%
+    left_join(select(ltdb, trtid10, nhwht00), by='trtid10') %>%
+    mutate(lntotchg = log(nhw15/nhwht00))
+
+## Merge combined 2000 Census/2015 ACS data into 2016 DC Area Survey data
+dcas16 <- dcas16 %>%
+    mutate(trtid10 = sample_tract) %>%
+    left_join(nhoods, by='trtid10')
+    
+
+## Merge combined 2000 Census/2015 ACS data into 2018 DC Area Survey data
+dcas18bg_fname <- 'dcas2018/source/CensusBlockData_R1049.xlsx'
+dcas18bg <- readxl::read_xlsx(paste0(dataDIR, dcas18bg_fname)) %>%
+    rename_with(tolower) 
+
+dcas18 <- dcas18 %>%
+    full_join(dcas18bg, by='rid') %>%
+    mutate(trtid10 = substr(cbg, 1, 11)) %>%
+    left_join(nhoods, by='trtid10') 
+```
+
 ## Data Imputation and Weighting
 
 Select variables to keep that will be used in analysis. Define vectors of identification and numeric variables that will be used for imputation. 
@@ -356,6 +419,8 @@ Create five imputation datasets of survey-weighted data and assign to object `dc
 ```{r weights-assign}
 set.seed(214518)
 idvars <- c('satisfied', 'better', 'anarace')
+nhoodvars <- c('nhwht00', 'lntotchg', 'nhdtype', 'wtype')
+idvars <- c(idvars, nhoodvars)
 dcas16 <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
     mutate(sample_tract=factor(sample_tract))
 dcas16mi <- amelia(dcas16[dcas16$neighborhood=="Global Neighborhood", 

@@ -1,7 +1,7 @@
 rmd_files: [
     "index.Rmd",
-    "01-variable-data-construction.Rmd",
     "02-descriptives-dcarea.Rmd",
+    "01-variable-data-construction.Rmd",
     "03-descriptives-survey.Rmd",
     "04-analysis-between.Rmd",
     "05-analysis-within.Rmd",
