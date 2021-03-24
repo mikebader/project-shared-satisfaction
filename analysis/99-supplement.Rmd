@@ -121,9 +121,115 @@ gsub("```(.+\\n)?", "", to_latex(chgtert_tbl), perl=TRUE) %>%
 chgtert_tbl
 
 ```
+
 ## Between Neighborhood Analysis
 
-**TODO: Analyze regression of satisfaction in DCAS 2018 including entropy or HHI as a covariate in the model to test relationship of diversity to satisfaction.**
+### Satisfaction in DC Area by neighborhood entropy
+
+The following analysis examines whether neighborhood entropy predicts satisfaction among residents of the DC area broadly. The analysis uses the 2018 data and interacts neighborhood entropy by individual respondent race. 
+
+```{r supp-entropy-dcas2018, warning=FALSE}
+## Warnings are suppressed
+## Define models and estimate parameters
+m5bn <- paste(m3bn, "+ H*raceeth")
+
+m518 <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m5bn)), family=binomial)
+    )
+
+raceixn_labs <- c("", "x Asian", "x Black", "x Latinx")
+entropy_tbl <- report_models(
+    MIcombine_aic(m518), 
+    reglabels = c(regression_labels,paste("Entropy", raceixn_labs)),
+    caption = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "of models estimating neighborhood satisfaction among DC-area", 
+        "residents including entropy index"
+    ),
+    label = "tbl:entropy"
+)
+entropy_tbl
+```
+
+### Differences in white population change between multiracial and other neighborhoods
+
+Describe the different distributions of neighborhood change in the white population. \@ref(fig:supp-lntochg-plt) plots the distribution of the logged change ratio of whites in 2015 to whites in 2000. 
+
+```{r supp-white-change}
+stacked <- select(dcas16, lntotchg) %>% 
+    mutate(year = 2016) %>%
+    bind_rows(select(dcas18, lntotchg) %>% mutate(year = 2018))
+
+kable(bind_rows(
+    summary(dcas16$lntotchg[!is.infinite(dcas16$lntotchg)]),
+    summary(dcas18$lntotchg[!is.infinite(dcas18$lntotchg)])
+), digits = 2)
+
+lntotchg_plt <- ggplot(stacked, aes(x=lntotchg)) +
+    geom_histogram(binwidth=.125) +
+    scale_x_continuous(limits = c(-3, 7.5), breaks=-7:7) +
+    facet_wrap(~year, ncol = 1) +
+    labs(
+        title="Distribution of logged ratio of white population, 2015 to 2000",
+        x = "Logged ratio of white change",
+        y = "Count"
+    ) +
+    theme_minimal()
+
+```
+
+```{r supp-lntochg-plt, echo=FALSE, fig.cap="Distribution of logged ratio of white population, 2015 to 2000"}
+lntotchg_plt
+```
+
+Examine the association between entropy and neighborhood satisfaction by race among the entire DC area population using the DCAS 2018 data. This provides a sense of whether residents respond to neighborhood diversity differently by race. 
+
+```{r supp-lntotchg, warning=FALSE}
+## Warnings are suppressed
+## Create datasets that remove impossible values of lntotchg
+dcas16svyln <- subset(dcas16svy, !is.infinite(lntotchg))
+dcas18svyln <- subset(dcas18svy, !is.infinite(lntotchg))
+
+mean18 <- with(dcas18svyln, svymean(~lntotchg)) %>% MIcombine() %>% coef()
+var18  <- with(dcas18svyln, svyvar(~lntotchg)) %>% MIcombine() %>% coef()
+
+dcas16svyln <- update(dcas16svyln, whiterat = (lntotchg - mean18)/var18)
+dcas18svyln <- update(dcas18svyln, whiterat = (lntotchg - mean18)/var18)
+
+## Estimate models of satisfaction with interactions by white change
+m6bn <- paste(m3bn, "+ whiterat")
+m7bn <- paste(m3bn, "+ whiterat*raceeth")
+
+m616 <- with(dcas16svyln, svyglm(
+    as.formula(paste('satisfied ~', m6bn)), family=binomial)
+)
+m716 <- with(dcas16svyln, svyglm(
+    as.formula(paste('satisfied ~', m7bn)), family=binomial)
+)
+
+m618 <- with(dcas18svyln, svyglm(
+    as.formula(paste('satisfied ~', m6bn)), family=binomial)
+)
+m718 <- with(dcas18svyln, svyglm(
+    as.formula(paste('satisfied ~', m7bn)), family=binomial)
+)
+
+bn2018_supp_tbl <- report_models(
+    MIcombine_aic(m616), MIcombine_aic(m716), 
+    MIcombine_aic(m618), MIcombine_aic(m718),
+    reglabels = c(regression_labels,
+                  paste("Logged white change", raceixn_labs)),
+    caption=paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "of models estimating neighborhood satisfaction among", 
+        "residents of multiracial neighborhoods and the DC-area, including",
+        "logged change ratio of white population" 
+    ),
+    label="tbl:lnchgtot"
+)
+bn2018_supp_tbl
+
+```
 
 ## Neighborhood Change Robustness Analysis
 

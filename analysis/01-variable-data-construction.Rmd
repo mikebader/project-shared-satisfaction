@@ -333,8 +333,19 @@ dcarea <- dcarea %>%
         wtype = ifelse(nhdtype=='w', 'white', wtype),
         wtype = ifelse(wtype=='' & grepl('w\\w{1}$', nhdtype), 'white-1', wtype),
         wtype = ifelse(wtype=='' & grepl('w\\w{2}$', nhdtype), 'white-2', wtype),
-        wtype = ifelse(wtype=='', 'non-white', wtype)
-    )
+        wtype = ifelse(wtype=='', 'non-white', wtype),
+        
+        across(starts_with('race'), ~ifelse(.==0, 0, log(./100)), 
+               .names='ln{.col}'),
+        H = (-1 * (exp(lnrace.pnhw) * lnrace.pnhw +
+                   exp(lnrace.pnhb) * lnrace.pnhb +
+                   exp(lnrace.phsp) * lnrace.phsp +
+                   exp(lnrace.papi) * lnrace.papi  )) / log(4),
+        Hc= (H - mean(H)) / sd(H)
+                
+                
+    ) %>%
+    select(-starts_with('lnrace'))
 ```
 
 Append the LTDB 2000 values of Census characteristics and the 2015 values of ACS characterisitcs to each of the DCAS dataframes. The code below constructs a variable, `lntotchg`, that equals the natural log of the change in the non-Hispanic white population from 2000 to 2015. This creates a linearly scaled variable that measures change in the white population that accounts for the size of neighborhoods. 
@@ -419,7 +430,7 @@ Create five imputation datasets of survey-weighted data and assign to object `dc
 ```{r weights-assign}
 set.seed(214518)
 idvars <- c('satisfied', 'better', 'anarace')
-nhoodvars <- c('nhwht00', 'lntotchg', 'nhdtype', 'wtype')
+nhoodvars <- c('nhwht00', 'lntotchg', 'nhdtype', 'wtype', 'H', 'Hc')
 idvars <- c(idvars, nhoodvars)
 dcas16 <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
     mutate(sample_tract=factor(sample_tract))

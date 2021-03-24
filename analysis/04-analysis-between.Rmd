@@ -112,11 +112,11 @@ Developed the model for each DCAS in a series of three steps to understand what 
 3. Race, individual demographic characteristics, and neighborhood experience (home ownership, years in the neighborhood, and perceived neighborhood size)
 
 ```{r bn-regression-development}
-m1 <- "raceeth"
-m2 <- paste(m1, "+ agec + forbornc + manc + kidsc + marriedc"
+m1bn <- "raceeth"
+m2bn <- paste(m1bn, "+ agec + forbornc + manc + kidsc + marriedc"
             ,"+ educ1c + educ3c + educ4c + educ5c"
             )
-m3 <- paste(m2, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
+m3bn <- paste(m2bn, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
 
 ```
 
@@ -128,15 +128,15 @@ Conduct the analyses for the three models for residents living in multiracial ne
 ## Multiracial Neighborhood Residents
 ## Note: "non-integer #successes" warnings suppressed
 m116 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m1)), family=binomial)
+    as.formula(paste('satisfied ~', m1bn)), family=binomial)
     )
 
 m216 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m2)), family=binomial)
+    as.formula(paste('satisfied ~', m2bn)), family=binomial)
     )
 
 m316 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m3)), family=binomial)
+    as.formula(paste('satisfied ~', m3bn)), family=binomial)
     )
 
 bn2016_tbl <- report_models(
@@ -155,15 +155,15 @@ Conduct the analyses for the three models for all residents of the DC area. Para
 ## DC-Area Residents
 ## Note: "non-integer #successes" warnings suppressed
 m118 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m1)), family=binomial)
+    as.formula(paste('satisfied ~', m1bn)), family=binomial)
     )
 
 m218 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m2)), family=binomial)
+    as.formula(paste('satisfied ~', m2bn)), family=binomial)
     )
 
 m318 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m3)), family=binomial)
+    as.formula(paste('satisfied ~', m3bn)), family=binomial)
     )
 
 bn2018_tbl <- report_models(
@@ -204,7 +204,7 @@ bn_tbl
 Compare the predicted values of percent of multiracial neighborhood residents satisfied to the percent of DC-area residents satisfied with their neighborhood by race. Calculate predicted values of satisfaction at the intercept, which represents the weighted mean values of variables from the DCAS 2018 data. 
 
 ```{r bn-predicted-values}
-varnames <- str_match_all(m3, "\\w+")[[1]][-1]
+varnames <- str_match_all(m3bn, "\\w+")[[1]][-1]
 pred316 <- MIpredict(m316, at="intercept", vars = varnames)
 pred318 <- MIpredict(m318, at="intercept", vars = varnames)
 bn_pred_tbl <- tibble(pred316$raceeth, pred316$p*100, pred318$p*100, 
