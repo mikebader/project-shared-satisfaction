@@ -7,11 +7,126 @@
 ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
 ```
 
+## Within Neighborhood Robustness Analysis
+
+To address the concerns of reviewers that the findings reflect those whites willing to stay (or those who sought out diversity), I stratify models based on tertiles of the logged total change ratio in the white population from 2000 to 2015 (i.e., $\ln(POP_{2015}/POP_{2000}$). 
+
+```{r supp-lntotchg-tertiles}
+sampled_nhoods <- dcas16 %>%
+    group_by(sample_tract) %>%
+    slice(1L) %>%
+    ungroup()
+
+chgsum <- summary(sampled_nhoods$lntotchg)
+chgtertiles <- quantile(sampled_nhoods$lntotchg, probs = seq(0, 1, 1/3))
+
+```
+
+I collapsed the dataset into a neighborhood-level dataset and then calculated tertiles of change based on the distribution of neighborhood white population change. The average neighborhood in the dataset kept `r round(exp(chgsum['Mean']), 2)*100` of its white residents (median = `r round(exp(chgsum['Median']), 2)*100`). The bands for the white population ratio in each tertile are: 
+
+Tertile  Range of change ratio
+-------- -------------------------------------------------------------------------
+First    `r paste(sapply(chgtertiles[1:2], function(x) round(exp(x),2)), collapse ="-")`
+Second   `r paste(sapply(chgtertiles[2:3], function(x) round(exp(x),2)), collapse ="-")` 
+Third    `r paste(sapply(chgtertiles[3:4], function(x) round(exp(x),2)), collapse ="-")`
+
+The distribution of neighborhood-level white population change can be seen in \@fig:supp-chgtert with the tertile breaks labeled in orange. 
+
+```{r supp-chgtert, fig.cap="Distribution of neighborhood white population change"}
+qplot(sampled_nhoods$lntotchg, bins=40) +
+    geom_vline(aes(xintercept = chgtertiles[2:3]), color='orange') +
+    scale_x_continuous(breaks=seq(-2,2,.5), limits=c(-1.75,1.75)) +
+    labs(
+        title='Distribution of logged population change ratio of whites',
+        y = 'N',
+        x = 'Logged white population change ratio'
+    ) +
+    theme_minimal()
+```
+
+Subset the DCAS 2016 data into three datasets, each containing data from one of the three tertiles. 
+
+```{r supp-lntotchg-data}
+dcas16svy <- dcas16svy %>%
+    update(
+        chgtert = factor(
+                cut(lntotchg, breaks = chgtertiles, include.lowest = TRUE),
+                labels = as.character(1:3)
+            )
+        )
+
+svytert <- lapply(as.character(1:3), function(t){
+    subset(dcas16svy, chgtert==t) %>%
+        update(sample_tract = factor(as.character(sample_tract)))
+})
+```
+
+Estimate model parameters and standard errors for the complete model and the model without race. These correspond to columns (2) and (3) in Table 6 of the manuscript (the strings stored in objects `m3` and `m4` contain the formulas for these two models). Report parameter estimates and standard errors into a table. 
+
+```{r supp-lntotchg-analysis}
+## Function to gather and tidy imputed results and report summary statistics
+combine_tertiles <- function(res){
+    lapply(res, function(res){
+        cmb <- MIcombine_aic(res)
+        nobs <- nrow(res[[1]]$data)
+        cmb$nobs <- nobs
+        return(cmb)
+    })
+}
+
+## Estimate parameters of full model
+m3tert <- lapply(svytert, function(svy){
+    with(svy, svyglm(
+        as.formula(paste('satisfied ~', m3)), family=binomial)
+    )
+})
+m3comb <- combine_tertiles(m3tert)
+
+## Estimate parameters of model without race
+m4tert <- lapply(svytert, function(svy){
+    with(svy, svyglm(
+        as.formula(paste('satisfied ~', m4)), family=binomial)
+    )
+})
+m4comb <- combine_tertiles(m4tert)
+
+## Report models
+chgtert_tbl <- report_models(
+    m3comb[[1]], m4comb[[1]], m3comb[[2]], m4comb[[2]], m3comb[[3]], m4comb[[3]],
+    caption = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "from models estimating neighborhood satisfaction among residents", 
+        "of mulitracial neighborhoods by tertile of white population change"
+        ),
+    label = "tab:within",
+    reglabels = regression_labels,
+    use.headers = TRUE
+)
+statrow <- nrow(chgtert_tbl)-3
+chgtert_tbl <- chgtert_tbl %>%
+    insert_row(c("Tract fixed effects", rep("X", 6)),after=statrow) %>%
+    set_top_border(statrow+1, everywhere, TRUE) %>%
+    set_top_border(statrow+2, everywhere, FALSE) %>% 
+    insert_row(c("", "First", "", "Second", "", "Third", ""), after=0) %>%
+    merge_cells(1, c(2:3)) %>% 
+    merge_cells(1, c(4:5)) %>%
+    merge_cells(1, c(6:7)) %>%
+    set_align(1, everywhere, 'center') %>%
+    set_bottom_border(2, everywhere, TRUE) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+chgtert_tbl[2,] <- c("", "(2)", "(3)", "(2)", "(3)", "(2)", "(3)")
+gsub("```(.+\\n)?", "", to_latex(chgtert_tbl), perl=TRUE) %>% 
+    cat(file="tables/within-by-change.tex")
+chgtert_tbl
+
+```
 ## Between Neighborhood Analysis
 
 **TODO: Analyze regression of satisfaction in DCAS 2018 including entropy or HHI as a covariate in the model to test relationship of diversity to satisfaction.**
 
-## Neighborhood Change Analysis
+## Neighborhood Change Robustness Analysis
+
 ### Multinomial Logistic Regression of Neighborhood Change Questions
 ```{r improvement-analysis-multinomial}
 library(svrepmisc)

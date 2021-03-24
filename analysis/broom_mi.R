@@ -34,8 +34,8 @@ nobs.MIresult <- function(x) {
 }
 
 glance.MIresult <- function(x) {
-    output <- data_frame(AIC = x$aic$mean, aic_v = x$aic$var,
-                         N = nobs(x))
+    output <- data_frame(AIC = x$aic$mean, aic_v = x$aic$var)
+    output$N <- ifelse(any(grepl('nobs', names(x))), x$nobs, nobs(x))
     class(output) <- "data.frame"
     output
 }
