@@ -12,7 +12,7 @@ report_models <- function(
     }
     ht <- huxreg(..., statistics=c("N", "AIC"), align='.', borders=0)
     if(length(fe_rows(ht)) > 1) ht <- ht[-1*fe_rows(ht),]
-    ht[seq(4,(length(reglabels)+1)*2,2), 1] <- reglabels
+    if(length(reglabels) > 0) ht[seq(4,(length(reglabels)+1)*2,2), 1] <- reglabels
     last.row <- nrow(ht)
     ncols <- ncol(ht)
     ht <- ht %>%

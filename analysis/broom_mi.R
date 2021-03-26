@@ -1,6 +1,6 @@
 MIcombine_aic <- function(m) { ## Combines imputations, including AIC
     mi <- MIcombine(m)
-    if(m[[1]]$aic) {
+    if(!is.null(m[[1]]$aic)) {
         aics <- sapply(m, function(x) x$aic)
         mi$aic <- list(mean=mean(aics), var=var(aics))
     }

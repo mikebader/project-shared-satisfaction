@@ -122,6 +122,127 @@ chgtert_tbl
 
 ```
 
+The second robustness analysis considers length of residence in neighborhoods by race. Figure \@ref(fig:supp-nhdyrs-race) plots the distribution of years lived in their current neighborhood by the race of the respondent. Whites exclusively account for residents who have lived in neighborhoods longer than 40 years. Yet most respondents, *even half of white respondents*, moved into their neighborhoods in the past 10 years. 
+
+```{r supp-nhdyrs-race, fig.cap="Distribution of years lived in current neighborhood by race"}
+names(racelabs) <- racelevs[-1]
+nhdyrs_race_plt <- ggplot(filter(dcas16, !is.na(raceeth)), aes(x=nhdyrs)) +
+    geom_bar() +
+    scale_x_continuous(breaks = seq(0, 60, 5)) +
+    facet_wrap(~raceeth, ncol=1, labeller = labeller(raceeth = racelabs)) +
+    labs(
+        title = "Distribution of years lived in current neighborhood by race",
+        x = "Years lived in neighborhood"
+    ) +
+    theme_minimal()
+nhdyrs_race_plt
+```
+
+```{r supp-nhdyrs-race-tbl, echo=FALSE}
+dcas16svy <- dcas16svy %>%
+    update(nhdyrscat = cut(nhdyrs, 
+                           breaks=c(0,10,20,30,40,60), include.lowest = TRUE))
+tbl <- with(dcas16svy,
+            svyby(~nhdyrscat, ~raceeth, svymean))%>%
+    MIcombine() %>% 
+    coef() %>%
+    matrix(nrow=4, byrow=FALSE)
+rownames(tbl) <- racelabs[c(4, 1:3)]
+colnames(tbl) <- levels(dcas16svy$designs[[1]]$variables$nhdyrscat)
+
+kable(tbl, 
+      caption="Years lived in current neighborhood by race",
+      label = 'tbl:nhdyrs-race')
+```
+
+Figure \@ref(fig:supp-satisfied-years-whites) shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 20 to 40 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
+
+```{r supp-satisfied-years-whites, fig.cap="Percent (unweighted) of white residents reporting being satisfied in multiracial neighborhoods by length of residence in neighborhoods"}
+nhwsat_nhdyrs_fig <- ggplot(filter(dcas16, raceeth=='white'), 
+       aes(x=nhdyrs, y=satisfied)) +
+    geom_smooth(color='#333333') +
+    scale_x_continuous(breaks=seq(0,60,10)) +
+    scale_y_continuous(breaks=seq(0.2,1.0,0.1)) +
+    theme_minimal()
+nhwsat_nhdyrs_fig 
+
+```
+
+Recent white newcomers are not more satisfied than current white residents, a pattern that we would have expected if diversity-seeking whites entered multiracial neighborhoods filled with existing dissatisfied whites. Similarly, we do not see satisfaction decline among white residents who lived in the neighborhood longer, at least among those who lived in neighborhoods less than 40 years. 
+
+The descriptive plot above does not, however, account for other factors that might correlate with satisfaction and length of residents, especially age, which mechanically correlates with length of residence. I created models that include a categorical variable for how long respondents have lived in multiracial neighborhoods and estimated parameters based only among white respondents. 
+
+```{r supp-nhwsat-nhdyrs, warning=FALSE}
+## Warnings are suppressed
+## Subset data to include only white respondents
+dcas16nhw <- subset(dcas16svy, raceeth=='white')
+
+## Estimate model with fixed effects
+m3yrs <- sub('nhdyrsc', 'nhdyrscat', m3) 
+m3yrs <- sub('raceeth \\+', '', m3yrs)
+m3nhwyrs <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs)), family=binomial)
+)
+
+m3yrs_wo <- sub('nhdyrscat \\+', '', m3yrs)
+m3nhwyrs_wo <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_wo)), family=binomial)
+)
+
+## Estimate model without fixed effects
+m3yrs_nofe <- sub('sample_tract +', '', m3yrs)
+m3nhwyrs_nofe <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_nofe)), family=binomial)
+)
+
+m3yrs_nofe_wo <- sub('nhdyrscat \\+', '', m3yrs_nofe)
+m3nhwyrs_nofe_wo <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_nofe_wo)), family=binomial)
+)
+
+
+```
+
+The results of these models are reported below. The first two columns estimated models with neighborhood fixed effects, meaning the models statistically compare white residents living in the same neighborhood. The first column shows that length of residence *does not* predict satisfaction among whites. The coefficients for residents who lived longer in their neighborhoods were negative, but the standard errors were double the estimated point estimate for two of three cases and as large as the point estimate for the third. What is more, the AIC for the estimated model without length of residence, reported at the bottrom of the second column, was smaller than the model that included length of residence; the data fit the model without length of residence better than the model that included length of residence. 
+
+```{r supp-nhwsat-nhdyrs-tbl, echo=FALSE}
+yearlabs <- paste(
+    c("11-20", "21-30", "31-40", ">40"), 
+    "years in neighborhood"
+)
+nhwyrs_labels <- c(regression_labels[4:13], yearlabs,
+                   regression_labels[15:16])
+nhwyrs_tbl <- report_models(
+    MIcombine_aic(m3nhwyrs), MIcombine_aic(m3nhwyrs_wo), 
+    MIcombine_aic(m3nhwyrs_nofe), MIcombine_aic(m3nhwyrs_nofe_wo),
+    reglabels = nhwyrs_labels,
+    caption = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "of models estimating neighborhood satisfaction among white", 
+        "residents of multiracial neighborhoods"
+        ),
+    label = 'tbl:nhw-years'
+)
+section_headers <- c('Demographics', 'Education', 'Neighborhood perceptions')
+nhwyrs_tbl <- nhwyrs_tbl %>%
+    insert_row(c('Demographics', '', '', '', ''),
+                after=(which(nhwyrs_tbl$names=='(Intercept)')+1)) %>%
+    insert_row(c('Education', '', '', '', ''),
+               after=(which(nhwyrs_tbl$names=='Married')+2)) %>%
+    insert_row(c('Neighborhood perceptions', '', '', '', ''),
+               after=(which(nhwyrs_tbl$names=='M.A.+')+3)) %>%
+    insert_row(c('Neighborhood Fixed Effects', 'X', 'X', '', ''),
+               after=(which(nhwyrs_tbl$names=='>50 blocks')+4))
+nhwyrs_tbl <- set_italic(nhwyrs_tbl, 
+                         which(nhwyrs_tbl$names %in% section_headers), everywhere, TRUE)
+
+nhwyrs_tbl[1,] <- c('', '(1)', '(2)', '(1)', '(2)') 
+nhwyrs_tbl
+
+```
+
+The third and fourth columns report analogous models without fixed effects. Removing the fixed effects (and not including any neighborhood covariates) allowed me to examine whether the duration of residence between any two white residents randomly drawn from any multiracial neighborhood in the DC Area differ from one another. Since we would expect neighborhood conditions to exert a strong influence on mobility decisions, then not accounting for neighborhood differences provides a conservative estimate regarding whether length of residence influences satisfaction among whites. Yet, again, none of the coefficients can be distinguished from a null association and the data fit the model without length of residence better than the model with length of residence. 
+
 ## Between Neighborhood Analysis
 
 ### Satisfaction in DC Area by neighborhood entropy
