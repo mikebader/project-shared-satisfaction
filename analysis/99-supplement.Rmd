@@ -9,21 +9,22 @@ ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
 
 ## Within Neighborhood Robustness Analysis
 
-The data from the DCAS 2016 raise the issue that I, by construction, only received responses from residents who chose not to move out and residents who selected multiracial neighborhoods. The theories that I test in the paper suggest that these two problems will be larger among white residents than among residents of color. 
-
-The between-neighborhood analyses, to some degree, address the selection of white residents *into* neighborhoods. Comparing the pool of white residents in the DC area, I observed differences between the satisfaction of that pool overall and the satisfaction of whites living in multiracial neighborhoods. If white residents who valued diversity above other amenities sought multiracial neighborhoods, then satisfaction would be as high among whites in multiracial neighborhoods as among whites in other neighborhoods.[^recent-movers]
-
-[^recent-movers]: Equal satisfaction would perhaps be more likely among white residents who recently moved than among those who have stayed in neighborhoods as they become integrated. I take up this possibility in the next section.
+The data from the DCAS 2016 raise the issue that I, by construction, only received responses from residents selected on two types of behaviors: residents who chose not to move out of multiracial neighborhoods and residents who selected to move into multiracial neighborhoods. Residents may have exhibited one or both of these behaviors. These residents might exhibit different levels of satisfaction that either those who left or chose not to move into multiracial neighborhoods. Given the importance of selection effects, and the importance of selection of whites in particular based on the predictions of existing theories, I examined analyses to mitigate concerns about selection effects among whites. 
 
 Because of its cross-sectional design, the DCAS 2016 does not allow me to specifically test the hypothesis that dissatisfied residents disproportionately moved out of neighborhoods. I do, however, conduct a series of analyses to investigate whether sentiments among those who have stayed provide evidence that selection likely occurs. The first analyses examine levels of satisfaction among whites by duration of residence and the second examine interracial differences by the size of white population change in neighborhoods. 
 
+Additionally, the between-neighbohrood analyses address the selection of whites *into* neighborhoods to some degree. By comparing the pool of white residents in the DC area, I observed differences between the satisfaction of that pool overall and the satisfaction of whites living in multiracial neighborhoods. If white residents who valued diversity above other amenities sought multiracial neighborhoods, then satisfaction would be as high among whites in multiracial neighborhoods as among whites in other neighborhoods, something that I did not find.[^recent-movers]
+
+[^recent-movers]: Equal satisfaction would perhaps be more likely among white residents who recently moved than among those who have stayed in neighborhoods as they become integrated. I take up this possibility in the next section.
+
 ### Influence of length of residence on satisfaction
 
-The first robustness analysis considers length of residence in neighborhoods by race. Figure \@ref(fig:supp-nhdyrs-race) plots the distribution of years lived in their current neighborhood by the race of the respondent. Whites exclusively account for residents who have lived in neighborhoods longer than 40 years. Yet most respondents, *even half of white respondents*, moved into their neighborhoods in the past 10 years. 
+The first robustness analysis considers length of residence in neighborhoods by race. Evidence of white dissatisfaction with multiracial neighborhoods would be apparent if new white entrants failed to materialize in multiracial neighborhoods. Multiracial neighborhood integration would be the exclusive result, therefore, of white incumbents who stayed in multiracial neighborhoods. 
+Figure \@ref(fig:supp-nhdyrs-race) shows evidence against this dynamic. Figure \@ref(fig:supp-nhdyrs-race) plots the distribution of years lived in their current neighborhood by the race of the respondent. While it is true that whites exclusively account for residents who have lived in neighborhoods longer than 40 years, the inverse is not true. Most residents, *even about half of white respondents* moved into multiracial neighborhoods in the past 10 years. The mixture of long-term and short-term white residents does not suggest that neighborhoods have become anathema to whites as they have become more integrated (though Table \@ref(tab:supp-nhdyrs-race-tbl) shows that whites do not move in as frequently as other racial groups). 
 
-```{r supp-nhdyrs-race, fig.cap="Distribution of years lived in current neighborhood by race"}
+```{r supp-nhdyrs-race, fig.cap="Distribution of years lived in current neighborhood by race", echo=FALSE}
 names(racelabs) <- racelevs[-1]
-nhdyrs_race_plt <- ggplot(filter(dcas16, !is.na(raceeth)), aes(x=nhdyrs)) +
+nhdyrs_race_plt <- ggplot(filter(dcas16, !is.na(nhdyrs)), aes(x=nhdyrs)) +
     geom_bar() +
     scale_x_continuous(breaks = seq(0, 60, 5)) +
     facet_wrap(~raceeth, ncol=1, labeller = labeller(raceeth = racelabs)) +
@@ -48,13 +49,22 @@ rownames(tbl) <- racelabs[c(4, 1:3)]
 colnames(tbl) <- levels(dcas16svy$designs[[1]]$variables$nhdyrscat)
 
 kable(tbl, 
-      caption="Years lived in current neighborhood by race",
-      label = 'tbl:nhdyrs-race')
+      digits=2,
+      caption="Years lived in current neighborhood by race"
+      ) %>%
+    kable_styling(full_width = FALSE)
 ```
+
+Previous theories and evidence suggest that the white residents who have stayed in multiracial neighborhoods will be some mixture of: 
+
+#. white residents who have been satisfied living in integrated neighborhoods and chose not to leave (satisfied stayers), and 
+#. white residents who have been stuck in the neighborhood without the means to move out of the neighborhood despite being dissatisified (dissatisfied stayers). 
+
+The latter subgroup, the "dissatisfied stayers" would perceive neighbohroods similarly to those who were dissatisfied *and* able to leave. Meanwhile, previous theories and evidence do not provide a strong reason that the former subgroup, the "satisfied stayers," would have higher levels of satisfaction than new white entrants who selected multiracial neighborhoods above other neighborhood types. Without a reason to suspect that stayers would, on average, be more satisfied than the average new entrant, and stayers comprise both those satisfied and those dissatisfied with integration, then evidence of lower satisfaction among longer-term residents would provide some evidence in favor of selection. 
 
 Figure \@ref(fig:supp-satisfied-years-whites) shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Given the importance of white residents to the theories, and the fact that the neighborhoods in the sample were almost all predominantly white neighborhoods that integrated over time, I focus on white respondents. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 20 to 40 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
 
-```{r supp-satisfied-years-whites, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE}
+```{r supp-satisfied-years-whites, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE, echo=FALSE}
 nhwsat_nhdyrs_fig <- ggplot(filter(dcas16, raceeth=='white' & !is.na(nhdyrs)), 
        aes(x=nhdyrs, y=satisfied)) +
     geom_smooth(color='#333333') +
@@ -112,7 +122,7 @@ m3nhwyrs_nofe_wo <- with(dcas16nhw, svyglm(
 
 ```
 
-The results of these models are reported below. The first two columns estimated models with neighborhood fixed effects, meaning the models statistically compare white residents living in the same neighborhood. The first column shows that length of residence *does not* predict satisfaction among whites. The coefficients for residents who lived longer in their neighborhoods were negative, but the standard errors were double the estimated point estimate for two of three cases and as large as the point estimate for the third. What is more, the AIC for the estimated model without length of residence, reported at the bottrom of the second column, was smaller than the model that included length of residence; the data fit the model without length of residence better than the model that included length of residence. 
+The results of these models are reported below. The first two columns report estimates of models with neighborhood fixed effects, meaning the models statistically compare white residents living in the same neighborhood. The first column shows that length of residence *does not* predict satisfaction among whites. The coefficients for residents who lived longer in their neighborhoods were negative, but the standard errors were double the estimated point estimates for two of three cases and as large as the point estimate for the third. What is more, the data fit the model without length of residence better than the model that included length of residence, evidence of which can be seen in the smaller AIC in the second column compared to the first. Table \@ref(tab:supp-nhwsat-nhdyrs-tbl)
 
 ```{r supp-nhwsat-nhdyrs-tbl, echo=FALSE}
 yearlabs <- paste(
@@ -129,8 +139,7 @@ nhwyrs_tbl <- report_models(
         "Logistic regression coefficients and standard errors predicted",
         "of models estimating neighborhood satisfaction among white", 
         "residents of multiracial neighborhoods"
-        ),
-    label = 'tbl:nhw-years'
+        )
 )
 section_headers <- c('Demographics', 'Education', 'Neighborhood perceptions')
 nhwyrs_tbl <- nhwyrs_tbl %>%
@@ -154,7 +163,9 @@ The third and fourth columns report analogous models without fixed effects. Remo
 
 ### Influence of white population change
 
-The second analysis examined whether white residents were systematically less likely to be satisfied in neighborhoods that tended to lose more whites. To address this possibility, I stratified the data by the white population change that occurred in the neighborhood from 2000 to 2015 (the latter being based on the 2011-2015 Five-year American Community Survey estimates). To account for different neighborhood sizes, I calculated the ratio of whites living in the neighborhood in 2015 to the number of whites who lived in the neighborhood in 2000; I then took the natural log of this value (i.e., $\ln(\text{POP}_{2015}/\text{POP}_{2000})$) to obtain a linear variable to include in models. 
+The second analysis examined whether white residents were systematically less likely to be satisfied in neighborhoods that tended to lose more whites. The loss of whites could signal dissatisfaction as whites "vote with their feet" and move out of the neighborhood. In addition, the loss of white neighbors could lead white residents who remain to feel less satisfied with their neighborhoods.
+
+To address the possibility that white losses affect satisfaction among whites, I stratified the data by the white population change that occurred in the neighborhood from 2000 to 2015 (the latter being based on the 2011-2015 Five-year American Community Survey estimates). To account for different neighborhood sizes, I calculated the ratio of whites living in the neighborhood in 2015 to the number of whites who lived in the neighborhood in 2000; I then took the natural log of this value (i.e., $\ln(\text{POP}_{2015}/\text{POP}_{2000})$) to obtain a linear variable to include in models. 
 
 ```{r supp-lntotchg-tertiles}
 sampled_nhoods <- dcas16 %>%
@@ -277,7 +288,9 @@ chgtert_tbl
 
 ```
 
-While the analyses above cannot definitively reject selection effects, they mitigate against the fear that the results showing shared satisfaction mask the strongest selection effects. Among whites, the group previous research suggests would be the most likely to be affected by integration, including the length of residence does not improve the fit of the model. About half of whites moved into multiracial neighborhoods in the past 10 years, yet the share of satisfied residents in this group did not differ from the share among whites who moved into multiracial neighborhoods 20, 30, or 40 years prior. These data cannot answer whether the whites who left in the intervening decades did so because their neighborhoods integrated. The analyses provide evidence, however, that a shared satisfaction among *current* residents will persist, and are further supported by the fact that interracial differences in satisfaction were not systematically related to the share of the white population that left.
+### Summary of within-neighborhood robustness analyses 
+
+While the analyses above cannot definitively reject selection effects, they mitigate against the fear that the results showing shared satisfaction mask the strongest selection effects. Among whites, the group that previous research suggests would be the most likely to be affected by integration, the inclusion of the variable measuring length of residence did not improve the fit of the model. About half of white residents moved into multiracial neighborhoods in the past 10 years. They were not more satisfied than whites who moved into multiracial neighborhoods 20, 30, or 40 years prior. These data cannot defnitively disprove that whites who left in the intervening decades did so because their neighborhoods integrated. The results provide evidence, however, that satisfaction levels among the long-term white residents who happened into integrated neighborhoods by circumstance differ much from white residents who recently moved into the neighborhoods. It furthermore provides evidence of that a shared satisfaction among *current* residents will persist.  Evidence in favor of the shared satisfaction hypothesis was further bolstered by the fact that interracial differences in satisfaction were not systematically related to the share of the white population that left, minimizing a concern of spillover effects of white flight onto current white residents. 
 
 ## Between Neighborhood Analysis
 
