@@ -340,8 +340,8 @@ dcarea <- dcarea %>%
         H = (-1 * (exp(lnrace.pnhw) * lnrace.pnhw +
                    exp(lnrace.pnhb) * lnrace.pnhb +
                    exp(lnrace.phsp) * lnrace.phsp +
-                   exp(lnrace.papi) * lnrace.papi  )) / log(4),
-        Hc= (H - mean(H)) / sd(H)
+                   exp(lnrace.papi) * lnrace.papi  )),
+        Hc= (H - mean(H, na.rm=TRUE)) / sd(H, na.rm = TRUE)
                 
                 
     ) %>%
@@ -498,7 +498,7 @@ dcas18svy <- svy.center(dcas18svy)
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
 ```{r save-data}
-save(vars, dataDIR, texcmds,
+save(vars, dataDIR, texcmds, dcarea,
      dcas16svy, dcas16, dcas16mi, 
      dcas18svy, dcas18, dcas18mi,
      file = '../data/dcassvy.Rdata')
