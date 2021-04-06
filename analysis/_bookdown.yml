@@ -5,5 +5,6 @@ rmd_files: [
     "03-descriptives-survey.Rmd",
     "05-analysis-within.Rmd",
     "04-analysis-between.Rmd",
-    "06-robustness-change.Rmd"
+    "06-robustness-change.Rmd",
+    "99-supplement.Rmd"
     ]
