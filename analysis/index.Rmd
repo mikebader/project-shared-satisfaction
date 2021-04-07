@@ -1,5 +1,5 @@
 ---
-title: "Replication File and Supplemental Analyses for 'Neighborhood Satisfaction in Multiracial Neighborhoods'"
+title: "Replication File and Supplemental Analyses for 'Shared Satisfaction among Residents Living in Multiracial Neighborhoods'"
 author: "Michael Bader"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site

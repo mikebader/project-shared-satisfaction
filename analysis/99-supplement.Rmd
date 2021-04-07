@@ -1,10 +1,18 @@
 # Supplement
 
 ## Data Construction
-### Correlation of education and income:
+
+The following plot shows the high degree of correlation between respondent educational attainment and income in the DCAS 2016 sample. The high level of correlation and the larger share of missingness on income led me to use educational attainment to measure socioeconomic status rather than using income or both educational attainment and income. 
 
 ```{r education-income-correlation, echo=TRUE, include=TRUE}
-ggplot(dcas, aes(x=dem.income.cat4,y=dem.educ.attain)) + geom_jitter()
+ggplot(dcas16, aes(x=dem.income.cat4,y=dem.educ.attain)) + 
+    geom_jitter(size=.9) +
+    labs(
+        title = "Correlation of respondent education and income",
+        x = "Income",
+        y = "Educational attainment"
+    ) +
+    theme_minimal()
 ```
 
 ## Within Neighborhood Robustness Analysis
@@ -40,6 +48,8 @@ nhdyrs_race_plt <- ggplot(filter(dcas16, !is.na(nhdyrs), !is.na(raceeth)),
     theme_minimal()
 nhdyrs_race_plt
 
+ggsave("images/supp-nhdyears-race.png", plot = nhdyrs_race_plt,
+       width=6.75, units='in')
 ```
 
 Figure \@ref(fig:supp-nhdyrs-race) shows evidence against the dynamic of total white avoidance. Figure \@ref(fig:supp-nhdyrs-race) plots the distribution of years lived in their current neighborhood by the race of the respondent. While it is true that whites exclusively account for residents who have lived in neighborhoods longer than 40 years, *about half of white respondents* moved into multiracial neighborhoods in the past 10 years. The mixture of long-term and short-term white residents does not suggest that neighborhoods have become anathema to whites as they have become more integrated. Of DCAS 2016 respondents who had moved into their neighborhoods in the previous 10 years, `r round(newcomers_tbl['white']*100)` were white (in fact, approximately equal shares of newcomers identified by each race: `r round(newcomers_tbl['asian']*100)` were Asian, `r round(newcomers_tbl['black']*100)` were Black, and `r round(newcomers_tbl['latino']*100)` were Latinx). 
@@ -53,8 +63,8 @@ The latter subgroup, the "dissatisfied stayers" would perceive neighbohroods sim
 
 Figure \@ref(fig:supp-satisfied-years-whites) shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Given the importance of white residents to the theories, and the fact that the neighborhoods in the sample were almost all predominantly white neighborhoods that integrated over time, I focus on white respondents. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 10 to 20 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
 
-```{r supp-satisfied-years-whites, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE, echo=FALSE}
-nhwsat_nhdyrs_fig <- ggplot(filter(dcas16, raceeth=='white' & !is.na(nhdyrs)), 
+```{r supp-nhwsat, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE, echo=FALSE}
+nhwsat_fig <- ggplot(filter(dcas16, raceeth=='white' & !is.na(nhdyrs)), 
        aes(x=nhdyrs, y=satisfied)) +
     geom_smooth(color='#333333') +
     scale_x_continuous(breaks=seq(0,60,10)) +
@@ -72,8 +82,10 @@ nhwsat_nhdyrs_fig <- ggplot(filter(dcas16, raceeth=='white' & !is.na(nhdyrs)),
         x = "Years in neighborhood"
     ) +
     theme_minimal() 
-nhwsat_nhdyrs_fig 
+nhwsat_fig 
 
+ggsave("images/supp-nhwsat.pdf", plot=nhwsat_fig,
+       width=6.75, units='in')
 ```
 
 The descriptive plot above does not, however, account for other factors that might correlate with satisfaction and length of residents, especially age, which mechanically correlates with length of residence. I created models that include a categorical variable for how long respondents have lived in multiracial neighborhoods and estimated parameters based only among white respondents. 
@@ -137,7 +149,9 @@ nhwyrs_tbl <- nhwyrs_tbl %>%
     insert_row(c('Neighborhood perceptions', '', '', '', ''),
                after=(which(nhwyrs_tbl$names=='M.A.+')+3)) %>%
     insert_row(c('Neighborhood Fixed Effects', 'X', 'X', '', ''),
-               after=(which(nhwyrs_tbl$names=='>50 blocks')+4))
+               after=(which(nhwyrs_tbl$names=='>50 blocks')+4)) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
 nhwyrs_tbl <- set_italic(nhwyrs_tbl, 
                          which(nhwyrs_tbl$names %in% section_headers), everywhere, TRUE)
 
@@ -147,10 +161,11 @@ nhwyrs_tbl %>%
 
 ## Save to LaTeX
 nhwyrs_tbl <- nhwyrs_tbl %>%
+    set_latex_float("!h") %>%
     set_caption(cap) %>%
     set_label("tab:nhwyrs")
 gsub("```(.+\\n)?", "", to_latex(nhwyrs_tbl), perl=TRUE) %>% 
-    cat(file="tables/nhwyrs.tex")
+    cat(file="tables/supp-nhwyrs.tex")
 
 ```
 
@@ -199,6 +214,8 @@ qplot(sampled_nhoods$lntotchg, bins=40) +
         x = 'Logged white population change ratio'
     ) +
     theme_minimal()
+ggsave("images/supp-chgtert.pdf",
+       width=6.75, units="in")
 ```
 
 ```{r supp-lntotchg-analysis, warning=FALSE}
@@ -283,10 +300,11 @@ chgtert_tbl %>%
 
 ## Save to LaTeX
 chgtert_tbl <- chgtert_tbl %>%
+    set_latex_float("!h") %>%
     set_caption(cap) %>%
     set_label("tab:chgtert")
 gsub("```(.+\\n)?", "", to_latex(chgtert_tbl), perl=TRUE) %>% 
-    cat(file="tables/chgtert.tex")
+    cat(file="tables/supp-chgtert.tex")
 
 ```
 
@@ -376,17 +394,20 @@ cap = paste(
 entropy_tbl <- report_models(
     MIcombine_aic(m518), MIcombine_aic(m518_ixn),
     reglabels = c(regression_labels,paste("Entropy", raceixn_labs))
-)
+) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
 
 entropy_tbl %>%
     set_caption(paste("(#tab:entropy)", cap))
 
 ## Save to LaTeX
 entropy_tbl <- entropy_tbl %>%
+    set_latex_float("!h") %>%
     set_caption(cap) %>%
     set_label("tab:entropy")
 gsub("```(.+\\n)?", "", to_latex(entropy_tbl), perl=TRUE) %>% 
-    cat(file="tables/entropy.tex")
+    cat(file="tables/supp-entropy.tex")
 ```
 
 Entropy had almost no influence on the satisfaction expressed by Blacks and Latinos. A one standard deviation decrease in entropy only reduced the odds of satisfaction among Black residents `r entfx[,'black'][['yhat']] %>% exp() %>% round(2)` (p$\approx$ `r entfx[,'black'][['pval']] %>% round(2)`) times and among Latinx residents `r entfx[,'latino'][['yhat']] %>% exp() %>% round(2)` (p$\approx$ `r entfx[,'latino'][['pval']] %>% round(2)`) times. Asian residents appeared to be more satisfied in less diverse neighborhoods; the odds of an Asian resident being satisfied were `r entfx[,'asian'][['yhat']] %>% exp() %>% round(2)` times higher for each standard deviation decrease in entropy and were marginally significant (p$\approx$ `r entfx[,'asian'][['pval']] %>% round(2)`).
@@ -418,6 +439,9 @@ lntotchg_plt <- ggplot(filter(stacked, !is.infinite(lntotchg)),
     ) +
     theme_minimal()
 lntotchg_plt
+
+ggsave("images/supp-lntotchg.pdf", plot=lntotchg_plt,
+       width = 6.75, units="in")
 ```
 
 A second analysis assessed the influence of changing white population on satisfaction among residents of the DC area. Using the same measure that I used above (the logged ratio of the white populations in 2015 to those in 2000), I examined the distribution of changes respondents in the DCAS 2016 experienced compared to those that the DCAS 2018 experienced. Figure \@ref(fig:supp-lntotchg-plt) plots these two distributions and Table \@ref(tab:supp-white-change-tbl) reports descriptive statistics of the changes. 
@@ -468,7 +492,7 @@ m718 <- with(dcas18svyln, svyglm(
 
 I examined whether the white population change from 2000 to 2015 affected the results reported in Figure 3. I added the logged change ratio to models for both respondents representing residents of multiracial neighborhoods (DCAS 2016 respondents) and those representing residents of the entire DC area (DCAS 2018 respondents). I centered the variable around the mean change experienced by DCAS 2018 respondents and scaled the variable by the standard deviation of the DCAS 2018 respondents.  I estimated two models for each set of data, one each with and without interactions with race. The interactions would account for the different sensitivity white residents have to the loss of white neighbors. The parameter estimates and standard errors are reported in Table \@ref(tab:lnchgtot). 
 
-The first two columns of Table \@ref(tab:lnchgtot) report parameter estimates using data representing residents of multiracial neighborhoods. The results in the first column show that residents were more satisfied in neighborhoods that gained more whites---or, inversely, lost fewer whites. The odds of being satisfied aong residents of multiracial neighborhoods where white change was one standard deviation above the DC-area mean were `r exp(coef(MIcombine_aic(m616))['whiterat']) %>% round(2)` times higher than residents of multiracial neighborhoods that matched the DC-area-wide mean. Consistent with the findings reported in Table \@ref(tab:chgtert) above showing no racial differences across tertiles of white population change, I found that the data fit the model with an interaction worse than the model without. The results imply that white growth (or the absence of white loss) increases satisfaction, but *it does so equally across all racial groups*.  
+The first two columns of Table \@ref(tab:lnchgtot) report parameter estimates using data representing residents of multiracial neighborhoods. The results in the first column show that residents were more satisfied in neighborhoods that gained more whites---or, inversely, lost fewer whites. The odds of being satisfied among residents of multiracial neighborhoods where white change was one standard deviation above the DC-area mean were `r exp(coef(MIcombine_aic(m616))['whiterat']) %>% round(2)` times higher than residents of multiracial neighborhoods that matched the DC-area-wide mean. Consistent with the findings reported in Table \@ref(tab:chgtert) above showing no racial differences across tertiles of white population change, I found that the data fit the model with an interaction worse than the model without. The results imply that white growth (or the absence of white loss) increases satisfaction, but *it does so equally across all racial groups*.  
 
 ```{r supp-lntotchg-tbl, echo=FALSE}
 cap = paste(
@@ -483,15 +507,19 @@ lnchgtot_tbl <- report_models(
     reglabels = c(regression_labels,
                   paste("Logged white change", raceixn_labs))
 ) %>%
-    set_caption(paste('(#tab:lnchgtot)', cap))
-lnchgtot_tbl
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+
+lnchgtot_tbl %>%
+    set_caption(paste('(#tab:lnchgtot)', cap)) 
 
 ## Save to LaTeX
 lnchgtot_tbl <- lnchgtot_tbl %>%
+    set_latex_float("!h") %>%
     set_caption(cap) %>%
     set_label("tab:lnchgtot")
 gsub("```(.+\\n)?", "", to_latex(lnchgtot_tbl), perl=TRUE) %>% 
-    cat(file="tables/lnchgtot.tex")
+    cat(file="tables/supp-lnchgtot.tex")
 ```
 
 The second two columns of Table \@ref(tab:lnchgtot) report parameter estimates using data representing all DC-area residents. The amount of what change that occurred in the neighborhood had little influence on satisfaction of residents, though in the case of residents from the entire DC-area the data fit the model with an interaction better. The fourth column shows that the influence of white population growth was higher for Asian and Latinx residents was higher than the influence on whites, though only the the association for Latinx residents could be distingushed from the null. 
@@ -507,10 +535,14 @@ Among neighborhoods in the DC area generally, Asian and Latinx were more likely 
 ## Neighborhood Change Robustness Analysis
 
 ### Multinomial Logistic Regression of Neighborhood Change Questions
-```{r improvement-analysis-multinomial}
+```{r supp-change-multinomial, message=FALSE, include=FALSE}
 library(svrepmisc)
-des <- as.svrepdesign(svy$designs[[1]], type="bootstrap" , replicates=250)
-m3m_bet <- svymultinom(as.formula(paste('nhd.change3 ~', m3)),
+dcas16svy <- dcas16svy %>%
+    update(
+        nhdchg = relevel(nhdchg, ref = 'Same')
+    )
+des <- as.svrepdesign(dcas16svy$designs[[1]], type="bootstrap" , replicates=250)
+m3m_bet <- svymultinom(as.formula(paste('nhdchg ~', m3)),
                        design = des)
 tbl <- tidy(m3m_bet)[1:8,] %>%
     mutate(star = if_else(p.value < .001, '***',
