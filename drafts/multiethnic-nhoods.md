@@ -20,13 +20,15 @@ classoption: unpub
 natbib: true
 bibliography: /Users/bader/work/projects/multiethnic_nhoods/drafts/bib/multiethnic-nhoods.bib
 csl: /Users/bader/work/Bibs/csl/american-sociological-review.csl
+header-includes: |
+    \newcommand{\revision}[1]{\sethlcolor{pink}\hl{#1}\sethlcolor{yellow}}
 ---
 
-Multiracial neighborhoods---those neighborhoods shared among Asian, Black, Latino, and white neighbors---have become common in many metropolitan areas. Made possible by immigration reform and fair housing legislation that passed in the 1960s, the number of multiracial neighborhoods has grown since the 1980s [@logan_global_2010; @bader_fragmented_2016; @holloway_racially_2012]. In addition to traditional ports of entry like New York City and Los Angeles, multiracial neighborhoods have become more common in "new immigrant" destinations and metropolitan areas with large shares of immigrants [@singer_twenty-first_2008; @zhang_global_2016]. 
+Multiracial neighborhoods---those neighborhoods shared among Asian, Black, Latino, and white neighbors---\revision{are no longer anomalies} in many metropolitan areas. Made possible by immigration reform and fair housing legislation that passed in the 1960s, the number of multiracial neighborhoods has grown since the 1980s [@logan_global_2010; @bader_fragmented_2016; @holloway_racially_2012]. In addition to traditional ports of entry like New York City and Los Angeles, multiracial neighborhoods have become more common in "new immigrant" destinations and metropolitan areas with large shares of immigrants [@singer_twenty-first_2008; @zhang_global_2016]. 
 
 Nearly all theories of urban change would not have predicted the emergence of multiracial neighborhoods, let alone their increasing prevalence. Theories of urban change tend to build on the human ecological model of inter-group competition for resources [@burgess_growth_1984; @park_human_1936; @mckenzie_ecological_1984]. Racial identity is thought to represent such a chasm between groups that racial integration undermines neighborhood cohesion and causes residents to become dissatisfied [@putnam_e_2007; @duncan_negro_1957]. The few integrated neighborhoods that existed were held up as notable exceptions to the general rule of dissatisfaction and change [@taub_paths_1984]. 
 
-The recent growth and stability of multiracial neighborhoods contradict traditional theories of racial change. Recent qualitative research demonstrates that residents of different races are satisfied living in multiracial neighborhoods [e.g., @lumley-sapanski_planning_2017; @spitz_segregated_2015]. Through ethnographic methods, these researchers find that racial diversity becomes a collective identity that residents work to protect. The contradiction between these more recent studies and the traditional theories of neighborhood change calls into question the general rule that integration begets neighborhood dissatisfaction. Due to their methods, however, it is difficult to determine whether these neighborhoods represent exceptions to the general rule of dissatisfaction or are instead part of a larger trend of shared interracial satisfaction in multiracial neighborhoods. 
+The recent growth of multiracial neighborhoods contradict traditional theories of racial change. Recent qualitative research demonstrates that residents of different races are satisfied living in multiracial neighborhoods [e.g., @lumley-sapanski_planning_2017; @spitz_segregated_2015]. Through ethnographic methods, these researchers find that racial diversity becomes a collective identity that residents work to protect. The contradiction between these more recent studies and the traditional theories of neighborhood change calls into question the general rule that integration begets neighborhood dissatisfaction. Due to their methods, however, it is difficult to determine whether these neighborhoods represent exceptions to the general rule of dissatisfaction or are instead part of a larger trend of shared interracial satisfaction in multiracial neighborhoods.  
 
 This article overcomes these problems by using data from a sample that represents residents living in all multiracial neighborhoods across an entire metropolitan region. The data favor the conclusion that multiracial neighborhoods engender a shared satisfaction among residents of all races. About 70 percent of residents are satisfied living in multiracial neighborhoods, and the level of satisfaction does not vary by the race of residents. White residents of multiracial neighborhoods report lower satisfaction than white counterparts elsewhere in the region. Yet the similar levels of satisfaction that whites feel compared to their neighbors of color and the small share of whites who perceive neighborhood declines point to deficiencies of traditional urban theories to explain *multiracial* integration. Based on these representative data, I conclude that qualitative research on the topic has not simply found anomalous cases of shared satisfaction. Instead, multiracial neighborhoods engender interracial neighborhood satisfaction and could be a structure that levels opportunities in US metropolitan areas. 
 
@@ -54,11 +56,13 @@ Evidence for the uniqueness of white dissatisfaction also comes from research on
 
 # Shared Satisfaction with Multiracial Integration
 
-A small but growing body of research finds that multiracial neighborhoods develop cohesion around the notion of diversity. The studies examine multiracial neighborhoods as a distinct type of racial integration distinct from the dual-group model of the invasion\slash succession model. Lumley-Sapanksi and Fowler -@lumley-sapanski_planning_2017 showed residents of all races were satisfied living in a "hyperdiverse" neighborhood in Seattle. Groups compromised with one another, getting some, but not all, of what they desired in order to maintain neighborhood diversity. Similarly, Spitz -@spitz_segregated_2015 finds that neighborhood residents value diversity in a multiracial neighborhood in Milwaukee. In both cases, residents were willing to trade off their optimal neighborhood conditions to sustain racial diversity. This was true even if residents lacked strong interpersonal bonds that bridged racial groups. These recent qualitative studies echo Maly's -@maly_beyond_2005 argument that collective identities develop around racial diversity that help groups feel satisfied living in multiracial neighborhoods [see also, @nyden_neighborhood_1998]. Collectively these studies present a compelling argument for what I'll call "shared satisfaction" among residents of multiracial neighborhoods.
+A small but growing body of research finds that multiracial neighborhoods develop cohesion around the notion of diversity. The studies examine multiracial neighborhoods as a distinct type of racial integration distinct from the dual-group model of the invasion\slash succession model. Lumley-Sapanksi and Fowler -@lumley-sapanski_planning_2017 showed residents of all races were satisfied living in a "hyperdiverse" neighborhood in Seattle. Groups compromised with one another, getting some, but not all, of what they desired in order to maintain neighborhood diversity. Similarly, Spitz -@spitz_segregated_2015 finds that neighborhood residents value diversity in a multiracial neighborhood in Milwaukee. In both cases, residents were willing to trade off their optimal neighborhood conditions to sustain racial diversity. This was true even if residents lacked strong interpersonal bonds that bridged racial groups, and cooperation sometimes occurred by businesses and neighborhood organizations spanning racial divides [@matsumoto_social_2020]. These recent qualitative studies echo Maly's -@maly_beyond_2005 argument that collective identities develop around racial diversity that help groups feel satisfied living in multiracial neighborhoods [see also, @nyden_neighborhood_1998]. Collectively these studies present a compelling argument for what I'll call "shared satisfaction" among residents of multiracial neighborhoods.
 
-Demographic analyses reveal a persistence of multiracial integration in neighborhoods over several decades that support the shared satisfaction perspective. Logan and Zhang [-@logan_global_2010; -@logan_global_2011] identified neighborhoods based on a presence of Asian, Black, Latino, and white residents commensurate with their metropolitan composition that they termed "global neighborhoods." They estimated that 38 percent of neighborhoods in 2010 were global neighborhoods [@logan_global_2011]. Bader and Warkentien -@bader_fragmented_2016 used a model-based approach of classifying neighborhoods. They found that "quadrivial neighborhoods," those with stable or slow change in the percentage of Asian, Black, Latino, and white residents made up between eight and twenty percent of neighborhoods in the metropolitan areas of the four largest US cities. 
+\revision{Some demographic evidence also shows that multiracial integration persists, supporting the shared satisfaction perspective.} Logan and Zhang [-@logan_global_2010; -@logan_global_2011] identified neighborhoods based on a presence of Asian, Black, Latino, and white residents commensurate with their metropolitan composition that they termed "global neighborhoods." They estimated that 38 percent of neighborhoods in 2010 were global neighborhoods [@logan_global_2011]. \revision{Ellen and colleagues} [-@ellen_pathways_2012] \revision{found that almost two thirds of multiracially integrated neighborhoods in 2000 remained integrated in 2010.} Another study used a model-based approach and found that between eight and twenty percent of tracts in the metropolitan areas of the four largest metropolitan areas following a trajectory of sustained multiracial integration [@bader_fragmented_2016]. 
 
-Recent studies of racial preferences show a growing appreciation for diverse neighborhoods among whites. In interviews of white parents in two different cities, Darrah-Okike and colleagues -@darrah-okike_because_2020 found that parents valued diversity of their neighborhoods when searching for housing. Similarly, using survey data, Krysan and colleagues -@krysan_diversity_2017 showed that multiracial neighborhoods were the most desired type of neighborhood across racial groups. The white participants in the study were, however, averse to living in neighborhoods integrated only with black or Latino residents [@bader_community_2015].
+Recent studies of racial preferences show a growing appreciation for diverse neighborhoods among whites. In interviews of white parents in two different cities, Darrah-Okike and colleagues -@darrah-okike_because_2020 found that parents valued diversity of their neighborhoods when searching for housing. Similarly, using survey data, Krysan and colleagues -@krysan_diversity_2017 showed that multiracial neighborhoods were the most desired type of neighborhood across racial groups. 
+
+\revision{In contrast to these studies, however, Wright and colleagues} -@wright_instability_2020\revision{ found that almost half of highly diverse neighborhoods in both 1990 and 2000 became less integrated over the subsequent decade. Similarly, Kye and Halpern-Manners }[-@kye_detecting_2019] \revision{found that whites were generally leaving multiracial neighborhoods, even if a sufficient number remained present to classify the neighborhood as diverse. In addition, even as the white participants in Krysan's study with her colleagues} -@krysan_diversity_2017 \revision{expressed a desire for multiracial neighborhoods, those same participants expressed an aversion to living in neighborhoods integrated only with black or Latino residents }[@bader_community_2015]\revision{. These studies call into question whether a sense of shared satisfaction may generalize to multiracial neighborhoods.}\label{rev:shared-satisfaction}
 
 # Are People Satisfied Living in Multiracial Neighborhoods?
 
@@ -87,7 +91,7 @@ The research raises practical as well as theoretical concerns. Long-term multira
 I tested these hypotheses using what I believe to be the first representative sample of metropolitan residents living in multiracial neighborhoods. After describing the samples upon which the analysis is based, I present the results that show evidence from analytical models measuring levels of neighborhood satisfaction. 
 
 ## Study Region
-Data to test the hypotheses come from two samples of Washington, DC-area residents in 2016 and 2018. Washington, DC has historically been a black\slash white segregated metropolitan area. Asians and Latinos each made up only 3 percent of the DC-area population in 1980. Almost all Blacks lived in the eastern part of the city and nearly all whites in the western part. This east-west pattern spilled out to the Maryland suburbs with the eastern suburbs in Prince George's County containing large shares of black residents compared to its western neighbor, Montgomery County, that had (and continues to have) a whiter population. A few Blacks lived across the Potomac River in Northern Virginia, though they were highly clustered in a small number of neighborhoods. 
+Data to test the hypotheses come from two samples of Washington, DC-area residents in 2016 and 2018. Washington, DC has historically been a black\slash white segregated metropolitan area. Asians and Latinos each made up only 3 percent of the DC-area population in 1980. Almost all Blacks lived in the eastern part of the city and nearly all whites in the western part. This east-west pattern spilled out to the Maryland suburbs with the eastern suburbs in Prince George's County containing large shares of black residents compared to its western neighbor, Montgomery County, that had (and continues to have) a whiter population. A few Blacks lived across the Potomac River in Northern Virginia, though they were highly clustered in a small number of neighborhoods [see also, @pinto-coelho_segregated_2015]. 
 
 The region's economy grew and became less based on the federal government in the 1980s and 1990s. The expansion of finance, insurance, and real estate services sector mirrored the sector's prominence in redeveloping metropolitan areas in the U.S. and abroad. Real estate developers capitalized on the expanding population by developing large swaths of land in middle-ring suburbs encircling the District. Having been built after the Fair Housing Act passed, the housing developed was not subject to the history of redlining and restrictive covenants. 
 
@@ -103,7 +107,11 @@ Residents of all races were attracted to new suburban homes since 1980, especial
 
 Both surveys represented residents in the Washington, DC area, which defined as Washington, DC and the surrounding jurisdictions of Montgomery and Prince George's Counties in Maryland, Arlington and Fairfax (including the cities of Falls Church and Fairfax) Counties Virginia, and the independent city of Alexandria, Virginia, an area that comprises 4,096,851 residents. The 2016 DC Area Survey represents residents of two types of neighborhoods: multiracial and disproportionately Latino. Analyses for this study only include responses from residents sampled in the multiracial neighborhoods. 
 
-Multiracial neighborhoods included in the 2016 DCAS sampling frame met two criteria. First, neighborhoods comprised at least 10 percent Asian, Black, Latino, and white residents. The ten-percent cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. Second, none of those four groups could represent a majority of residents. This criterion was included to eliminate neighborhoods where a single group formed the dominant identity of the neighborhood.[^latino-enclaves] These criteria resulted in a sample frame of 114 neighborhoods that represented just under 585,000 people.[^one-criterion] The majority of neighborhoods were in Montgomery County, Maryland, followed by Fairfax County, Virginia, then Prince George's County, Maryland. The neighborhoods included in the sampling frame are shown in Figure \ref{fig:map}. An address-based sample of households was drawn from these eligible neighborhoods. The sample design included over-samples of households with Asian and Hispanic surnames and households located in from disproportionately Black tracts among those that still satisfied the criteria to be included as multiracial neighborhoods. 
+Multiracial neighborhoods included in the 2016 DCAS sampling frame met two criteria.[^latino-enclaves] First, neighborhoods comprised at least 10 percent Asian, Black, Latino, and white residents. The ten-percent cutoff was used to ensure that each of the four racial groups represented a distinguishable subset of a neighborhood's residents. \revision{A ten-percent cutoff has been used in previous research} [e.g., @walton_multiethnic_2016; @ellen_sharing_2000] \revision{and, given the racial diversity of the DC area, would not require the disproportionate clustering of any racial group to meet the criteria.} Second, none of those four groups could represent a majority of residents. \revision{This criterion was included to identify places that would most likely be perceived as multiracial. Since racial composition influences perceptions of place} [@krysan_perceiving_2007; @krysan_racial_2009; @krysan_cycle_2017] \revision{, the second requirement sought to avoid neighborhoods that may still be perceived to be single-race neighborhoods and has also been used as a requirement in previous research} [e.g., @farrell_no-majority_2018; @holloway_racially_2012].[^definition]
+
+[^definition]: \revision{Wright and colleagues }[-@wright_mixed_2020] \revision{demonstrate the proliferation of definitions of multiracial neighborhoods. They show that broad conclusions about the growth and stability of multiracial neighborhoods agree across definitions, but that the specific magnitudes vary by definition.}
+
+These criteria resulted in a sample frame of 114 neighborhoods that represented just under 585,000 people.[^one-criterion] The majority of neighborhoods were in Montgomery County, Maryland, followed by Fairfax County, Virginia, then Prince George's County, Maryland. The neighborhoods included in the sampling frame are shown in Figure \ref{fig:map}. \revision{These patterns mirror increases in Latino and Asian shares of neighborhoods documented by Pinto-Coelho and Zuberi}\label{rev:pinto-coelho} [-@pinto-coelho_segregated_2015]. An address-based sample of households was drawn from these eligible neighborhoods. The sample design included over-samples of households with Asian and Hispanic surnames and households located in from disproportionately Black tracts among those that still satisfied the criteria to be included as multiracial neighborhoods. 
 
 [^latino-enclaves]: Disproportionately Latino neighborhoods were those in which Latino residents made up at least a quarter of the residents and were not already classified as a multiracial neighborhood.
 
@@ -175,6 +183,10 @@ The final row of Table \ref{tab:within} shows further evidence against interraci
 
 These findings provide evidence that residents of all races are equally satisfied living in multiracial neighborhoods. White residents, among whom the racial stratification theories would predict to be dissatisfied living in multiracial neighborhoods, were just as satisfied as their neighbors of color. What is more, a large majority of all four racial groups, ranging from 68.3 to 75.1 percent, reported being satisfied living in multiracial neighborhoods. The widespread level of satisfaction among all four racial groups supports the shared satisfaction model of multiracial integration. 
 
+\revision{Due to the cross-sectional source of data, the selection of diversity-seeking residents into multiracial neighborhoods and dissatisfied residents out of multiracial neighborhoods may undermine the conclusion of shared satisfaction, especially among whites. I conducted robustness analyses to look for evidence of selection.}[^internal-robustness] \revision{First, I did not find any evidence that longer-term white residents were more dissatisfied than those who recently moved into neighborhoods, a finding that we would have expected if long-term white residents were stuck in place without options to move out. Second, I did not find any interracial differences in satisfaction among neighborhoods that had lost larger shares of whites over the previous 15 years. Although only longitudinal data from respondents can decisively answer the question, these robustness analyses provide evidence consistent with the conclusion that selection does not exert a strong influence on shared satisfaction.}\label{rev:internal}
+
+[^internal-robustness]: A full description of these analyses and the results may be viewed on pages \pageref{rob:internal}--\pageref{rob:comparative} of the supplement.
+
 ## Comparative Satisfaction
 
 I compared the difference between neighborhood satisfaction among residents of multiracial neighborhoods to neighborhood satisfaction among residents in general. In particular, I focused on comparisons between same-race residents. The traditional theories of neighborhood change predict lower satisfaction in multiracial neighborhoods. Recall, however, that two separate hypotheses predict different patterns: Putnam's -@putnam_e_2007 constrict theory predicts lower satisfaction among all racial groups while Abascal and Baldassarri -@abascal_love_2015 white exceptionalism predicts lower satisfaction only among whites. In contrast to both, the strongest form of the shared satisfaction perspective predicts that residents of multiracial neighborhoods will be as satisfied as residents elsewhere in the region. To examine these hypotheses, I compared estimates of a model using the multiracial sample from the 2016 DCAS to estimates that used the DC area-wide sample from the 2018 DCAS. I used the model in Equation \ref{eqn:model} without neighborhood fixed-effects. 
@@ -189,8 +201,9 @@ The pattern of lower satisfaction among whites held after controlling for other 
 
 [^MEM]: These marginal effects at the mean (MEM) differ from the average marginal effect (AME) plotted in Figure \ref{fig:within}. The MEM allows the comparisons to be made at comparable values across the two datasets with substantially different marginal distributions.
 
-The results cast doubt on the universality of the Putnam's -@putnam_e_2007 constrict theory. Black and Latino residents of multiracial neighborhoods were equally or more satisfied than their counterparts elsewhere in the metropolitan area. Even among Asians, the difference between multiracial neighborhood residents and metropolitan residents was small after controlling for individual characteristics. Only among whites did living in a multiracial neighborhood predict lower levels of satisfaction. The result affirms Abascal and Baldassarri's -@abascal_love_2015 prediction of white exceptionalism. In addition to providing evidence against the constrict theory, the results also cast doubt on the strongest view of the shared satisfaction perspective that whites find as much satisfaction in multiracial neighborhoods as other neighborhoods. 
+The results cast doubt on the universality of the Putnam's -@putnam_e_2007 constrict theory. Black and Latino residents of multiracial neighborhoods were equally or more satisfied than their counterparts elsewhere in the metropolitan area. Even among Asians, the difference between multiracial neighborhood residents and metropolitan residents was small after controlling for individual characteristics. Only among whites did living in a multiracial neighborhood predict lower levels of satisfaction. The result affirms Abascal and Baldassarri's -@abascal_love_2015 prediction of white exceptionalism. In addition to providing evidence against the constrict theory, the results also cast doubt on the strongest view of the shared satisfaction perspective that whites find as much satisfaction in multiracial neighborhoods as other neighborhoods.[^entropy] 
 
+[^entropy]: \revision{I also analyzed the association between entropy and satisfaction among groups using only the DC area-wide data from the DCAS 2018. The results were consistent with the findings presented in Figure} \ref{fig:between}, \revision{and can be seen in pages} \pageref{rob:entropy}--\pageref{rob:lntotchg-all} \revision{of the supplement.}
 
 
 ## Internal Perceptions of Neighborhood Change
@@ -224,12 +237,13 @@ Multiracial neighborhoods might offer a structure that levels satisfaction rates
 
 Preferences for integration might also explain why larger shares of Asians, Blacks, and Latinos perceive neighborhood improvement compared to whites. Past research shows that all three groups profess stronger preferences for integration than whites [@charles_neighborhood_2000; @bader_community_2015]. Until recently, whites overwhelmingly rejected integration [@charles_wont_2006; @krysan_diversity_2017]. That neighborhood integration precipitated neutral feelings rather than negative feelings in this study reflects a marked contrast to traditional theories of racial integration. 
 
-In summary, multiracial neighborhoods may level access to resources and, as a result, level perceptions of satisfaction. This comparative analysis deserves future research, especially given the implications for redistributive policies.
-Although whites may be less satisfied living in multiracial neighborhoods than in other neighborhoods, they end up with a similar level of satisfaction felt by other racial groups in the metropolitan area. Changes in multiracial neighborhoods improve the neighborhoods in the eyes of people of color while not diminishing neighborhoods in 87 percent of whites. That integration occurs while invoking  among most whites a neutral or positive sentiment about changes in their neighborhoods indicates that integration does not impose too substantial of a cost on their enjoyment of neighborhoods. 
+In summary, multiracial neighborhoods may level access to resources and, as a result, level perceptions of satisfaction. The comparative analysis deserves future research, \revision{especially since the dispersion of respondents across neighborhoods in the DC-area-wide data limited my ability to assess the impact on residents experiencing the same neighborhood changes. Changes to racial attitudes since the 1980s suggest that updating Hipp's }[-@hipp_specifying_2009]\revision{ analysis would be a fruitful endeavor, as would collecting and analyzing data on satisfaction with respondents clustered at the neighborhood level} [e.g., @greif_intersection_2015].\label{rev:comparative-conclusions}
+
+\revision{Research investigating contemporary spatial inequality should help to refine estimates of neighborhood satisfaction across neighborhoods with different racial compositions}, especially given the implications for redistributive policies. Although whites may be less satisfied living in multiracial neighborhoods than in other neighborhoods, they end up with a similar level of satisfaction felt by other racial groups in the metropolitan area. Changes that occurred in multiracial neighborhoods improve the neighborhoods in the eyes of people of color while not diminishing neighborhoods in 87 percent of whites. That integration occurs while invoking  among most whites a neutral or positive sentiment about changes in their neighborhoods indicates that integration does not impose too substantial of a cost on their enjoyment of neighborhoods. 
 
 The belief that whites end up dissatisfied when living in integrated neighborhoods has stymied progress toward policies promoting integration. The results of this study combined with the previous literature should alleviate concerns of white dissatisfaction since an equal-sized majority of all racial groups find satisfaction in multiracial neighborhoods. Policymakers may wish to start by affirmatively marketing multiracial neighborhoods. Knowledge about neighborhoods tends to differ by race [@krysan_racial_2009; @krysan_cycle_2017], and lower familiarity with specific multiracial neighborhoods might prevent movers from searching in them. Affirmative marketing campaigns can market the shared sense of satisfaction when they feature multiracial neighborhoods. 
 
-At the same time, multiracial neighborhoods do not constitute a panacea. Racial integration requires trading off benefits and costs [@bell_silent_2005]. There are good reasons to support further racial integration, but integration itself does not represent an unalloyed good. People of color, and Blacks in particular, are already aware of the trade-offs and have been negotiating these trade-offs for decades [@lacy_blue-chip_2007; @lewis-mccoy_inequality_2014; @lewis_race_2003]. Integration promotes a sense of the "real world," but also exposes them to the daily incivilities and danger of racism [@lacy_blue-chip_2007; @spitz_segregated_2015]. Policies that promote racial integration should also attend to the inclusion and access of residents living in those spaces. That shared satisfaction exists in multiracial neighborhoods does not, however, preclude the possibility that bi-racial integration leads to declining satisfaction and animosity. Future research should investigate satisfaction in different types of integrated neighborhoods.
+At the same time, multiracial neighborhoods do not constitute a panacea. Racial integration requires trading off benefits and costs [@bell_silent_2005]. There are good reasons to support further racial integration, but integration itself does not represent an unalloyed good. People of color, and Blacks in particular, are already aware of the trade-offs and have been negotiating these trade-offs for decades [@lacy_blue-chip_2007; @lewis-mccoy_inequality_2014; @lewis_race_2003]. Integration promotes a sense of the "real world," but also exposes them to the daily incivilities and danger of racism [@lacy_blue-chip_2007; @spitz_segregated_2015]. Policies that promote racial integration should also attend to the inclusion and access of residents living in those spaces. That shared satisfaction exists in multiracial neighborhoods does not, however, preclude the possibility that bi-racial integration leads to declining satisfaction and animosity. Future research should investigate satisfaction in different types of integrated neighborhoods. \revision{Relatedly, as Greif's }[-@greif_intersection_2015]\revision{ work has demonstrated the importance of intraracial influence of neighborhood change on satisfaction and should be incorporated into future work }[see also @woldoff_white_2011; @lacy_blue-chip_2007].
 
 ## Improving Theories of Urban Change Based on Shared Satisfaction
 The evidence in this article shows that, on balance, future research should investigate why multiracial neighborhoods sustain equal rates of satisfaction among residents across racial groups. While racial groups all find satisfaction, they might do so for different reasons. Knowing which amenities appeal to different groups will be important to understand the prospects for stable multiracial integration and must be part of policies that support multiracial integration. 
@@ -259,9 +273,9 @@ This article finds that a large share of residents are satisfied living in multi
 
 \input{../analysis/tables/theory.tex}\clearpage
 
-\input{../analysis/tables/descriptives_dcas16.tex}\clearpage
-
 \input{../analysis/tables/nhood_descriptives.tex}\clearpage
+
+\input{../analysis/tables/descriptives_dcas16.tex}\clearpage
 
 \input{../analysis/tables/descriptives_dcas18.tex}\clearpage
 
@@ -281,7 +295,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Map of sampled tracts in 2016 DC Area Survey}
 \label{fig:map}
-\includegraphics[width=6in]{../analysis/images/DCASCommunityMap.png}
+\includegraphics[width=6in]{../analysis/images/DCAS2016.pdf}
 \end{figure}
 
 \clearpage
@@ -325,7 +339,7 @@ This article finds that a large share of residents are satisfied living in multi
 
 The following plot shows the high degree of correlation between respondent educational attainment and income in the DCAS 2016 sample. The high level of correlation and the larger share of missingness on income led me to use educational attainment to measure socioeconomic status rather than using income or both educational attainment and income. 
 
-## Within Neighborhood Robustness Analysis
+## Within Neighborhood Robustness Analysis{#rob:internal}
 
 The data from the DCAS 2016 raise the issue that I, by construction, only received responses from residents selected on two types of behaviors: residents who chose not to move out of multiracial neighborhoods and residents who selected to move into multiracial neighborhoods. Residents may have exhibited one or both of these behaviors. These residents might exhibit different levels of satisfaction that either those who left or chose not to move into multiracial neighborhoods. Given the importance of selection effects, and the importance of selection of whites in particular based on the predictions of existing theories, I conducted analyses to mitigate concerns about selection effects among whites. The first analyses examine levels of satisfaction among whites by duration of residence and the second examine interracial differences by the size of white population change in neighborhoods. 
 
@@ -388,11 +402,11 @@ While the analyses above cannot definitively reject selection effects, they miti
 
 Together, these findings provide some assurance that selection effects are not solely responsible for shared satisfaction. Further data that measures satisfaction among people over time would, of course, provide data to answer the question. Even without these data, however, these results provide evidence of shared satisfaction among *current* residents, regardless of how they ended up living in multiracial neighborhoods. 
 
-## Between Neighborhood Robustness Analysis
+## Between Neighborhood Robustness Analysis{#rob:comparative}
 
 I also conducted two supplemental analyses to confirm the plausibility of the findings in the comparative analysis. The comparative analysis examined satisfaction levels, by race, between residents of multiracial neighborhoods and residents of DC-area neighborhoods generally. The findings reported in the article showed that a larger proportion of whites were satisfied living in the DC area neighborhoods relative to whites living in multiracial nieghborhoods while satisfaction levels were similar for non-white racial groups. I first analyzed whether neighborhood racial diversity predicted satisfaction among the DCAS 2018 sample and what effect a changing white population had on residents in both samples. 
 
-### Satisfaction in DC area by neighborhood entropy
+### Satisfaction in DC area by neighborhood entropy{#rob:entropy}
 
 A different way to approach the between-neighborhood analysis reported in Figure 3 of the manuscript is to analyze the influence of racial composition on the sample that represents all DC-area residents using the DCAS 2018 data. The DCAS 2018 data, which represented residents in the entire DC area, offered an opportunity to assess the influence of multiracial diversity on satisfaction across the DC area. The between neighborhood analysis showed:
 
@@ -416,7 +430,7 @@ In summary, this supplemental analysis shows:
 #. that whites are less satisfied in multiracial neighborhoods with some possibility that the difference reflects a statistical artifact (roughly consistent with Figure 3), and
 #. that satisfaction did not differ by level of neighborhood diversity among Black and Latino residents (consistent with Figure 3), but lowered satisfaction among Asian residents with some uncertainty whether the difference was a statistical artifact (inconsistent with Figure 3).
 
-#### Differences in white population change between multiracial and other neighborhoods
+#### Differences in white population change between multiracial and other neighborhoods{#rob:lntotchg-all}
 
 A second analysis assessed the influence of changing white population on satisfaction among residents of the DC area. Using the same measure that I used above (the logged ratio of the white populations in 2015 to those in 2000), I examined the distribution of changes respondents in the DCAS 2016 experienced compared to those that the DCAS 2018 experienced. Figure \@ref(fig:supp-lntotchg-plt) plots these two distributions and Table \ref{tab:supp-white-change-tbl) reports descriptive statistics of the changes. 
 
@@ -441,3 +455,91 @@ The analyses of entropy among only DCAS 2018 respondents showed that satisfactio
 The influence of white population change were different in multiracial neighborhoods than DC-area neighborhoods general. Residents of multiracial neighborhoods, regardless of race, were more likely to be satisfied in neighborhoods where white populations had increased. This finding supports the notion of shared satisfaction across racial groups living in multiracial neighborhoods. 
 
 Among neighborhoods in the DC area generally, Asian and Latinx were more likely satisfied than white and Black residents. The satisfaction of White and Black residents seemed unassociated with white population change. The differences between groups among neighborhoods in general do not contradict any of the conclusions of this paper, but do shed light on an area for further research. 
+
+\clearpage
+\singlespace
+\setcounter{equation}{0}
+\renewcommand{\theequation}{R\arabic{equation}}
+\setcounter{figure}{0}
+\renewcommand{\thefigure}{R\arabic{figure}}
+\pagenumbering{arabic}
+\renewcommand{\thepage}{R\arabic{page}}
+\setcounter{footnote}{0}
+\setcounter{table}{0}
+\renewcommand{\thetable}{R\arabic{table}}
+
+# Reviewer Memo
+
+## Responses to Reviewer 1 Comments
+
+#### Multiracial neighborhood inclusion criteria.
+
+The reviewer points out the proliferation of definitions in the literature. I used a combination of factors to arrive at the two criteria (10% to measure the presence of a racial group and no majority group). The data were collected to be used for both academic research and to inform policymakers. Having a clear definition that was easy to communicate while remaining consistent with the existing literature (even if not exactly the same as existing definitions). A 10% threshold was easy to communicate and was small enough that all racial groups could surpass the threshold without disproportionate clustering given the racial diversity of the region. 
+
+I based the requirement that no majority was present on research by Krysan and colleagues that racial composition exerts a large influence on perceptions of places. The study was designed to study places that would most likely be perceived as multiracial rather than a place that may still be perceived as dominated by one racial group. 
+
+#### Stability of multiracial neighborhoods. 
+
+I appreciate that the original manuscript overstated evidence in favor of multiracial stability. In addition to citing Ellen & colleague's paper, I also rewrote the final part of the "Shared Satisfaction with Multiracial Integration" section. I now devote the final paragraph to evidence contradicting the stability of multiracial integration and that the instability of multiracial integration calls into question the sense of shared satisfaction in multiracial neighborhoods (page \pageref{rev:shared-satisfaction} of the revised manuscript). In addition, I removed "and stability" from the first sentence of the third paragraph (that had previously read "The recent growth and stability of multiracial neighborhoods \ldots").
+
+#### Multiracial neighborhoods in transition.
+
+The existing evidence showing that multiracial neighborhoods commonly undergo transitions could undermine evidence of shared satisfaction. Figure S3 shows the distribution of white population loss in the sampled multiracial neighborhoods. These neighborhoods lost, on average, 20 percent of the white population from 2000 to 2015. That 20 percent, however, should be put in the context that, in the US, 31 percent of non-Hispanic whites moved from 2010 to 2015.[^15-year] The loss of whites causing transitions appear, therefore, to be the result of whites *not entering* multiracial neighborhoods, an observation consistent with the socially structured search process of Krysan and Crowder (2016). This observation is further supported by Figure S1 that shows that whites made up only 29 percent of residents who moved into these neighborhoods in the past ten years, a rate lower than replacement in multiracial neighborhoods **[CALCULATE FOR 5 OR 15 YEARS]**. It is also worth noting that residents living in a fifth of the neighborhoods included in the sample *gained* white population from 2000 to 2015. 
+
+[^15-year]: At a constant mobility rate of 31 percent, we would have expected only a third of the white residents present in 2000 to have remained in multiracial neighborhoods (i.e, $[1-0.31]^3=0.33$). 
+
+The context of transitions aside, the reviewer raises an important point: white losses transitions could signal higher dissatisfaction among whites than other groups. Pages S4-S8 of the Supplement address this concern by examining whether white satisfaction differs as a function of white population loss. The results in Table S3 show little evidence that white residents are less satisfied than their neighbors of color in neighborhoods that lost a larger share of white residents. In the bottom two tertiles of white loss, the data fit the model that included race worse than the model without race. Both the overall context of transition coming from moves into neighborhoods and the lack of racial differences in satisfaction by the rate of white loss increase my confidence that a sense of shared satisfaction exists in multiracial neighborhoods. 
+
+I include a summary of this robustness analysis on page \pageref{rev:internal} of the revised manuscript with a reference to the supplement for those who wish to examine the evidence further.
+
+#### Issues with map in Figure 1.
+
+I am embarrassed that the basic elements the reviewer suggested were not in the original manuscript (and I'm sure my GIS instructors would be ashamed!). I have added the components that the reviewer mentioned. I have also removed reference to "quadrivial" as the reviewer mentioned; this was a remnant from a previous version of the manuscript. I struggled with terminology throughout drafting the paper for precisely the reasons that the reviewer wrote. I decided against using the term quadrivial because, as the reviewer notes, it implies stability that was not a criterion for inclusion. I neglected to revise the term in the map after revising it in the paper. 
+
+#### Walton's (2018) "habits of whiteness." 
+
+\TK
+
+#### Citing Pinto-Coelho & Zuberi (2015).
+
+I now reference their paper in the discussion of the DC-area context on page \pageref{rev:pinto-coelho}.
+
+#### Commonness of multiracial neighborhoods. 
+
+The reviewer raises an important point about the (lack of) commonness of multiracial neighborhoods even as their numbers have grown. I have edited the sentence to now read "Multiracial neighborhoods---those neighborhoods shared among Asian, Black, Latino, and white neighbors---are no longer anomalies in many metropolitan areas" that I believe addresses the concern. 
+
+#### Figure 2 is unnecessary.
+
+I have kept Figure 2 because I think that it helps readers interpret the findings and it also demonstrates the similarity in preferences after accounting for the different distributions of independent variables across racial groups within multiracial neighborhoods. 
+
+#### Rename discussion.
+
+I have renamed the final section "Discussion and Conclusions" -- thank you for this helpful advice.
+
+#### Uniqueness of DC area multiracial neighborhoods.
+
+\TK
+
+
+
+## Responses to Reviewer 2 Comments
+
+#### Compare multiracial neighborhoods to other neighborhoods using DCAS 2018 data.
+
+I analyzed this question by including entropy as a measure of diversity in a model for the 2018 data. The results are described in the supplement, starting on page \pageref{rob:entropy}. I used entropy because the sample size of different neighborhood racial compositions (e.g., measured based on racial groups present) was too small to allow meaningful comparisons. At the mean entropy level of multiracial neighborhoods, 76 percent of whites were satisfied, while 84 percent of white residents were satisfied at the average level of entropy among white residents in the DC area. Though the difference is not statistically significant, the magnitudes and direction are consistent with the results reported in Figure \ref{fig:between} of the manuscript. Meanwhile entropy did not predict differences in satisfaction among Black and Latinx residents. Asian residents were *more* likely than whites to be satisfied with lower levels of entropy (though not significantly so). 
+
+#### Do anything else to convince the reader that differences are "real" and not artifacts
+
+
+## Responses to Reviewer 3 Comments
+
+#### Heterogeneity in white population change
+
+THe supplement now describes white population change among multiracial neighborhoods (pp. pageref{rob:internal}--\pageref{rob:comparison}). As I wrote in response to Reviewer 1, neighborhood change appears to be the result of disproportionately low rates of whites moving in than whites moving out. The share of whites leaving multiracial neighborhoods did not influence interracial differences in neighborhood satisfaction.
+
+#### Comparison of white population change in multiracial neighborhoods to other neighborhoods
+
+To address the reviewer's comment about neighborhood stability, I have added analyses in the supplement to assess the association between neighborhood change and neighborhood satisfaction. Table \ref{tab:lnchgtot} shows that white gains in population increased the share of satisfied residents of multiracial neighborhoods, but did so across all racial groups (a finding consistent with the internal satisfaction supplemental analysis). In comparison, white growth did little to increase the satisfaction of white residents in the region-wide sample, but did increase the share of Asian and Latinx residents satisfied (though only the latter were statistically distinguishable from a null association). **HOW DO I EXPLAIN THIS???!!!**
+
+I also take to heart the reviewer's larger point about comparison across neighborhoods and, as a result, have been more explicit about the limitations that these data pose for a full comparative analysis. Given the consistency of findings from the comparison reported in Figure \ref{fig:between} and the estimates of the model that included entropy in Table \ref{tab:entropy} (suggested by Reviewer 2), I feel confident stating that a difference in white satisfaction exists. I do not, however, feel confident that the differences aren't explained by various neighborhood changes occurring simultaneously. Unfortunately, the data I have are not suited to analyze these simultaneous changes because the region-wide data lack clustering in neighborhoods that would allow me to disentangle individual from neighborhood associations. As a result, I have tried to be more circumspect in the discussion and to identify this as an area in need of more research, including specific suggestions on the type of data and analysis needed (revision on page \pageref{rev:comparative-conclusions} of the manuscript).
+
