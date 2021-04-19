@@ -1,3 +1,8 @@
+```{r, echo=FALSE, include=FALSE}
+t <- tempfile()
+source(knitr::purl('index.Rmd', output=t))
+load('supplement-workspace.Rdata')
+```
 # Supplement
 
 ## Data Construction
@@ -464,15 +469,15 @@ One can see from both Figure \@ref(fig:supp-lntotchg-plt) and Table \@ref(tab:su
 dcas16svyln <- subset(dcas16svy, !is.infinite(lntotchg), lntotchg < 6)
 dcas18svyln <- subset(dcas18svy, !is.infinite(lntotchg), lntotchg < 6)
 
-mean18 <- with(dcas18svyln, svymean(~lntotchg)) %>% MIcombine() %>% coef()
-var18  <- with(dcas18svyln, svyvar(~lntotchg)) %>% MIcombine() %>% coef()
+mean16 <- with(dcas16svyln, svymean(~lntotchg)) %>% MIcombine() %>% coef()
+var16  <- with(dcas16svyln, svyvar(~lntotchg)) %>% MIcombine() %>% coef()
 
-dcas16svyln <- update(dcas16svyln, whiterat = (lntotchg - mean18)/sqrt(var18))
-dcas18svyln <- update(dcas18svyln, whiterat = (lntotchg - mean18)/sqrt(var18))
+dcas16svyln <- update(dcas16svyln, whiterat = (lntotchg - mean16)/sqrt(var16))
+dcas18svyln <- update(dcas18svyln, whiterat = (lntotchg - mean16)/sqrt(var16))
 
 ## Estimate models of satisfaction with interactions by white change
-m6bn <- paste(m3bn, "+ whiterat")
-m7bn <- paste(m3bn, "+ whiterat*raceeth")
+m6bn <- paste(m3bn, "+ race.pnhw + whiterat")
+m7bn <- paste(m3bn, "+ race.pnhw + whiterat*raceeth")
 
 m616 <- with(dcas16svyln, svyglm(
     as.formula(paste('satisfied ~', m6bn)), family=binomial)
@@ -487,6 +492,15 @@ m618 <- with(dcas18svyln, svyglm(
 m718 <- with(dcas18svyln, svyglm(
     as.formula(paste('satisfied ~', m7bn)), family=binomial)
 )
+
+## Calculate predicted satisfaction at -1 s.d. of white change
+sat1sig <- plogis(
+    diff(coef(MIcombine(m616))[c('whiterat', '(Intercept)')]))
+
+## Calculate exposure to white loss among whites in DCAS 2018
+
+mean18nhw <- with(subset(dcas18svyln, raceeth=="white"), svymean(~lntotchg)) %>% MIcombine() %>% coef()
+var18nhw  <- with(subset(dcas18svyln, raceeth=="white"), svyvar(~lntotchg)) %>% MIcombine() %>% coef()
 ```
 
 
@@ -508,7 +522,13 @@ lnchgtot_tbl <- report_models(
                   paste("Logged white change", raceixn_labs))
 ) %>%
     set_top_padding(0) %>%
-    set_bottom_padding(0)
+    set_bottom_padding(0) %>%
+    insert_row(c("", "Multiracial", "", "DC area", ""), after=0) %>%
+    merge_cells(1, 2:3) %>%
+    merge_cells(1, 4:5) %>%
+    set_align(1, everywhere, 'center') %>%
+    set_bottom_border(2, everywhere)
+lnchgtot_tbl[2, 4:5] <- c("(1)", "(2)")
 
 lnchgtot_tbl %>%
     set_caption(paste('(#tab:lnchgtot)', cap)) 
