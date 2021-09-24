@@ -44,13 +44,13 @@ dcas16$sample_tract <- droplevels(dcas16$sample_tract)
 
 **Neighborhood Satisfaction.** Create neighborhood satisfaction variable (`satisfied`) to represent responses of "Extremely Satisfied" or "Very Satisfied". Check that the variable was created correctly.
 ```{r variables-satisfied}
-dcas16$satisfied <- dcas16$nhd.satisfaction %in% c(
-                       'Extremely satisfied','Very satisfied')*1
+dcas16$satisfied <- as.numeric(dcas16$nhd.satisfaction %in% c(
+                       'Extremely satisfied','Very satisfied')*1)
 dcas16$nhdsat <- dcas16$nhd.satisfaction
 table(dcas16[, c('nhd.satisfaction','satisfied')]) ##Check variable
 table(dcas16[, c('nhd.satisfaction','nhdsat')]) ##Check variable
 
-dcas18$satisfied <- dcas18$nhdsat %in% c('Extremely', 'Very')*1
+dcas18$satisfied <- as.numeric(dcas18$nhdsat %in% c('Extremely', 'Very')*1)
 table(dcas18[, c('nhdsat', 'satisfied')]) ##Checkvariable
 ```
 
@@ -165,9 +165,9 @@ dcas16$man <- dcas16$dem.gender.mf=='Male'
 table(dcas16[, c('dem.gender', 'man')], useNA='always')
 
 dcas18 <- dcas18 %>%
-    mutate(man = recode_factor(
-        gender, Male=TRUE, Female=FALSE, `In another way`=NA
-    ))
+    mutate(
+        man = if_else(gender=='Male', TRUE, FALSE)
+        )
 table(dcas18[, c("gender","man")], useNA="always") 
 
 ```
@@ -385,8 +385,8 @@ Select variables to keep that will be used in analysis. Define vectors of identi
 ```{r weights-variables}
 vars <- c(
           # 'satisfied', 'better',
-          'nhdsat', 'nhdchg'
-          , 'raceeth'
+          # 'nhdsat', 'nhdchg'
+          'raceeth'
           , 'age'
           , 'forborn'
           , 'man'
@@ -425,26 +425,31 @@ dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medsatid)
 
 ```
 
-Create five imputation datasets of survey-weighted data and assign to object `dcas<YR>svy`. For the DCAS 2016 data, include only respondents who live in multiracial neighborhoods in the multiple imputation.  
+Prepare data to be imputed based on different datasets. 
 
-```{r weights-assign}
+```{r variables-assign}
 set.seed(214518)
 idvars <- c('satisfied', 'better', 'anarace')
 nhoodvars <- c('nhwht00', 'lntotchg', 'nhdtype', 'wtype', 'H', 'Hc', 
                'race.pnhw')
-idvars <- c(idvars, nhoodvars)
-dcas16 <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
+nivars <- c(idvars, nhoodvars)
+```
+
+Create five imputation datasets of survey-weighted data and assign to object `dcas<YR>svy`. For the DCAS 2016 data, include only respondents who live in multiracial neighborhoods in the multiple imputation. Create vectors of variable names for different types of variables to be used as parameters for multiple imputation.
+
+```{r weights-assign}
+dcas16q <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
     mutate(sample_tract=factor(sample_tract))
-dcas16mi <- amelia(dcas16[dcas16$neighborhood=="Global Neighborhood", 
-                          c(vars, idvars, idvars16)], 
+dcas16mi <- amelia(dcas16[dcas16q$neighborhood=="Global Neighborhood", 
+                          unique(c(vars, nominals, nivars, idvars16))], 
                    m=5, noms=nominals, emburn=c(500, 500), p2s=FALSE, 
-                   idvars=c(idvars, idvars16))
+                   idvars=c(nivars, idvars16))
 dcas16svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
                        data=imputationList(dcas16mi$imputations))
 
-dcas18mi <- amelia(dcas18[, c(vars, idvars, idvars18)], 
+dcas18mi <- amelia(dcas18[, unique(c(vars, nominals, nivars, idvars18))], 
                    m=5, noms=nominals, emburn=c(500,500), p2s=FALSE, 
-                   idvars=c(idvars, idvars18))
+                   idvars=c(nivars, idvars18))
 dcas18svy <- svydesign(id=~rid, strata=~strata, weights=~weight,
                        data=imputationList(dcas18mi$imputations))
 
