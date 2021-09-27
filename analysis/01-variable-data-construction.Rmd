@@ -46,11 +46,12 @@ dcas16$sample_tract <- droplevels(dcas16$sample_tract)
 ```{r variables-satisfied}
 dcas16$satisfied <- as.numeric(dcas16$nhd.satisfaction %in% c(
                        'Extremely satisfied','Very satisfied')*1)
-dcas16$nhdsat <- dcas16$nhd.satisfaction
+dcas16$nhdsat <- gsub(" satisfied", "", dcas16$nhd.satisfaction) %>%
+    ordered(levels = c("Not at all", "Somewhat", "Very", "Extremely"))
 table(dcas16[, c('nhd.satisfaction','satisfied')]) ##Check variable
 table(dcas16[, c('nhd.satisfaction','nhdsat')]) ##Check variable
 
-dcas18$satisfied <- as.numeric(dcas18$nhdsat %in% c('Extremely', 'Very')*1)
+dcas18$satisfied <- dcas18$nhdsat %in% c('Extremely', 'Very')*1
 table(dcas18[, c('nhdsat', 'satisfied')]) ##Checkvariable
 ```
 
@@ -168,7 +169,7 @@ dcas18 <- dcas18 %>%
     mutate(
         man = if_else(gender=='Male', TRUE, FALSE)
         )
-table(dcas18[, c("gender","man")], useNA="always") 
+table(dcas18[, c("gender","man")], useNA="always")
 
 ```
 
@@ -385,8 +386,8 @@ Select variables to keep that will be used in analysis. Define vectors of identi
 ```{r weights-variables}
 vars <- c(
           # 'satisfied', 'better',
-          # 'nhdsat', 'nhdchg'
-          'raceeth'
+          'nhdsat', 'nhdchg'
+          , 'raceeth'
           , 'age'
           , 'forborn'
           , 'man'

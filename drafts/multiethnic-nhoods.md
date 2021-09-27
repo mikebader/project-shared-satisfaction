@@ -18,7 +18,7 @@ keywords:
 doublespace: true
 classoption: unpub
 natbib: true
-bibliography: /Users/bader/work/projects/multiethnic_nhoods/drafts/bib/multiethnic-nhoods.bib
+bibliography: /Users/bader/work/projects/multiethnic_nhoods/drafts/bib/multiethnic-nhoods.json
 csl: /Users/bader/work/Bibs/csl/american-sociological-review.csl
 header-includes: |
     \newcommand{\revision}[1]{\sethlcolor{pink}\hl{#1}\sethlcolor{yellow}}
@@ -34,7 +34,7 @@ This article overcomes these problems by using data from a sample that represent
 
 # Racial Integration as a Disintegrating Social Force
 
-Dominant theories of neighborhood change predict lower satisfaction in multiracial neighborhoods than in other types of neighborhoods. These theories rest on the foundational notion that racial group identity organizes society to such a strong degree that racial differences undermine social cohesion among neighbors [@park_city:_1984; @bursik_community_1982; @blumer_race_1958]. The origins of these theories go back to the Chicago School, who developed the theory of invasion-succession to explain why neighborhoods change [@park_city:_1984]. Neighborhoods evolved to conform to the needs of one ethnic group. Competition over the use of space and other resources occurs after the entry, or "invasion," by another group and the exit, or "succession" of the incumbent group [@mckenzie_ecological_1984; @park_human_1936; @duncan_negro_1957].[^black-belt]
+Dominant theories of neighborhood change predict lower satisfaction in multiracial neighborhoods than in other types of neighborhoods. These theories rest on the foundational notion that racial group identity organizes society to such a strong degree that racial differences undermine social cohesion among neighbors [@park_city_1984; @bursik_community_1982; @blumer_race_1958]. The origins of these theories go back to the Chicago School, who developed the theory of invasion-succession to explain why neighborhoods change [@park_city_1984]. Neighborhoods evolved to conform to the needs of one ethnic group. Competition over the use of space and other resources occurs after the entry, or "invasion," by another group and the exit, or "succession" of the incumbent group [@mckenzie_ecological_1984; @park_human_1936; @duncan_negro_1957].[^black-belt] 
 
 [^black-belt]: It bears mentioning that the original Chicago School sociologists did not have such a developed theory for *racial* differences. Burgess -@burgess_growth_1984 reinforced the distinction between racial and ethnic change through the construction of the "Black Belt" that graphically highlighted it as an exception to the general theory of the concentric ring model.  
 
