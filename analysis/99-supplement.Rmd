@@ -219,7 +219,88 @@ ggsave("images/supp-chgtert.pdf",
        width=6.75, units="in")
 ```
 
-To examine whether interracial differences in satisfaction were consistent across this distribution of white neighborhood change, I stratified the DCAS 2016 by tertiles, report the unconditional means of satisfaction by race, and re-estimated Models 2 and 3 from Table 6 of the manuscript. 
+To examine whether interracial differences in satisfaction were consistent across this distribution of white neighborhood change, I stratified the DCAS 2016 by tertiles, report the unconditional means of satisfaction by race, and re-estimated Models 2 and 3 from Table 6 of the manuscript. Before doing so, I investigate the distribution of DCAS 2016 sample respondents across the three tertiles. Figure \@ref(fig:supp-lntotchg-satisfaction) shows the smoothed percentage of white respondents who were satisfied in their neighborhoods by the logged white population change ratio. 
+
+```{r supp-lntotchg-satisfaction, fig.cap="Share of white respondents satisfied in neighborhood by logged white population change ratio"}
+## Create variable measuring tertiles of white population change in 
+## DCAS 2016 data
+dcas16svy <- dcas16svy %>%
+    update(
+        chgtert = factor(
+                cut(lntotchg, breaks = chgtertiles, include.lowest = TRUE),
+                labels = as.character(1:3)
+            )
+        )
+
+nhwsat <- filter(dcas16svy$designs$imp1$variables, raceeth=='white')
+chgsat_smth <- ggplot(nhwsat, aes(x=lntotchg, y=satisfied)) +
+    geom_smooth(color='#333333') +
+    geom_vline(xintercept = chgtertiles[2:3], color='orange') +
+    scale_x_continuous(breaks = seq(-1.5, 2.75, 0.5)) +
+    scale_y_continuous(breaks = seq(0.1,1.0,0.2)) +
+    labs(
+        title = paste(
+            "Satisfaction by change in white population among whites in", 
+            "multiracial neighborhoods"
+            ),
+        subtitle = paste(
+            "Unweighted percent of white residents living in multiracial",
+            "neighborhoods"
+            ),
+        y = "Percent satisfied",
+        x = NULL
+        ) +
+    theme_minimal() +
+    theme(
+        axis.text.x = element_blank()
+    )
+
+chgsat_hst <- ggplot(nhwsat, aes(x = lntotchg)) +
+    geom_histogram(bins = 41) +
+    geom_vline(xintercept = chgtertiles[2:3], color='orange') +
+    scale_x_continuous(breaks = seq(-1.5, 2.75, 0.5)) +
+    labs(
+        y = "Count",
+        x = "White population change ratio (logged)",
+        caption = "Note: Orange vertical lines demarcate tertiles"
+    ) +
+    theme_minimal() 
+chgsat_hst
+ggpubr::ggarrange(chgsat_smth, chgsat_hst, ncol = 1, heights = c(.65, .35))
+
+```
+
+Table \@ref(tab:tertcount) shows the number of respondents by race and tertile of white change.
+
+```{r supp-lntotchg-count}
+racedisp <- racelabs
+names(racedisp) = racelevs[-1]
+tertcount <- dcas16svy$designs$imp1$variables %>%
+    group_by(chgtert, raceeth) %>%
+    count() %>%
+    ungroup() %>%
+    pivot_wider(id_cols = raceeth, names_from = chgtert, values_from = n) %>%
+    mutate(
+        Race = recode_factor(raceeth, !!!racedisp, ordered = !!!racedisp)
+    )
+
+tertcount_tbl <- tertcount %>%
+    select(Race, `1`, `2`, `3`) %>%
+    as_huxtable() %>%
+    insert_row(c("", "Tertile of White Change", "" ,"")) %>%
+    set_align(1, everywhere, "center") %>%
+    merge_across(1, 2:4) %>%
+    set_bold(1:2, everywhere, TRUE) %>%
+    set_bottom_border(c(2, nrow(.)), everywhere, TRUE) %>%
+    set_caption(paste(
+        "Number of sample respondents by race and tertile of white",
+        "population change")) %>%
+    set_label("tab:tertcount") 
+tertcount_tbl
+
+gsub("```(.+\\n)?", "", to_latex(desctert_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-tertcount.tex")
+```
 
 ```{r supp-lntotchg-descriptive}
 ## Create variable measuring tertiles of white population change in 
@@ -274,23 +355,24 @@ gsub("```(.+\\n)?", "", to_latex(desctert_tbl), perl=TRUE) %>%
 ## Warnings are suppressed
 ## Subset DCAS 2016 data by tertile
 svytert <- lapply(as.character(1:3), function(t){
-    subset(dcas16svy, chgtert==t) %>%
+    svy <- subset(dcas16svy, chgtert==t) %>%
         update(sample_tract = factor(as.character(sample_tract)))
+    contr_N <- length(unique(svy$designs$imp1$variables$sample_tract))
+    for(d in svy$designs) {
+        contrasts(d$variables$sample_tract) <- contr.sum(contr_N)
+    }
+    return(svy)
 })
 
 ## Estimate parameters of full model
-m3tert <- lapply(svytert, function(svy){
+tert_model <- function(svy, vars) {
     with(svy, svyglm(
-        as.formula(paste('satisfied ~', m3)), family=binomial)
-    )
-})
+        as.formula(paste('satisfied ~', vars)), family=binomial
+    ))
+}
 
-## Estimate parameters of model without race
-m4tert <- lapply(svytert, function(svy){
-    with(svy, svyglm(
-        as.formula(paste('satisfied ~', m4)), family=binomial)
-    )
-})
+m3tert <- lapply(svytert, tert_model, m3) # Full model
+m4tert <- lapply(svytert, tert_model, m4) # Without race
 
 ```
 
@@ -347,6 +429,47 @@ chgtert_tbl <- chgtert_tbl %>%
     set_label("tab:chgtert")
 gsub("```(.+\\n)?", "", to_latex(chgtert_tbl), perl=TRUE) %>% 
     cat(file="tables/supp-chgtert.tex")
+
+```
+
+The disparate intercepts across tertiles in Table \@ref(tab:chgtert) cause concern about the potential for satisfaction to vary substantially by white population change. The large intercepts are not caused by the race of the respondent, but by respondent education. Table \@ref(tab:eductert) shows that 90.5 percent of residents with high school degrees were satisfied living in neighborhoods with the largest white declines. Satisfaction was substantially higher among high school graduates than all other groups (range 14.5-37.3 percentage points). Since high school graduates represented the reference category, the intercept in the parameter estimates with data from the first tertile of racial change was extremely high. 
+
+```{r supp-lntotchg-intercepts}
+## Warnings issued because of missingness on educational attainment leads
+## subsets to be different across tertiles
+educdfs <- list(
+    subset(dcas16svy, educ=="H.S."),
+    subset(dcas16svy, educ=="<H.S."),
+    subset(dcas16svy, educ=="Some college, no B.A."),
+    subset(dcas16svy, educ=="B.A."),
+    subset(dcas16svy, educ=="M.A.+")
+)
+eductert <- lapply(educdfs, function(df){
+    res <- with(df, svyby(~satisfied, ~educ + chgtert, svymean)) %>%
+        MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(Percent=coef(res)*100)
+}) %>%
+    bind_rows() %>%
+    mutate(
+        Education = rep(levels(dcas16$educ), each = 3),
+        tertile = rep(1:3, 5)
+    ) 
+
+eductert_tbl <- eductert %>%
+    pivot_wider(id_cols = "Education",
+                names_from = "tertile", values_from = "Percent") %>%
+    as_huxtable() %>%
+    insert_row(c("", "Tertile of White Change", "" ,"")) %>%
+    set_align(1, everywhere, "center") %>%
+    merge_across(1, 2:4) %>%
+    set_bold(1:2, everywhere, TRUE) %>%
+    set_bottom_border(c(2, nrow(.)), everywhere, TRUE) %>%
+    set_caption(paste(
+        "Mean percent of residents satisfied by educational attainment",
+        "in each tertile of white population change")) %>%
+    set_label("tab:eductert") 
+eductert_tbl
 
 ```
 
