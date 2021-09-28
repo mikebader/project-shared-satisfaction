@@ -26,6 +26,8 @@ Load the libraries necessary for the analysis and presentation of data.
 library(Amelia)
 library(broom)
 library(ggplot2)
+library(ggpubr)
+library(foreign)
 library(huxtable)
 library(knitr)
 library(kableExtra)
@@ -35,7 +37,7 @@ library(survey)
 library(tidyverse)
 library(xtable)
 
-options('huxtable.bookdown'=FALSE)
+options('huxtable.bookdown'=TRUE)
 ```
 
 **R Version.** The analyses were built with `r R.version.string`, as reported on page 13 of the manuscript.

@@ -1,4 +1,4 @@
-# Satisfaction in Multiethnic Neighborhoods Compared to DC-Area Population
+# Satisfaction Comparison *Between* Multiethnic Neighborhoods and DC-Area Population
 
 ## Descriptive analysis of satisfaction by race
 
@@ -120,120 +120,195 @@ m3bn <- paste(m2bn, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
 
 ```
 
-### Multiracial Neighborhood Residents (DAS 2016)
 
-Conduct the analyses for the three models for residents living in multiracial neighborhoods. Parameter estimates for the three models are reported below.
+### Combining DCAS 2016 and DCAS 2018 data for analysis
 
-```{r bn-regression-2016, warning=FALSE}
-## Multiracial Neighborhood Residents
-## Note: "non-integer #successes" warnings suppressed
-m116 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m1bn)), family=binomial)
+I obtained combined sampling weights for the 2016 and 2018 waves of the DCAS. Having these data allowed me to directly assess the influence of being sampled in a multiracial neighborhood on neighborhood satisfaction. This addresses a reviewer comment that combining the data offers the best way to compare residents of multiracial neighborhoods with residents elsewhere in the DC area. 
+
+I first combined the data and then multiply imputed the combined data to create a multiple imputation object, `dcasCsvy`, containing five multiply imputed samples.
+
+```{r bn-combined-data}
+wgts <- foreign::read.spss('../data/DCAS_Reweight_U1044_Confidential.sav') %>%
+    as_tibble() %>%
+    mutate(across(everything(), ~trimws(.x))) %>%
+    mutate(
+        wave = if_else(study=="O1087", "dcas16", "dcas18"),
+        rid = if_else(wave=="dcas16", trimws(studycase), trimws(RID)),
+        totwgt = as.numeric(TOTALWEIGHT),
+        totwgt18 = as.numeric(TOTAL2018WEIGHT)
     )
 
-m216 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m2bn)), family=binomial)
+idvarsC <- c('rid', 'strata')
+dcasC <- bind_rows(
+    select(dcas16, c(!!!vars, !!!nominals, !!!nivars, 'rid', 'strata')),
+    select(dcas18, c(!!!vars, !!!nominals, !!!nivars, 'rid', 'strata')),
+) %>%
+    left_join(select(wgts, rid, totwgt)) %>%
+    mutate(
+        nhdsmp = if_else(grepl("^Global", strata), "quad",
+                 if_else(grepl("^Latino", strata), "latino", "all")),
+        nhdsmp = ordered(nhdsmp, levels=c("all", "quad", "latino"))
+    ) %>%
+    subset(
+        raceeth != 'other'
+    ) %>%
+    mutate(
+        raceeth = factor(raceeth)
     )
+contrasts(dcasC$nhdsmp) <- contr.treatment(3)
+idvarsC <- c(idvarsC, 'totwgt', 'nhdsmp')
 
-m316 <- with(dcas16svy, svyglm(
-    as.formula(paste('satisfied ~', m3bn)), family=binomial)
-    )
-
-bn2016_tbl <- report_models(
-    MIcombine_aic(m116), MIcombine_aic(m216), MIcombine_aic(m316),
-    reglabels = regression_labels
-) 
-bn2016_tbl
-
+set.seed(214518)
+dcasCmi <- amelia(dcasC[, unique(c(vars, nominals, nivars, idvarsC))],
+                  m=5, noms=nominals, emburn=c(500,500), p2s=FALSE,
+                  idvars=c(nivars, idvarsC))
+dcasCsvy <- svydesign(
+  id=~rid, weights=~totwgt, data=imputationList(dcasCmi$imputations)
+) %>%
+  svy.center()
 ```
 
-### DC-Area Residents (DCAS 2018)
 
-Conduct the analyses for the three models for all residents of the DC area. Parameter estimates for the three models are reported below.
+### Estimate model of satisfaction using combined DCAS 2016 and DCAS 2018 data
 
-```{r bn-regression-2018, warning=FALSE}
-## DC-Area Residents
-## Note: "non-integer #successes" warnings suppressed
-m118 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m1bn)), family=binomial)
-    )
+I use the same variables as the within-neighborhood analysis but include an interaction between respondent race and the sampled neighborhood type (all neighborhoods, global neighborhood, or disproportionately Latinx neighborhood). The coefficients for the interactions indicate the difference in the log-odds of satisfaction for the racial group in the DC area versus those in global or disproportionately Latino neighborhoods. 
 
-m218 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m2bn)), family=binomial)
-    )
-
-m318 <- with(dcas18svy, svyglm(
-    as.formula(paste('satisfied ~', m3bn)), family=binomial)
-    )
-
-bn2018_tbl <- report_models(
-    MIcombine_aic(m118), MIcombine_aic(m218), MIcombine_aic(m318),
-    reglabels = regression_labels
-) 
-bn2018_tbl
-```
-
-## Comparison of Residents in Multiracial Neighborhoods and DC Area
-
-Create a table with the that compares the estimates of both residents in multiracial neighborhoods and residents of the DC-area from the full models (third models) above. 
-
-```{r bn-regression-table}
-bn_tbl_cap <- paste(
-    "Logistic regression coefficients and standard errors predicted",
-    "from models estimating neighborhood satisfaction among residents", 
-    "of mulitracial neighborhoods and among residents of the entire DC area"
+```{r bn-combined-models, warning=FALSE}
+m1bnC <- "nhdsmp * raceeth"
+m2bnC <- paste(m1bnC, "+ agec + forbornc + manc + kidsc + marriedc"
+              ,"+ educ1c + educ3c + educ4c + educ5c"
 )
-bn_tbl <- report_models(
-    MIcombine_aic(m316), MIcombine_aic(m318),
-    caption = bn_tbl_cap,
-    label = "tab:between",
-    reglabels = regression_labels,
-    use.headers = TRUE
-) %>% 
+m3bnC <- paste(m2bnC, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
+
+## Warnings suppressed: non-integer #successes in a binomial glm 
+m1C <- with(dcasCsvy, svyglm(
+    as.formula(paste('satisfied ~', m1bnC)), family=binomial,
+    contrasts = list(nhdsmp = "contr.treatment"))
+)
+
+m2C <- with(dcasCsvy, svyglm(
+    as.formula(paste('satisfied ~', m2bnC)), family=binomial,
+    contrasts = list(nhdsmp = "contr.treatment"))
+)
+
+m3C <- with(dcasCsvy, svyglm(
+    as.formula(paste('satisfied ~', m3bnC)), family=binomial,
+    contrasts = list(nhdsmp = "contr.treatment"))
+)
+```
+
+The parameter estimates and standard errors can be found in Table \@ref(tab:combined), below, and are saved to the file `tables/combined.tex`.
+
+```{r bn-combined-models-tbl}
+regression_labelsC <- c(racelabs[1:3],
+                        "Multiracial neighborhoods",
+                        paste("~x ", racelabs[1:3]),
+                        "Predom. Latinx neighborhoods",
+                        paste("~x ", racelabs[1:3]),
+                        regression_labels[-1:-3])
+coef_names <- c("(Intercept)",
+                paste0("raceeth", racelevs[2:4]),
+                paste0("nhdsmpquad", c("", paste0(":raceeth", racelevs[2:4]))),
+                paste0("nhdsmplatino", c("", paste0(":raceeth", racelevs[2:4]))),
+                "agec", "forbornc", "manc", "kidsc", "marriedc",
+                paste0("educ", c(1, 3:5), "c"), "ownc", "nhdyrsc",
+                paste0("nhdsize", c(2, 3), "c"))
+cmb_tbl_cap <- paste(
+    "Logistic regression coefficients and standard errors predicted",
+    "from models estimating neighborhood satisfaction among residents",
+    "combining DCAS 2016 and DCAS 2018 data"
+)
+cmb_tbl <- report_models(
+    MIcombine_aic(m1C), MIcombine_aic(m2C), MIcombine_aic(m3C),
+    reglabels = regression_labelsC,
+    use.headers = TRUE,
+    coefs=coef_names
+) %>%
     set_top_padding(0) %>%
     set_bottom_padding(0) %>%
-    set_bottom_border(1, everything(), TRUE)
-
-bn_tbl[1, 2:3] <- c("Multiracial", "DC area")
-gsub("```(.+\\n)?", "", raw_latex(to_latex(bn_tbl)), perl=TRUE) %>%
-    cat(file="tables/between.tex")
-bn_tbl
-
+    set_bottom_border(1, everything(), TRUE) %>%
+    set_caption(cmb_tbl_cap) %>%
+    set_label("tab:combined")
+cmb_tbl
 ```
 
-Compare the predicted values of percent of multiracial neighborhood residents satisfied to the percent of DC-area residents satisfied with their neighborhood by race. Calculate predicted values of satisfaction at the intercept, which represents the weighted mean values of variables from the DCAS 2018 data. 
-
-```{r bn-predicted-values}
-varnames <- str_match_all(m3bn, "\\w+")[[1]][-1]
-pred316 <- MIpredict(m316, at="intercept", vars = varnames)
-pred318 <- MIpredict(m318, at="intercept", vars = varnames)
-bn_pred_tbl <- tibble(pred316$raceeth, pred316$p*100, pred318$p*100, 
-                      (pred316$p - pred318$p)*100)
-names(bn_pred_tbl) <- c("Race", "Multiracial", "DC area", "Difference")
-kable(bn_pred_tbl, digits=1)
-
-bn_pred_tbl
+```{r bn-combined-models-tex, include=FALSE}
+cmb_tbl_tex <- gsub("```(.+\\n)?", "", raw_latex(to_latex(cmb_tbl)), perl=TRUE)
+cmb_tbl_tex <- gsub("(\\\\begin\\{tabular\\})", "\\\\small\n\\1", cmb_tbl_tex)
+cmb_tbl_tex <- gsub("\\\\~\\{\\}x", "$~~~\\\\times$ ", cmb_tbl_tex)
+cat(cmb_tbl_tex, file="tables/combined.tex")
 ```
 
-Plot the predicted values at the intercept to show the difference in the predicted probability of neighborhood satisfaction between residents of multiracial neighborhoods and all DC-area  residents.  
+### Calculate predicted probabilities and marginal effects from between-data comparison
 
-```{r bn-prediction-plt}
-pred316$samp <- "Multiracial neighborhoods"
-pred318$samp <- "DC area"
+Calculate the predicted probabilities and standard errors at the intercept of control variables based on the third model in Table \@ref(tab:combined). To provide a conservative estimate, the standard errors represent the *maximum* standard error across the estimates from the five imputed datasets. The predicted values are plotted in Figure \@ref(fig:bn-combined-prediction-plt) and saved in the file `images/between-prediction.pdf`.
 
-dodge_wd <- 0.25
-raceordlevs <- c("black", "latino", "asian", "white")
-bn_pred_long <- bind_rows(pred316, pred318) %>%
-    mutate(race = ordered(raceeth, levels=raceordlevs))
-bn_pred_plt <-ggplot(bn_pred_long, aes(
-    x=race, y=p, ymax=uci, ymin=lci, 
-    group=samp, color=samp, shape=samp
-)) +
-    geom_point(size=2.15, position=position_dodge(dodge_wd)) +
-    geom_linerange(size=.5, position=position_dodge(dodge_wd)) +
+```{r bn-combined-prediction}
+## Get list of control variables from formula (without sample & race)
+ctrlvarnames <- strsplit(m3bnC, " \\+ ")[[1]][-1] 
+
+## Record display names for neighborhood types
+sampnames <- c(
+    all = "DC area", quad = "Multiracial neighborhoods", latino = "latino"
+)
+
+## Create data with predictions of model of combined sample
+bnC_pred <- tibble(
+    raceeth = relevel(factor(rep(racelevs[-1], 3)), ref = "white"),
+    nhdsmp = factor(rep(c("all", "quad", "latino"), each = 4)),
+
+    ## Create matrix containing zeros on all control variables
+    !!!matrix(rep(0, 12 * length(ctrlvarnames)), nrow = 12) %>%
+        as_tibble(.name_repair = ~ctrlvarnames),
+) %>%
+    mutate(
+        ## Predict across all five imputations
+        !!!lapply(m3C, prediction, data = ., type = "link") %>%
+        
+            ## Keep only the predictions and standard errors
+            lapply(select, fitted, se.fitted) %>% 
+            
+            ## Combine the five separate data frames of predictions 
+            bind_cols(                            
+                .name_repair = ~paste0(
+                    rep(c("fitted", "se"), 5), rep(1:5, each = 2)
+                )
+            ) %>% 
+            
+            ## Summarize across rows of predictions (mean) and SEs (max)
+            mutate(
+                yhat = rowMeans(across(.cols = seq(1, 9, 2))), 
+                se = apply(.[, seq(2, 10, 2)], 1, max)       
+            ) %>%
+            select(yhat, se),
+        
+        ## Calculate predicted value in response scale and standard errors
+        p = plogis(yhat),
+        uci = plogis(yhat + 1.96 * se),
+        lci = plogis(yhat - 1.96 * se),
+        race = ordered(raceeth, levels=racelevs[-1]),
+        samp = recode_factor(
+            nhdsmp, !!!c(
+                all = "DC area",
+                quad = "Multiracial neighborhoods"
+            )
+        )
+    ) %>%
+    select(raceeth, race, samp, yhat, se, p, uci, lci) 
+
+## Plot values
+bnC_pred_plt <- ggplot(
+    filter(bnC_pred, samp !="latino"), 
+    aes(
+        x = race, y = p, ymin = lci, ymax = uci,
+        group = samp, color = samp, shape = samp
+    )
+) +
+    geom_point(position = position_dodge(dodge_wd)) +
+    geom_linerange(position = position_dodge(dodge_wd)) +
     scale_color_manual(values = c("#888888", "#222222")) +
     scale_x_discrete(
-        labels=gsub("^(\\w)", "\\U\\1", raceordlevs, perl=TRUE)
+        labels=gsub("^(\\w)", "\\U\\1", racelevs, perl=TRUE)
     ) +
     scale_y_continuous(
         limits=c(.45, 1), breaks=seq(.5, 1.0, .1)
@@ -249,19 +324,93 @@ bn_pred_plt <-ggplot(bn_pred_long, aes(
         panel.grid.major.x = element_blank()
     )
 
-bn_pred_plt_cap <- paste(
+cap = paste(
     "Predicted probability of neighborhood satisfaction among residents of",
-    "multiracial neighborhoods and the DC area"
+    "multiracial neighborhoods and the DC area based on model using combined",
+    "data from the DCAS 2016 and DCAS 2018"
 )
-```
-
-```{r bn-pred-plt, echo=FALSE, fig.cap=bn_pred_plt_cap}
-bn_pred_plt
-ggsave("images/predicted_between.png", plot = bn_pred_plt,
+ggsave("images/between-prediction.pdf", plot = bnC_pred_plt,
        width=6.75, units='in')
 ```
 
-```{r wn-survey-bak, include=FALSE, echo=FALSE}
-dcas16svybak <- dcas16svy
+```{r bn-combined-prediction-plt, fig.cap=cap, echo=FALSE}
+bnC_pred_plt
+```
 
+Table \@ref(tab:bnC) reports the predicted percentages of residents satisfied with their neighborhoods in all DC-area neighborhoods and in multiracial neighborhoods, as well as the difference between the two probabilities. 
+
+```{r bn-combined-prediction-tbl}
+bn_pred_tbl <- bnC_pred %>%
+    select(race, samp, p) %>%
+    filter(samp != "latino") %>%
+    pivot_wider(id_cols = race, names_from = samp, values_from = p) %>%
+    mutate(
+        across(2:3, ~. * 100),
+        race = sub("^(\\w)", "\\U\\1", race, perl = TRUE),
+        Difference = `DC area` - `Multiracial neighborhoods`
+    ) %>%
+    as_huxtable(digits = 1) %>%
+    set_caption(paste(
+        "Predicted percentage of residents satisfied with their neighborhood",
+        "by race and DCAS sample estimated from model with combined samples"
+    )) %>%
+    set_label("tab:bnC")
+bn_pred_tbl
+```
+
+From the third model in Table \@ref(tab:combined), I estimated the marginal effects of living in a multiracial neighborhood compared to living in the DC area generally by race. I plotted the mean of the average marginal effects across the five imputations and then the maximum absolute values of the lower and upper confidence levels in Figure \@ref(fig:bn-combined-margins-plt). 
+
+```{r bn-combined-margins, warning=FALSE}
+## Calculate and combine marginal effects across imputations
+# Warning that contrasts are dropped from factor nhdsmp suppressed
+mfxC <- lapply(
+    m3C, margins, variables = "nhdsmp", at = list(raceeth = racelevs[-1]), 
+    design = dcasCsvy$designs[[1]] #Weights are the same across imputations
+) 
+mfxC_all <- mfxC %>%
+    lapply(summary) %>%
+    bind_rows() %>%
+    as_tibble() %>%
+    filter(!grepl("latino$", factor)) %>%
+    mutate(
+        imp = rep(1:5, each = 4),
+        raceeth = sub("^(\\w)", "\\U\\1", raceeth, perl = TRUE)
+    ) 
+
+## Plot marginal effects
+mfxC_sum <- mfxC_all %>%
+    group_by(raceeth) %>%
+    mutate(
+        lower = sign(lower) * max(abs(lower)),
+        upper = sign(upper) * max(abs(upper))
+    ) %>%
+    summarize(
+        across(c(AME, lower, upper), mean)
+    ) %>%
+    ungroup()
+
+mfxC_plt <- ggplot(mfxC_sum, 
+                   aes(x = raceeth, y = AME, ymin = lower, ymax = upper)) +
+    geom_hline(yintercept = 0, color = "#cccccc", size = 1) +
+    geom_point() + 
+    geom_linerange() +
+    scale_y_continuous(
+        breaks = round(seq(-0.3, 0.3, 0.1), 1), limits = c(-0.35, 0.35)
+    ) +
+    labs(
+        x = NULL,
+        y = "Average marginal effect"
+    ) +
+    theme_minimal() +
+    theme(
+        panel.grid.major.x = element_blank()
+    )
+cap = paste("Average marginal effects on satisfaction of living in multiracial",
+            "neighborhoods compared to all DC-area residents of the same race")
+```
+
+```{r bn-combined-margins-plt, fig.cap=cap}
+mfxC_plt
+ggsave("images/between.pdf", plot = mfxC_plt,
+       width=6.75, units='in')
 ```

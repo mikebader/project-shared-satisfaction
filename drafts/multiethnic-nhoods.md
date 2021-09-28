@@ -319,7 +319,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Average marginal effects on satisfaction of living in multiracial neighborhoods compared to all DC-area residents of the same race}
 \label{fig:between}
-\includegraphics[width=6in]{../analysis/images/supp-margins-between.pdf}
+\includegraphics[width=6in]{../analysis/images/between.pdf}
 \end{figure}
 
 \clearpage
@@ -437,7 +437,7 @@ I used a similar model, shown in Equation \ref{eqn:combined} below, to that whic
 
 Table \ref{tab:combined} reports the parameter estimates of the model that were used to estimate the average marginal effect in Figure \ref{fig:between}.
 
-\input{../analysis/tables/supp-combined.tex}
+\input{../analysis/tables/combined.tex}
 
 ## Comparative Satisfaction Robustness Analysis{#rob:comparative}
 
