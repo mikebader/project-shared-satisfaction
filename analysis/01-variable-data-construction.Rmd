@@ -441,7 +441,7 @@ Create five imputation datasets of survey-weighted data and assign to object `dc
 ```{r weights-assign}
 dcas16q <- subset(dcas16, neighborhood=="Global Neighborhood") %>%
     mutate(sample_tract=factor(sample_tract))
-dcas16mi <- amelia(dcas16[dcas16q$neighborhood=="Global Neighborhood", 
+dcas16mi <- amelia(dcas16q[dcas16q$neighborhood=="Global Neighborhood", 
                           unique(c(vars, nominals, nivars, idvars16))], 
                    m=5, noms=nominals, emburn=c(500, 500), p2s=FALSE, 
                    idvars=c(nivars, idvars16))

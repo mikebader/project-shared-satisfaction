@@ -194,6 +194,28 @@ Missingness of education and income in 2016 and 2018.
     )
 
     ```
+## Number of respondents by race 
+
+Table \@ref(tab:racecount) shows the number of respondents in 2016 and 2018.
+
+```{r surveys-race-counts}
+racecnt18 <- dcas18svy$designs[[1]]$variables %>%
+  group_by(raceeth) %>%
+  count() %>%
+  rename(`2018` = n)
+
+dcas16svy$designs[[1]]$variables %>%
+  group_by(raceeth) %>%
+  count() %>%
+  rename(`2016` = n) %>%
+  full_join(racecnt18, by = "raceeth") %>%
+  as_huxtable() %>%
+  set_caption(
+    "Number of respondents by race in DCAS 2016 and DCAS 2018 surveys"
+  ) %>%
+  set_label("tab:racecount")
+
+```
 
 ## Assign labels to be used throughout analyses
 

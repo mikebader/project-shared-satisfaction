@@ -37,8 +37,8 @@ names(newcomers_tbl) <- sub('.+raceeth(.+)', '\\1', names(newcomers_tbl))
 ## Plot distribution of years lived in neighborhoods by race
 racelblr <- racelabs
 names(racelblr) <- racelevs[-1]
-nhdyrs_race_plt <- ggplot(filter(dcas16, !is.na(nhdyrs), !is.na(raceeth)),
-                          aes(x=nhdyrs)) +
+nhdyrs_race_plt <- ggplot(
+    filter(dcas16q, !is.na(nhdyrs), !is.na(raceeth)),aes(x=nhdyrs)) +
     geom_bar() +
     scale_x_continuous(breaks = seq(0, 60, 5)) +
     facet_wrap(~raceeth, ncol=1, labeller = labeller(raceeth = racelblr)) +
@@ -65,7 +65,7 @@ The latter subgroup, the "dissatisfied stayers" would perceive neighbohroods sim
 Figure \@ref(fig:supp-satisfied-years-whites) shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Given the importance of white residents to the theories, and the fact that the neighborhoods in the sample were almost all predominantly white neighborhoods that integrated over time, I focus on white respondents. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 10 to 20 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
 
 ```{r supp-nhwsat, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE, echo=FALSE}
-nhwsat_fig <- ggplot(filter(dcas16, raceeth=='white' & !is.na(nhdyrs)), 
+nhwsat_fig <- ggplot(filter(dcas16q, raceeth=='white' & !is.na(nhdyrs)), 
        aes(x=nhdyrs, y=satisfied)) +
     geom_smooth(color='#333333') +
     scale_x_continuous(breaks=seq(0,60,10)) +
@@ -179,7 +179,7 @@ The second analysis examined whether white residents were systematically less li
 To address the possibility that white losses affect satisfaction differently for whites than other groups, I stratified the data by the white population change that occurred in the neighborhood from 2000 to 2015 (the latter being based on the 2011-2015 Five-year American Community Survey estimates). To account for different neighborhood sizes, I calculated the ratio of whites living in the neighborhood in 2015 to the number of whites who lived in the neighborhood in 2000; I then took the natural log of this value (i.e., $\ln(\text{POP}_{2015}/\text{POP}_{2000})$) to obtain a linear variable to include in models. 
 
 ```{r supp-lntotchg-tertiles}
-sampled_nhoods <- dcas16 %>%
+sampled_nhoods <- dcas16q %>%
     group_by(sample_tract) %>%
     slice(1L) %>%
     ungroup()
@@ -298,7 +298,7 @@ tertcount_tbl <- tertcount %>%
     set_label("tab:tertcount") 
 tertcount_tbl
 
-gsub("```(.+\\n)?", "", to_latex(desctert_tbl), perl=TRUE) %>% 
+gsub("```(.+\\n)?", "", to_latex(tertcount_tbl), perl=TRUE) %>% 
     cat(file="tables/supp-tertcount.tex")
 ```
 
