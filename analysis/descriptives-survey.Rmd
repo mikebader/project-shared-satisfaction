@@ -11,6 +11,7 @@ texcmds[['Rversion']] <- paste(R.version$major, R.version$minor, sep='.')
 
 ## Helper functions for analyzing and reporting results
 source('broom_mi.R')
+source('report_descriptives.R')
 source('report_models.R')
 source('make_predictions.R')
 source('marginal_effects.R')
@@ -29,7 +30,7 @@ dcas18svy <- subset(dcas18svy, anarace==TRUE) %>%
 ```
 
 
-Create tables with descriptive results of both DCAS samples, overall and by race. The tables are constructed using two helper functions:
+Create tables with descriptive results of both DCAS samples, overall and by race. The tables are constructed using two helper functions saved in `report_descriptives.R`:
 
 `desc`
 
@@ -40,41 +41,9 @@ Create tables with descriptive results of both DCAS samples, overall and by race
 : Returns the table of descriptive statistics
 
 Results are saved in `tables/descriptives_dcas16.tex` and `tables/descriptives_dcas18.tex`.
-```{r surveys-descriptives, echo=FALSE}
-desc <- function(dat, x) {
-    capture.output(
-        res <- summary(MIcombine(
-            with(dat, svymean(as.formula(paste0('~',x))))))
-    )
-    return(res[,1:2])
-}
-
-make.desc <- function(dat) {
-    ## Independent variable (race)
-    d <- desc(dat, 'raceeth')
-
-    ## Demographic variables
-    d <- rbind(d, desc(dat, 'age'))
-    d['age','results'] <- d['age','results'] + 50
-    d <- rbind(d, desc(dat, 'forborn')[2,])
-    d <- rbind(d, desc(dat, 'man')[2,])
-    d <- rbind(d, desc(dat, 'kids')[2,])
-    d <- rbind(d, desc(dat, 'married')[2,])
-
-    ## SES variables
-    d <- rbind(d, desc(dat, 'educ')[c(2,1,3:5),])
-
-    ## Neighborhood experience variables
-    d <- rbind(d, desc(dat, 'nhdyrs'))
-    d['nhdyrs','results'] <- d['nhdyrs','results']
-    d <- rbind(d, desc(dat, 'nhdsize'))
-
-    return(d)
-}
-
-```
 
 Make table of overall descriptive statistics and by race for DCAS 2016 and DCAS 2018. 
+
 ```{r surveys-descriptives-table, include=FALSE}
 d16 <- make.desc(dcas16svy) %>%
     cbind(make.desc(subset(dcas16svy, raceeth=='asian'))) %>%
@@ -91,82 +60,47 @@ d18 <- make.desc(dcas18svy) %>%
     round(2)
 
 tbl.names <- c(
-    '\\emph{Race}&&\\\\White', 'Asian', 'Black', 'Latinx\\vspace{1em}',
-    '\\emph{Demographics}&&\\\\Age', 'Foreign Born', 'Man', 'Children present',
-    'Married\\vspace{1em}',
-    '\\emph{Education}&&\\\\Less than H.S.','H.S. or G.E.D.','Some college',
-    'Bachelor\'s degree', 'Professional degree\\vspace{1em}',
-    '\\emph{Neighborhood Experience}\\\\Years in Neighborhood',
-    'Perceived neighborhood size\\\\1-9 blocks',  '10-50 blocks',
+    'White', 'Asian', 'Black', 'Latinx',
+    'Age', 'Foreign born', 'Man', 'Children present',
+    'Married',
+    'Less than H.S.','H.S. or G.E.D.','Some college',
+    'Bachelor\'s degree', 'Professional degree',
+    'Years in neighborhood',
+    '1-9 blocks',  '10-50 blocks',
     '>50 blocks'
 )
-descriptive_tbls <- list()
-for(dtab in list(d16, d18)) {
 
-    print(dtab)
+make_descriptive_table <- function(dtab) {
+
     ## Remove standard deviations from dichotomous & factor variables
     continuous_vars <- grep('age|nhdyrs',rownames(dtab), perl=TRUE)
     dtab[-continuous_vars,c(2,4,6,8,10)] <- ""
     
     ## Remove race descriptives for single-race subsets
     dtab[1:4, 3:10] <- ""
-    
-    dtab <- data.frame(tbl.names, dtab)
+
+    ## Format table for export using xtable
+    nms <- c(tbl.names, rownames(dtab)[nrow(dtab)])
+    dtab <- data.frame(nms, dtab)
     descriptive_tbl <- as.table(as.matrix(dtab))
     colnames(descriptive_tbl) <- c('Variable', rep(c('Mean', 'S.D.'),5))
-    descriptive_tbls[[length(descriptive_tbls)+1]] <- descriptive_tbl
-    rm(list=c("dtab", "descriptive_tbl"))
+    rownames(descriptive_tbl) <- c(nms)
+    return(descriptive_tbl)
 }
-```
-
-```{r surveys-descriptives-tables-print}
+descriptive_tbls <- lapply(list(d16, d18), make_descriptive_table)
 names(descriptive_tbls) <- c("d16", "d18")
-kable(descriptive_tbls[["d16"]],
-      caption="Descriptive statistics, DCAS 2016 multiracial neighborhoods")
-kable(descriptive_tbls[["d18"]],
-      caption="Descriptive statistics, DCAS 2018")
 
-```
-
-```{r surveys-descriptives-output, echo=FALSE, include=FALSE}
-descriptive.table <- function(table, fname, caption, lab) {
-    print.xtable(xtable(table,
-                        caption=caption,
-                        align=c('l','l', rep(c('R{.4in}','R{.4in}'), 5)),
-                        label=lab),
-                 booktabs = TRUE,
-                 floating.environment = 'sidewaystable',
-                 caption.placement = 'top',
-                 include.rownames = FALSE,
-                 file = fname,
-                 sanitize.text.function = identity,
-                 timestamp = '')
-    
-    ## Add group column labels to top row of table into the line after the 
-    ## `\toprule` LaTeX command was issued
-    colsets <-  paste(
-        '& \\multicolumn{2}{p{.8in}}{\\centering \\strong{Total Sample}}'
-        , '& \\multicolumn{2}{p{.8in}}{\\centering \\strong{Asians}}'
-        , '& \\multicolumn{2}{p{.8in}}{\\centering \\strong{Blacks}}'
-        , '& \\multicolumn{2}{p{.8in}}{\\centering \\strong{Latinxs}}'
-        , '& \\multicolumn{2}{p{.8in}}{\\centering \\strong{Whites}} \\\\'
-    )
-    tbltxt <- readLines(fname)
-    ruleline <- grep('toprule', tbltxt)
-    tbltxt <- c(tbltxt[1:ruleline], colsets, tbltxt[(ruleline+1):length(tbltxt)])
-    writeLines(tbltxt, fname)
-}
-
-descriptive.table(
+desc16 <- descriptive.table(
     table   = descriptive_tbls[["d16"]],
     fname   = 'tables/descriptives_dcas16.tex',
     caption = paste("Means and standard deviations of independent and",
                     "control variables, DCAS2016 multiracial",
-                    "neighborhood sample (N=", nrow(dcas16svy$designs$imp1),
-                    ")"),
+                    "neighborhood sample"),
     lab     = "tab:descriptives16"
 )
-descriptive.table(
+desc16
+
+desc18 <- descriptive.table(
     table   = descriptive_tbls[["d18"]],
     fname   = 'tables/descriptives_dcas18.tex',
     caption = paste("Means and standard deviations of independent and",
@@ -174,8 +108,7 @@ descriptive.table(
                     nrow(dcas18svy$designs$imp1),")"),
     lab     = "tab:descriptives18"
 )
-
-                    
+desc18
 ```
 
 Missingness of education and income in 2016 and 2018.
