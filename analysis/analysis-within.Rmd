@@ -1,6 +1,10 @@
 # Satisfaction *Within* Multiracial Neighborhoods
 
-Change the reference value of the `sample_tract` variable to the tract with the median level of satisfaction among neighborhoods. When calculating the median, include only those tracts with at least two respondents. 
+## Distribution of respondents across neighborhoods
+
+### Median satisfaction level in tracts
+
+To prevent large values on intercepts, I changed the reference value of the `sample_tract` variable to the tract with the median level of satisfaction among neighborhoods. When calculating the median, include only those tracts with at least two respondents. 
 
 ```{r wn-sample-tract}
 mutrtall <- dcas16 %>%
@@ -33,6 +37,8 @@ dcas16svy <- update(
 
 The reference level for `sample_tract` was set to tract ``r medtrt``, in which `r round(medtrtval, 1)`% of residents reported being satisfied. 
 
+### Count of respondents across neighborhoods
+
 Plot the distribution of respondents per tract. There are `r onlyone` tracts in the sample with a single respondent. There are `r round(mean(mutrt$N), 1)` respondents per tract on average (median=`r median(mutrt$N)`) with a maximum of `r max(mutrt$N)` respondents per tract. The sample size for the multiracial neighborhood resident sample used for analysis is `r nrow(dcas16svy$designs$imp1)`. 
 
 ```{r wn-n-per-nhood, echo=FALSE}
@@ -40,8 +46,84 @@ qplot(mutrtall$N, binwidth=1) +
     labs(
         x = "Respondents per tract",
         y = "Number of tracts"
-    )
+    ) +
+    theme_minimal()
 
+```
+
+### Distribution of respondents by race
+
+The analyses below consider the distribution of *respondents* by race across neighborhoods. Since the data include respondents, I do not need imputed values. I pull the data from the first imputed dataset. From that dataset, I calculate the percentage and sum of respondents for each race across neighborhoods. 
+
+```{r wn-nhood-race-data}
+## Summarize respondents across neighborhoods
+wndta <- dcas16svy$designs[[1]]$variables
+wncnt <- wndta %>%
+    group_by(sample_tract, raceeth) %>%
+    count() %>%
+    group_by(sample_tract) %>%
+    mutate(
+        pct = n / sum(n),
+        N = sum(n)
+    ) %>%
+    ungroup() %>%
+    pivot_wider(
+        id_cols = c(sample_tract, N), names_from = raceeth, values_from = pct
+    ) %>%
+    mutate(across(-1, ~replace_na(., 0))) %>%
+    select(sample_tract, N, asian, black, latino, white) %>%
+    filter(N > 1)
+
+## Count number of neighborhoods with respondents of all four racial groups
+all_pres <- wncnt %>%
+    mutate(allpres = if_all(-1:-2, ~ . > 0)) %>%
+    summarise(allpres = sum(allpres)) %>%
+    pull()
+```
+
+There of the `r nrow(wncnt)` neighborhoods with two or more respondents, `r all_pres` neighborhoods (`r round(100 * all_pres / nrow(wncnt), 1)` percent) contain respondents who identify across all four racial groups. Table \@ref(tab:nhood-desc) contains descriptive statistics of the distribution of the racial identities of respondents across neighborhoods and Table \@ref(tab:nhood-only) contains the number of *respondents* who live in neighborhoods where all other respondents share the same racial identity. 
+
+```{r wn-nhood-race-summary}
+## Respondent distribution across neighborhoods
+bind_cols(
+    tibble(Statistic = 
+               c("Minimum", "First Quart.", "Median", "Mean", "Third Quart.",
+                 "Maximum",
+                 "All of race",
+                 "None of race")
+    ),
+    bind_rows(
+        sapply(wncnt[, -1:-2], summary)  %>% as_tibble() %>% setNames(racelabs),
+    
+        ## Number of neighborhoods with all of each race
+        sapply(wncnt[, -1:-2], function(x) sum(x == 1)) %>% setNames(racelabs),
+        
+        ## Number of neighborhoods with none of each race
+        sapply(wncnt[, -1:-2], function(x) sum(x == 0)) %>% setNames(racelabs)
+    )
+) %>%
+    as_huxtable() %>%
+    set_bold(1, everywhere, TRUE) %>%
+    set_number_format(2:7, -1, "%.2f") %>%
+    set_align(everywhere, -1, "right") %>%
+    set_caption(paste("Descriptive statistics of distribution of respondents",
+                      "across neighborhoods by race")) %>%
+    set_label("tab:nhood-desc")
+```
+
+```{r wn-nhood-race-only}
+## Count of respondents living in neighborhood with only same-race neighbors
+wndta %>%
+    left_join(wncnt, by = "sample_tract") %>%
+    filter(if_any(c(asian, black, latino, white), ~ . == 1)) %>%
+    summarize(across(c(asian, black, latino, white), sum)) %>%
+    rename_with(~sub("^(\\w)", "\\U\\1", ., perl = TRUE)) %>%
+    as_huxtable() %>%
+    set_caption(paste(
+        "Number of respondents living in neighborhood with same-race", 
+        "neighbors, by race"
+    )) %>%
+    set_label("tab:nhood-only")
 ```
 
 ## Descriptive analysis of neighborhood satisfaction
