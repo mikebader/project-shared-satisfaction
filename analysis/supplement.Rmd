@@ -747,3 +747,17 @@ df <- tibble(
 kable(df, align = 'lrlrl', format = 'pandoc')
 ```
 -->
+
+```{r supp-cleanup, include=FALSE, echo=FALSE}
+## Removes fence blocks and replaces booktabs labels in .tex files
+fs <- list.files("tables", "\\.tex")
+for(f in fs) {
+    ll <- readLines(file.path("tables", f)) %>%
+        sapply(function(.) gsub("```(.+)?$", "", .)) %>%
+        sapply(function(.) sub(
+            "\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", .
+        )) %>%
+        # cat(file = file.path("tables", f))
+        writeLines(file.path("tables", f))
+}
+```
