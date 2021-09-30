@@ -1,9 +1,15 @@
+output_dir: "_multiethnic-nhoods-analysis"
+book_filename: "_multiethnic-nhoods-analysis.Rmd"
+clean:
+    - "_main.log"
+delete_merged_file: true
 rmd_files: [
     "index.Rmd",
-    "01-variable-data-construction.Rmd",
-    "02-descriptives-dcarea.Rmd",
-    "03-descriptives-survey.Rmd",
-    "04-analysis-between.Rmd",
-    "05-analysis-within.Rmd",
-    "06-robustness-change.Rmd"
+    "descriptives-dcarea.Rmd",
+    "data-construction.Rmd",
+    "descriptives-survey.Rmd",
+    "analysis-within.Rmd",
+    "analysis-between.Rmd",
+    "analysis-change.Rmd",
+    "supplement.Rmd"
     ]

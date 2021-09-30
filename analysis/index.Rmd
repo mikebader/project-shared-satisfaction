@@ -1,5 +1,5 @@
 ---
-title: "Replication File and Supplemental Analyses for 'Neighborhood Satisfaction in Multiracial Neighborhoods'"
+title: "Replication File and Supplemental Analyses for 'Shared Satisfaction among Residents Living in Multiracial Neighborhoods'"
 author: "Michael Bader"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
@@ -21,16 +21,13 @@ knitr::opts_chunk$set(echo=TRUE, include=TRUE, message=FALSE, cache = FALSE)
 
 # Set Up
 
-Clear all objects out of R. 
-```{r rm, message=FALSE}
-rm(list=ls())
-```
-
 Load the libraries necessary for the analysis and presentation of data. 
 ```{r libraries, message=FALSE, warning=FALSE}
 library(Amelia)
 library(broom)
 library(ggplot2)
+library(ggpubr)
+library(foreign)
 library(huxtable)
 library(knitr)
 library(kableExtra)
@@ -40,7 +37,7 @@ library(survey)
 library(tidyverse)
 library(xtable)
 
-options('huxtable.bookdown'=FALSE)
+options('huxtable.bookdown'=TRUE)
 ```
 
 **R Version.** The analyses were built with `r R.version.string`, as reported on page 13 of the manuscript.

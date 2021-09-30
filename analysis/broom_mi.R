@@ -1,6 +1,6 @@
 MIcombine_aic <- function(m) { ## Combines imputations, including AIC
     mi <- MIcombine(m)
-    if(m[[1]]$aic) {
+    if(!is.null(m[[1]]$aic)) {
         aics <- sapply(m, function(x) x$aic)
         mi$aic <- list(mean=mean(aics), var=var(aics))
     }
@@ -34,8 +34,8 @@ nobs.MIresult <- function(x) {
 }
 
 glance.MIresult <- function(x) {
-    output <- data_frame(AIC = x$aic$mean, aic_v = x$aic$var,
-                         N = nobs(x))
+    output <- data_frame(AIC = x$aic$mean, aic_v = x$aic$var)
+    output$N <- ifelse(any(grepl('nobs', names(x))), x$nobs, nobs(x))
     class(output) <- "data.frame"
     output
 }

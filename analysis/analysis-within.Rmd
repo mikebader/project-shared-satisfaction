@@ -1,0 +1,375 @@
+# Satisfaction *Within* Multiracial Neighborhoods
+
+## Distribution of respondents across neighborhoods
+
+### Median satisfaction level in tracts
+
+To prevent large values on intercepts, I changed the reference value of the `sample_tract` variable to the tract with the median level of satisfaction among neighborhoods. When calculating the median, include only those tracts with at least two respondents. 
+
+```{r wn-sample-tract}
+mutrtall <- dcas16 %>%
+    filter(neighborhood=="Global Neighborhood") %>%
+    group_by(sample_tract) %>%
+    summarize(
+        N = n(), 
+        tractsat = mean(satisfied)
+        ) %>%
+    ungroup()
+
+mutrt <- mutrtall %>%
+    filter(N>1) %>%
+    arrange(tractsat)
+
+medtrt <- mutrt$sample_tract[round(nrow(mutrt)/2)] %>% as.character()
+medtrtval <- mutrt$tractsat[mutrt$sample_tract==medtrt]*100
+dcas16svy <- update(
+    dcas16svy, sample_tract = relevel(sample_tract, ref=medtrt)
+)
+## Add following to allow MIpredict to predict values at intercept
+dcas16$sample_tract <- relevel(dcas16$sample_tract, ref=medtrt)
+
+onlyone <- nrow(mutrtall) - nrow(mutrt)
+onlyonelist <- mutrtall$sample_tract[mutrtall$N==1]
+dcas16svy <- subset(dcas16svy, !(sample_tract %in% onlyonelist))
+dcas16svy <- update(
+    dcas16svy, sample_tract = relevel(factor(sample_tract), ref=medtrt))
+```
+
+The reference level for `sample_tract` was set to tract ``r medtrt``, in which `r round(medtrtval, 1)`% of residents reported being satisfied. 
+
+### Count of respondents across neighborhoods
+
+Plot the distribution of respondents per tract. There are `r onlyone` tracts in the sample with a single respondent. There are `r round(mean(mutrt$N), 1)` respondents per tract on average (median=`r median(mutrt$N)`) with a maximum of `r max(mutrt$N)` respondents per tract. The sample size for the multiracial neighborhood resident sample used for analysis is `r nrow(dcas16svy$designs$imp1)`. 
+
+```{r wn-n-per-nhood, echo=FALSE}
+qplot(mutrtall$N, binwidth=1) +
+    labs(
+        x = "Respondents per tract",
+        y = "Number of tracts"
+    ) +
+    theme_minimal()
+
+```
+
+### Distribution of respondents by race
+
+The analyses below consider the distribution of *respondents* by race across neighborhoods. Since the data include respondents, I do not need imputed values. I pull the data from the first imputed dataset. From that dataset, I calculate the percentage and sum of respondents for each race across neighborhoods. 
+
+```{r wn-nhood-race-data}
+## Summarize respondents across neighborhoods
+wndta <- dcas16svy$designs[[1]]$variables
+wncnt <- wndta %>%
+    group_by(sample_tract, raceeth) %>%
+    count() %>%
+    group_by(sample_tract) %>%
+    mutate(
+        pct = n / sum(n),
+        N = sum(n)
+    ) %>%
+    ungroup() %>%
+    pivot_wider(
+        id_cols = c(sample_tract, N), names_from = raceeth, values_from = pct
+    ) %>%
+    mutate(across(-1, ~replace_na(., 0))) %>%
+    select(sample_tract, N, asian, black, latino, white) %>%
+    filter(N > 1)
+
+## Count number of neighborhoods with respondents of all four racial groups
+all_pres <- wncnt %>%
+    mutate(allpres = if_all(-1:-2, ~ . > 0)) %>%
+    summarise(allpres = sum(allpres)) %>%
+    pull()
+```
+
+There of the `r nrow(wncnt)` neighborhoods with two or more respondents, `r all_pres` neighborhoods (`r round(100 * all_pres / nrow(wncnt), 1)` percent) contain respondents who identify across all four racial groups. Table \@ref(tab:nhood-desc) contains descriptive statistics of the distribution of the racial identities of respondents across neighborhoods and Table \@ref(tab:nhood-only) contains the number of *respondents* who live in neighborhoods where all other respondents share the same racial identity. 
+
+```{r wn-nhood-race-summary}
+## Respondent distribution across neighborhoods
+bind_cols(
+    tibble(Statistic = 
+               c("Minimum", "First Quart.", "Median", "Mean", "Third Quart.",
+                 "Maximum",
+                 "All of race",
+                 "None of race")
+    ),
+    bind_rows(
+        sapply(wncnt[, -1:-2], summary)  %>% as_tibble() %>% setNames(racelabs),
+    
+        ## Number of neighborhoods with all of each race
+        sapply(wncnt[, -1:-2], function(x) sum(x == 1)) %>% setNames(racelabs),
+        
+        ## Number of neighborhoods with none of each race
+        sapply(wncnt[, -1:-2], function(x) sum(x == 0)) %>% setNames(racelabs)
+    )
+) %>%
+    as_huxtable() %>%
+    set_bold(1, everywhere, TRUE) %>%
+    set_number_format(2:7, -1, "%.2f") %>%
+    set_align(everywhere, -1, "right") %>%
+    set_caption(paste("Descriptive statistics of distribution of respondents",
+                      "across neighborhoods by race")) %>%
+    set_label("tab:nhood-desc")
+```
+
+```{r wn-nhood-race-only}
+## Count of respondents living in neighborhood with only same-race neighbors
+wndta %>%
+    left_join(wncnt, by = "sample_tract") %>%
+    filter(if_any(c(asian, black, latino, white), ~ . == 1)) %>%
+    summarize(across(c(asian, black, latino, white), sum)) %>%
+    rename_with(~sub("^(\\w)", "\\U\\1", ., perl = TRUE)) %>%
+    as_huxtable() %>%
+    set_caption(paste(
+        "Number of respondents living in neighborhood with same-race", 
+        "neighbors, by race"
+    )) %>%
+    set_label("tab:nhood-only")
+```
+
+## Descriptive analysis of neighborhood satisfaction
+
+Calculate the unconditional percentage of respondents who are satisfied in their neighborhood by race. 
+
+```{r wn-desc}
+racedfs <- list(
+    dcas16svy,
+    subset(dcas16svy, raceeth=="asian"),
+    subset(dcas16svy, raceeth=="black"),
+    subset(dcas16svy, raceeth=="latino"),
+    subset(dcas16svy, raceeth=="white")
+)
+descwn <- lapply(racedfs, function(df){
+    res <- with(df, svymean(~satisfied)) %>% MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(mean16=coef(res)*100, se16=sqrt(vcov(res)[1,1])*100, n16 = n)
+}) %>%
+    bind_rows() %>%
+    mutate(race = racelevs)
+```
+
+Create a 4x4 matrix where each cell represents the difference in satisfaction percentages between the racial group listed in the column and the racial group listed in the row. No values are entered for the bottom triangle or the diagonal.
+
+```{r wn-difference-matrix}
+## Create matrix of differences
+diffmat <- matrix(rep(NA_real_, 16), nrow=4)
+musat <- descwn$mean16[1]
+muraces <- descwn$mean16[-1]
+for(i in 1:3) {
+    start <- i+1
+    for(j in start:4) {
+        diffmat[i, j] <- muraces[j] - muraces[i]
+    }
+}
+colnames(diffmat) <- racelevs[-1]
+```
+
+Add an additional row to the top of the matrix that contains the percent of each group that reports being satisfied in their neighborhoods. Add an additional column to the left that contains a) the overall percent of residents who are satisfied living in multiracial neighborhoods and b) the difference between the percent of the racial group listed in the row and the overall mean. This table is saved to `tables/within_descriptives.tex`.
+
+```{r wn-desc-tbl}
+descwn_tbl <- bind_rows(
+    descwn$mean16[-1] %>% set_names(racelevs[-1]), ## Percent satisfied in group
+    as_tibble(diffmat)                             ## Diff. matrix
+) %>%
+    add_column(all = c(musat, muraces - musat), .before = 1)
+names(descwn_tbl) <- c("All", "Asian", "Black", "Latino", "White")
+descwn_tbl<- descwn_tbl %>%
+    mutate_all(round, 1) %>%
+    huxtable() %>%
+    # insert_row(c("All", "Asian", "Black", "Latino", "White")) %>%
+    insert_row(rep(NA, 5), after=2) %>%
+    insert_column(c("Group", "Percent satisfied", "Difference", 
+                    "Asian", "Black", "Latino", "White")) %>%
+    set_number_format(everywhere, everywhere, "%5.1f") 
+descwn_tbl
+
+```
+
+```{r wn-desc-latex, include=FALSE, echo=FALSE}
+strfmt <- function(x) {ifelse(
+    !is.na(as.numeric(x)),
+    as.character(formatC(as.numeric(x), digits=1, format="f")),
+    ""
+)}
+descwn_xt <- descwn_tbl[-1,]
+names(descwn_xt) <- descwn_tbl[1,]
+descwn_xt <- descwn_xt %>%
+    mutate_at(vars(-Group), strfmt)%>%
+    mutate_all(~sub("NA","", .)) %>%
+    setNames(c("", descwn_tbl[1,-1]))
+
+xtable(descwn_xt,
+    align = c("l", "l", rep("R{4em}", 5)),
+    caption =paste("Unconditional mean level of satisfaction and", 
+                   "differences by race among residents of multiracial",
+                   "neighborhoods"),
+    label=("tab:descwn")
+) %>% print(
+        booktabs = TRUE,
+        floating.environment = 'sidewaystable',
+        caption.placement = 'top',
+        include.rownames = FALSE,
+        file = 'tables/within_descriptives.tex',
+        sanitize.text.function = identity,
+        timestamp = ''
+)
+
+```
+
+## Regression anaysis of neighborhood satisfaction
+
+Follow a similar process of model development as in the separate multiracial neighborhood and complete DC-area datasets. Add a fourth model that removes race from the model to examine whether removing the race variables improves the model fit. Include a neighborhood fixed effect in all models so that the coefficients represent the difference for residents *living in the same neighborhood*. 
+
+1. Race and neighborhood fixed effects
+2. Race, individual demographic characteristics (age, foreign-born, gender, children present, marital status, and education), and neighborhood fixed effects
+3. Race, individual demographic characteristics, neighborhood experience (home ownership, years in the neighborhood, and perceived neighborhood size), and neighborhood fixed effects
+4. No race, only individual demographic characteristics, neighborhood experience, and neighborhood fixed effects
+
+```{r wn-regression-development}
+m1 <- "raceeth + sample_tract"
+m2 <- paste(m1, "+ agec + forbornc + manc + kidsc + marriedc",
+            " + educ1c + educ3c + educ4c + educ5c")
+m3 <- paste(m2, "+ ownc + nhdyrsc + nhdsize2c + nhdsize3c")
+m4 <- sub("raceeth \\+ ", "", m3)
+
+```
+
+Estimate model parameters for each of the four models. Record the parameter estimates and standard errors in a table stored in file `tables/within.tex`. 
+
+```{r wn-regression, warning=FALSE}
+## Note: "non-integer #successes" warnings suppressed
+m1wn <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m1)), family=binomial)
+    )
+
+m2wn <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m2)), family=binomial)
+    )
+
+m3wn <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m3)), family=binomial)
+    )
+
+m4wn <- with(dcas16svy, svyglm(
+    as.formula(paste('satisfied ~', m4)), family=binomial)
+    )
+
+wn_tbl <- report_models(
+    MIcombine_aic(m1wn), MIcombine_aic(m3wn), MIcombine_aic(m4wn),
+    caption = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "from models estimating neighborhood satisfaction among residents", 
+        "of mulitracial neighborhoods"
+        ),
+    label = "tab:within",
+    reglabels = regression_labels,
+    use.headers = TRUE
+)
+statrow <- nrow(wn_tbl)-3
+wn_tbl <- insert_row(
+    wn_tbl, c("Tract fixed effects", rep("X", 3)),after=statrow) %>%
+    set_top_border(statrow+1, everywhere, TRUE) %>%
+    set_top_border(statrow+2, everywhere, FALSE) %>% 
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+cat(
+    sub("\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", to_latex(wn_tbl)),
+    file="tables/within.tex"
+)
+wn_tbl
+
+```
+
+## Marginal Effect of Race on Neighborhood Satisfaction
+
+Calculate the marginal effect of race on neighborhood satisfaction using white residents as the reference group. The function `MImargins()` is defined in the file `marginal_effects.R`. The function combines the standard errors of marginal effects from the multiply imputed datasets using Rubin's rules (following this [algorithm][]).
+
+[algorithm]: https://stats.idre.ucla.edu/wp-content/uploads/2016/02/multipleimputation.pdf
+
+```{r wn-mfx}
+## Calculate partial effects of race
+m1wn_mfx <- MImargins(m1wn, param="margins")
+m3wn_mfx <- MImargins(m3wn, param="margins")
+
+## Record marginal effects and standard errors in table and report
+mfxwn <- inner_join(m1wn_mfx, m3wn_mfx, by="raceeth", 
+                    suffix=c(".Unadjusted", ".Adjusted")) 
+
+mfxwn_tbl <- mfxwn %>%
+    mutate_at(vars(starts_with("val")), ~paste0(" ", round(.,3), " ")) %>%
+    mutate_at(vars(starts_with("SE")), ~paste0("(", round(.,3), ")"))
+kable(mfxwn_tbl, digits=3)
+
+```
+
+```{r wn-mfx-make-plt}
+## Plot marginal effects and standard errors
+mfxwn_long <- bind_rows(m1wn_mfx, m3wn_mfx) %>%
+    mutate(model=relevel(factor(rep(c("Unadjusted", "Adjusted"), each=3)),
+                         ref="Unadjusted"))
+dodge_wd <- 0.25
+wn_mfx_plt <- ggplot(mfxwn_long, 
+       aes(x=raceeth, y=val, ymin=val-1.96*SE, ymax=val+1.96*SE,
+           group=model, color=model, shape=model)) +
+    geom_point(position=position_dodge(width=dodge_wd), size=2.15) +
+    geom_linerange(size=.5, position=position_dodge(dodge_wd)) +
+    geom_hline(yintercept=0, color="#666666") +
+    scale_color_manual(values = c("#888888", "#222222")) +
+    scale_x_discrete(
+        labels=gsub("^(\\w)", "\\U\\1", mfxwn_long$raceeth, perl=TRUE)
+    ) +
+    scale_y_continuous(limits=c(-.21, .21)) +
+    # scale_shape_discrete(labels=c("No controls", "With controls")) +
+    labs(
+        x = NULL,
+        y = "Marginal effect",
+        shape = NULL, color = NULL
+    ) +
+    theme_minimal() +
+    theme(
+        legend.position = "bottom",
+        panel.grid.major.x = element_blank()
+    )
+
+wn_mfx_plt_cap <- paste(
+    "Marginal effects of race on being satisfied in multiracial",
+    "neighborhoods compared to white residents of multiracial neighborhoods"
+)
+```
+
+```{r wn-mfx-plt, echo=FALSE, fig.cap=wn_mfx_plt_cap}
+wn_mfx_plt
+ggsave("images/marginal_effects_within.png", plot = wn_mfx_plt,
+       width=6.75, units='in')
+```
+
+## Partial Predicted Probabilities
+
+```{r wn-pmarg}
+m3wn_prd <- MImargins(m3wn, param="predicted")
+kable(m3wn_prd)
+
+```
+
+## Wald Statistics of Model Fit
+
+Report the value of Wald tests measuring the change in model fit for the full model (Model 3) compared to a model without race covariates (Model 4). 
+
+```{r wn-wald-test}
+racewn_wald <- lapply(m3wn, regTermTest, test.terms=~raceeth, df=NULL)
+racewn_wald_tbl <- tibble(
+    val = c(
+        sapply(racewn_wald, function(x) x$Ftest),
+        sapply(racewn_wald, function(x) x$p)
+    ),
+    stat = rep(c("F test", "p"), each=5),
+    i = rep(1:5,2)
+) %>%
+    pivot_wider(id_cols = "stat", values_from="val", names_from="i", 
+                names_prefix="imp")
+
+racewn_wald_tbl$mean <- apply(racewn_wald_tbl[, 2:6], 1, mean)
+racewn_wald_tbl$min <- apply(racewn_wald_tbl[, 2:6], 1, min)
+racewn_wald_tbl$max <- apply(racewn_wald_tbl[, 2:6], 1, max)
+kable(racewn_wald_tbl, digits=3)
+
+```

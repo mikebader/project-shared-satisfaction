@@ -50,6 +50,20 @@ dcarea80 <- read.csv(fname)
 
 ## DC-area characteristics 
 
+Population of the DC area.
+
+: Calculate the total population of the DC area in 1980 and 2015. 
+
+```{r dcarea-totpop}
+totpop80 <- sum(dcarea80$totpop)
+totpop15 <- sum(dcarea$totpop15)
+
+```
+   Year    Total Population
+   ------  --------------------------------------------------------
+   1980    `r prettyNum(totpop80,big.mark=",",scientific=FALSE)`
+   2015    `r prettyNum(totpop15,big.mark=",",scientific=FALSE)`
+   
 Racial composition in 1980. 
 
 : Calculate proportion of DC-area population made up each racial group in 1980.
@@ -210,7 +224,7 @@ dcarea <- dcarea %>% mutate(
     race.pnhw = pnhw15 * 100
 ) %>%
     select(GISJOIN, totpop15, pchildpres, pfborn, pmarried, mdage15,
-           starts_with('peduc'), starts_with('race'), quad15)
+           starts_with('peduc'), starts_with('race'), quad15, nhw15)
 
 ## CONSTRUCT TABLE
 ## Define list of variables in desired display order

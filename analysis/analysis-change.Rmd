@@ -104,8 +104,10 @@ ch_tbl <- insert_row(
     set_top_border(statrow+2, everywhere, FALSE) %>% 
     set_top_padding(0) %>%
     set_bottom_padding(0)
-gsub("```(.+\\n)?", "", to_latex(ch_tbl[,c(1,2,4)]), perl=TRUE) %>%
-    cat(file="tables/change.tex")
+cat(
+    sub("\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", to_latex(ch_tbl)),
+        file="tables/change.tex"
+)
 ch_tbl
 
 ```

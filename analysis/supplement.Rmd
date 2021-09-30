@@ -1,0 +1,763 @@
+# Supplement
+
+## Data Construction
+
+The following plot shows the high degree of correlation between respondent educational attainment and income in the DCAS 2016 sample. The high level of correlation and the larger share of missingness on income led me to use educational attainment to measure socioeconomic status rather than using income or both educational attainment and income. 
+
+```{r education-income-correlation, echo=TRUE, include=TRUE}
+ggplot(dcas16, aes(x=dem.income.cat4,y=dem.educ.attain)) + 
+    geom_jitter(size=.9) +
+    labs(
+        title = "Correlation of respondent education and income",
+        x = "Income",
+        y = "Educational attainment"
+    ) +
+    theme_minimal()
+```
+
+## Within Neighborhood Robustness Analysis
+
+The data from the DCAS 2016 raise the issue that I, by construction, only received responses from residents selected on two types of behaviors: residents who chose not to move out of multiracial neighborhoods and residents who selected to move into multiracial neighborhoods. Residents may have exhibited one or both of these behaviors. These residents might exhibit different levels of satisfaction that either those who left or chose not to move into multiracial neighborhoods. Given the importance of selection effects, and the importance of selection of whites in particular based on the predictions of existing theories, I conducted analyses to mitigate concerns about selection effects among whites. The first analyses examine levels of satisfaction among whites by duration of residence and the second examine interracial differences by the size of white population change in neighborhoods. 
+
+### Influence of length of residence on satisfaction
+
+The first robustness analysis considers length of residence in neighborhoods by race. One element of selection would exist if whites were so disinterested in moving to multiracial neighborhoods that no new whites moved in. If this were true, then multiracial integration would be the exclusive result of incumbents remaining in integrated neighborhoods. 
+
+```{r supp-nhdyrs-race, fig.cap="Distribution of years lived in current neighborhood by race", echo=FALSE}
+## Calculate percentage of DCAS 2016 newcomers made up of each racial group
+dcas16svy <- dcas16svy %>%
+    update(nhdyrscat = cut(nhdyrs, 
+                           breaks=c(0,10,20,30,40,60), include.lowest = TRUE))
+yrsby <- with(dcas16svy, svyby(~raceeth, ~nhdyrscat, svymean, na.rm=TRUE)) %>%
+    MIcombine()
+newcomers <- grep('\\[0,10\\]', names(coef(yrsby)))
+newcomers_tbl <- coef(yrsby)[newcomers]
+names(newcomers_tbl) <- sub('.+raceeth(.+)', '\\1', names(newcomers_tbl))
+
+## Plot distribution of years lived in neighborhoods by race
+racelblr <- racelabs
+names(racelblr) <- racelevs[-1]
+nhdyrs_race_plt <- ggplot(
+    filter(dcas16q, !is.na(nhdyrs), !is.na(raceeth)),aes(x=nhdyrs)) +
+    geom_bar() +
+    scale_x_continuous(breaks = seq(0, 60, 5)) +
+    facet_wrap(~raceeth, ncol=1, labeller = labeller(raceeth = racelblr)) +
+    labs(
+        title = "Distribution of years lived in current neighborhood by race",
+        x = "Years lived in neighborhood"
+    ) +
+    theme_minimal()
+nhdyrs_race_plt
+
+ggsave("images/supp-nhdyears-race.png", plot = nhdyrs_race_plt,
+       width=6.75, units='in')
+```
+
+Figure \@ref(fig:supp-nhdyrs-race) shows evidence against the dynamic of total white avoidance. Figure \@ref(fig:supp-nhdyrs-race) plots the distribution of years lived in their current neighborhood by the race of the respondent. While it is true that whites exclusively account for residents who have lived in neighborhoods longer than 40 years, *about half of white respondents* moved into multiracial neighborhoods in the past 10 years. The mixture of long-term and short-term white residents does not suggest that neighborhoods have become anathema to whites as they have become more integrated. Of DCAS 2016 respondents who had moved into their neighborhoods in the previous 10 years, `r round(newcomers_tbl['white']*100)` were white (in fact, approximately equal shares of newcomers identified by each race: `r round(newcomers_tbl['asian']*100)` were Asian, `r round(newcomers_tbl['black']*100)` were Black, and `r round(newcomers_tbl['latino']*100)` were Latinx). 
+
+Previous theories and evidence suggest that the white residents who have stayed in multiracial neighborhoods will be some mixture of: 
+
+#. white residents who have been satisfied living in integrated neighborhoods and chose not to leave (satisfied stayers), and 
+#. white residents who have been stuck in the neighborhood without the means to move out of the neighborhood despite being dissatisified (dissatisfied stayers). 
+
+The latter subgroup, the "dissatisfied stayers" would perceive neighbohroods similarly to those who were dissatisfied *and* able to leave. Meanwhile, previous theories and evidence do not provide a strong reason that the former subgroup, the "satisfied stayers," would have higher levels of satisfaction than new white entrants who selected multiracial neighborhoods above other neighborhood types. Without a reason to suspect that stayers would, on average, be more satisfied than the average new entrant, and stayers comprise both those satisfied and those dissatisfied with integration, then evidence of lower satisfaction among longer-term residents would provide some evidence that selection by satisfaction level has been occurring. 
+
+Figure \@ref(fig:supp-satisfied-years-whites) shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Given the importance of white residents to the theories, and the fact that the neighborhoods in the sample were almost all predominantly white neighborhoods that integrated over time, I focus on white respondents. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 10 to 20 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
+
+```{r supp-nhwsat, fig.cap="Satisfaction by length of residence among whites in multiracial neighborhoods", message=FALSE, echo=FALSE}
+nhwsat_fig <- ggplot(filter(dcas16q, raceeth=='white' & !is.na(nhdyrs)), 
+       aes(x=nhdyrs, y=satisfied)) +
+    geom_smooth(color='#333333') +
+    scale_x_continuous(breaks=seq(0,60,10)) +
+    scale_y_continuous(breaks=seq(0.2,1.0,0.1)) +
+    labs(
+        title = paste(
+            "Satisfaction by length of residence among whites in", 
+            "multiracial neighborhoods"
+            ),
+        subtitle = paste(
+            "Unweighted percent of white residents living in multiracial",
+            "neighborhoods"
+            ),
+        y = "Percent satisfied",
+        x = "Years in neighborhood"
+    ) +
+    theme_minimal() 
+nhwsat_fig 
+
+ggsave("images/supp-nhwsat.pdf", plot=nhwsat_fig,
+       width=6.75, units='in')
+```
+
+The descriptive plot above does not, however, account for other factors that might correlate with satisfaction and length of residents, especially age, which mechanically correlates with length of residence. I created models that include a categorical variable for how long respondents have lived in multiracial neighborhoods and estimated parameters based only among white respondents. 
+
+```{r supp-nhwsat-nhdyrs, warning=FALSE}
+## Warnings are suppressed
+## Subset data to include only white respondents
+dcas16nhw <- subset(dcas16svy, raceeth=='white')
+
+## Estimate model with fixed effects
+m3yrs <- sub('nhdyrsc', 'nhdyrscat', m3) 
+m3yrs <- sub('raceeth \\+', '', m3yrs)
+m3nhwyrs <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs)), family=binomial)
+)
+
+m3yrs_wo <- sub('nhdyrscat \\+', '', m3yrs)
+m3nhwyrs_wo <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_wo)), family=binomial)
+)
+
+## Estimate model without fixed effects
+m3yrs_nofe <- sub('sample_tract +', '', m3yrs)
+m3nhwyrs_nofe <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_nofe)), family=binomial)
+)
+
+m3yrs_nofe_wo <- sub('nhdyrscat \\+', '', m3yrs_nofe)
+m3nhwyrs_nofe_wo <- with(dcas16nhw, svyglm(
+    as.formula(paste('satisfied ~', m3yrs_nofe_wo)), family=binomial)
+)
+
+
+```
+
+The results of these models are reported below. The first two columns report estimates of models with neighborhood fixed effects, meaning the models statistically compare white residents living in the same neighborhood. The first column shows that length of residence *does not* predict satisfaction among whites. The coefficients for residents who lived longer in their neighborhoods were negative, but the standard errors were double the estimated point estimates for two of three cases and as large as the point estimate for the third. What is more, the data fit the model without length of residence better than the model that included length of residence, evidence of which can be seen in the smaller AIC in the second column compared to the first. 
+
+```{r supp-nhwsat-nhdyrs-tbl, echo=FALSE}
+cap = paste(
+    "Logistic regression coefficients and standard errors predicted",
+    "of models estimating neighborhood satisfaction among white", 
+    "residents of multiracial neighborhoods"
+)
+yearlabs <- paste(
+    c("11-20", "21-30", "31-40", ">40"), 
+    "years in neighborhood"
+)
+nhwyrs_labels <- c(regression_labels[4:13], yearlabs,
+                   regression_labels[15:16])
+nhwyrs_tbl <- report_models(
+    MIcombine_aic(m3nhwyrs), MIcombine_aic(m3nhwyrs_wo), 
+    MIcombine_aic(m3nhwyrs_nofe), MIcombine_aic(m3nhwyrs_nofe_wo),
+    reglabels = nhwyrs_labels
+)
+section_headers <- c('Demographics', 'Education', 'Neighborhood perceptions')
+nhwyrs_tbl <- nhwyrs_tbl %>%
+    insert_row(c('Demographics', '', '', '', ''),
+                after=(which(nhwyrs_tbl$names=='(Intercept)')+1)) %>%
+    insert_row(c('Education', '', '', '', ''),
+               after=(which(nhwyrs_tbl$names=='Married')+2)) %>%
+    insert_row(c('Neighborhood perceptions', '', '', '', ''),
+               after=(which(nhwyrs_tbl$names=='M.A.+')+3)) %>%
+    insert_row(c('Neighborhood Fixed Effects', 'X', 'X', '', ''),
+               after=(which(nhwyrs_tbl$names=='>50 blocks')+4)) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+nhwyrs_tbl <- set_italic(nhwyrs_tbl, 
+                         which(nhwyrs_tbl$names %in% section_headers), everywhere, TRUE)
+
+nhwyrs_tbl[1,] <- c('', '(1)', '(2)', '(1)', '(2)') 
+nhwyrs_tbl %>%
+    set_caption(paste("(#tab:chgtert)", cap))
+
+## Save to LaTeX
+nhwyrs_tbl <- nhwyrs_tbl %>%
+    set_latex_float("!h") %>%
+    set_caption(cap) %>%
+    set_label("tab:nhwyrs")
+gsub("```(.+\\n)?", "", to_latex(nhwyrs_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-nhwyrs.tex")
+
+```
+
+The third and fourth columns report analogous models without fixed effects. Removing the fixed effects and not including any neighborhood covariates allowed me to examine whether the duration of residence between any two white residents randomly drawn from any multiracial neighborhood in the DC Area differ from one another. Not accounting for different neighborhood conditions allowed any trends in satisfaction between newcomers and incumbents to be observed, even if those conditions were the result of neighborhood conditions. Accordingly, it provided a conservative estimate regarding the association between duration and neighborhoods and satisfaction. As with the first two models, none of the coefficients can be distinguished from a null association and the data fit the model without length of residence better than the model with length of residence. Given existing the existing theories regarding neighborhood selection, these results provide evidence that mitigate concerns that selection effects undermine the share of satisfied white residents living in multiracial neighborhoods. 
+
+### Influence of white population change
+
+The second analysis examined whether white residents were systematically less likely than other racial to be satisfied in neighborhoods that tended to lose more whites. The loss of whites could signal dissatisfaction as whites "vote with their feet" and move out of the neighborhood. In addition, the loss of white neighbors could lead white residents who remain to feel less satisfied with their neighborhoods. Existing theories would predict that whites would be more sensitive to the loss of white residents than other racial groups, so we would expect to see larger interracial disparities in neighborhoods that lost more whites. 
+
+To address the possibility that white losses affect satisfaction differently for whites than other groups, I stratified the data by the white population change that occurred in the neighborhood from 2000 to 2015 (the latter being based on the 2011-2015 Five-year American Community Survey estimates). To account for different neighborhood sizes, I calculated the ratio of whites living in the neighborhood in 2015 to the number of whites who lived in the neighborhood in 2000; I then took the natural log of this value (i.e., $\ln(\text{POP}_{2015}/\text{POP}_{2000})$) to obtain a linear variable to include in models. 
+
+```{r supp-lntotchg-tertiles}
+sampled_nhoods <- dcas16q %>%
+    group_by(sample_tract) %>%
+    slice(1L) %>%
+    ungroup()
+
+chgsum <- summary(sampled_nhoods$lntotchg)
+chgtertiles <- quantile(sampled_nhoods$lntotchg, probs = seq(0, 1, 1/3))
+gainnhw <- nrow(filter(sampled_nhoods, lntotchg>0)) / nrow(sampled_nhoods)
+
+```
+
+I  calculated tertiles of change based on the distribution of white population change in neighborhoods.[^tertiles] The average neighborhood kept `r round(exp(chgsum['Mean']), 2)*100` out of every 100 of its white residents (median = `r round(exp(chgsum['Median']), 2)*100` out of 100). The bands for the white population ratio in each tertile reported in Table \@ref(tab:tertiles) and are depicted in orange in Figure \@ref(fig:supp-chgtert).
+
+[^tertiles]: I based the tertiles on the unique neighborhoods in the data. The tertiles have different numbers of residents based on the varying number of residents in each neighborhood. 
+
+Table: (\#tab:tertiles) Values of white population change ratio ranges by tertiles 
+
+Tertile  Range of change ratio
+-------- -------------------------------------------------------------------------
+First    `r paste(sapply(chgtertiles[1:2], function(x) round(exp(x),2)), collapse ="-")`
+Second   `r paste(sapply(chgtertiles[2:3], function(x) round(exp(x),2)), collapse ="-")` 
+Third    `r paste(sapply(chgtertiles[3:4], function(x) round(exp(x),2)), collapse ="-")`
+
+
+Table \@ref(tab:tertiles) and \@ref(fig:supp-chgtert) show considerable variation in how much white population change occurred in multiracial neighborhoods. Some neighborhoods lost a large number of whites, but even in the tertile representing the largest white losses, the upper limit of neighborhoods kept `r round(exp(chgtertiles[2]),2)*100` percent of white residents. This value is consistent with average annual mobility rates among whites, which in 2010 were **TK**. Although multiracial neighborhoods in the data lost whites, there were still `r round(gainnhw, 2)*100` percent of neighborhoods that *gained* white residents over 15 years. The data used in the manuscript, therefore, reflect neighborhoods with a large distribution of white population losses and gains. These descriptive analysies show that the data used in the manuscript, therefore, reflect neighborhoods with a large distribution of white population losses and gains. 
+
+```{r supp-chgtert, echo=FALSE, fig.cap="Distribution of neighborhood white population change"}
+qplot(sampled_nhoods$lntotchg, bins=40) +
+    geom_vline(aes(xintercept = chgtertiles[2:3]), color='orange') +
+    scale_x_continuous(breaks=seq(-2,2,.5), limits=c(-1.75,1.75)) +
+    labs(
+        title='Distribution of logged population change ratio of whites',
+        y = 'N',
+        x = 'Logged white population change ratio'
+    ) +
+    theme_minimal()
+ggsave("images/supp-chgtert.pdf",
+       width=6.75, units="in")
+```
+
+To examine whether interracial differences in satisfaction were consistent across this distribution of white neighborhood change, I stratified the DCAS 2016 by tertiles, report the unconditional means of satisfaction by race, and re-estimated Models 2 and 3 from Table 6 of the manuscript. Before doing so, I investigate the distribution of DCAS 2016 sample respondents across the three tertiles. Figure \@ref(fig:supp-lntotchg-satisfaction) shows the smoothed percentage of white respondents who were satisfied in their neighborhoods by the logged white population change ratio. 
+
+```{r supp-lntotchg-satisfaction, fig.cap="Share of white respondents satisfied in neighborhood by logged white population change ratio"}
+## Create variable measuring tertiles of white population change in 
+## DCAS 2016 data
+dcas16svy <- dcas16svy %>%
+    update(
+        chgtert = factor(
+                cut(lntotchg, breaks = chgtertiles, include.lowest = TRUE),
+                labels = as.character(1:3)
+            )
+        )
+
+nhwsat <- filter(dcas16svy$designs$imp1$variables, raceeth=='white')
+chgsat_smth <- ggplot(nhwsat, aes(x=lntotchg, y=satisfied)) +
+    geom_smooth(color='#333333') +
+    geom_vline(xintercept = chgtertiles[2:3], color='orange') +
+    scale_x_continuous(breaks = seq(-1.5, 2.75, 0.5)) +
+    scale_y_continuous(breaks = seq(0.1,1.0,0.2)) +
+    labs(
+        title = paste(
+            "Satisfaction by change in white population among whites in", 
+            "multiracial neighborhoods"
+            ),
+        subtitle = paste(
+            "Unweighted percent of white residents living in multiracial",
+            "neighborhoods"
+            ),
+        y = "Percent satisfied",
+        x = NULL
+        ) +
+    theme_minimal() +
+    theme(
+        axis.text.x = element_blank()
+    )
+
+chgsat_hst <- ggplot(nhwsat, aes(x = lntotchg)) +
+    geom_histogram(bins = 41) +
+    geom_vline(xintercept = chgtertiles[2:3], color='orange') +
+    scale_x_continuous(breaks = seq(-1.5, 2.75, 0.5)) +
+    labs(
+        y = "Count",
+        x = "White population change ratio (logged)",
+        caption = "Note: Orange vertical lines demarcate tertiles"
+    ) +
+    theme_minimal() 
+
+chgsat_plt <- ggarrange(chgsat_smth, chgsat_hst, ncol = 1, heights = c(.65, .35))
+ggsave("images/supp-chgsat.pdf", plot = mfxC_plt,
+       width=6.75, units='in')
+chgsat_plt
+
+```
+
+Table \@ref(tab:tertcount) shows the number of respondents by race and tertile of white change.
+
+```{r supp-lntotchg-count}
+racedisp <- racelabs
+names(racedisp) = racelevs[-1]
+tertcount <- dcas16svy$designs$imp1$variables %>%
+    group_by(chgtert, raceeth) %>%
+    count() %>%
+    ungroup() %>%
+    pivot_wider(id_cols = raceeth, names_from = chgtert, values_from = n) %>%
+    mutate(
+        Race = recode_factor(raceeth, !!!racedisp, ordered = !!!racedisp)
+    )
+
+tertcount_tbl <- tertcount %>%
+    select(Race, `1`, `2`, `3`) %>%
+    as_huxtable() %>%
+    insert_row(c("", "Tertile of White Change", "" ,"")) %>%
+    set_align(1, everywhere, "center") %>%
+    merge_across(1, 2:4) %>%
+    set_bold(1:2, everywhere, TRUE) %>%
+    set_bottom_border(c(2, nrow(.)), everywhere, TRUE) %>%
+    set_caption(paste(
+        "Number of sample respondents by race and tertile of white",
+        "population change")) %>%
+    set_label("tab:tertcount") 
+tertcount_tbl
+
+gsub("```(.+\\n)?", "", to_latex(tertcount_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-tertcount.tex")
+```
+
+```{r supp-lntotchg-descriptive}
+## Create variable measuring tertiles of white population change in 
+## DCAS 2016 data
+dcas16svy <- dcas16svy %>%
+    update(
+        chgtert = factor(
+                cut(lntotchg, breaks = chgtertiles, include.lowest = TRUE),
+                labels = as.character(1:3)
+            )
+        )
+racedfs <- list(
+    # dcas16svy,
+    subset(dcas16svy, raceeth=="asian"),
+    subset(dcas16svy, raceeth=="black"),
+    subset(dcas16svy, raceeth=="latino"),
+    subset(dcas16svy, raceeth=="white")
+)
+desctert <- lapply(racedfs, function(df){
+    res <- with(df, svyby(~satisfied, ~raceeth + chgtert, svymean)) %>%
+        MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(Percent=coef(res)*100)
+}) %>%
+    bind_rows() %>%
+    mutate(
+        Race = rep(racelabs, each = 3),
+        tertile = rep(1:3, 4)
+    ) 
+
+desctert_tbl <- desctert %>%
+    pivot_wider(id_cols = "Race",
+                names_from = "tertile", values_from = "Percent") %>%
+    as_huxtable() %>%
+    insert_row(c("", "Tertile of White Change", "" ,"")) %>%
+    set_align(1, everywhere, "center") %>%
+    merge_across(1, 2:4) %>%
+    set_bold(1:2, everywhere, TRUE) %>%
+    set_bottom_border(c(2, nrow(.)), everywhere, TRUE) %>%
+    set_caption(paste(
+        "Mean percent of residents satisfied by race in each tertile of", 
+        "white population change")) %>%
+    set_label("tab:desctert") 
+desctert_tbl
+
+gsub("```(.+\\n)?", "", to_latex(desctert_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-desctert.tex")
+
+```
+
+```{r supp-lntotchg-analysis, warning=FALSE}
+## Warnings are suppressed
+## Subset DCAS 2016 data by tertile
+svytert <- lapply(as.character(1:3), function(t){
+    svy <- subset(dcas16svy, chgtert==t) %>%
+        update(sample_tract = factor(as.character(sample_tract)))
+    contr_N <- length(unique(svy$designs$imp1$variables$sample_tract))
+    for(d in svy$designs) {
+        contrasts(d$variables$sample_tract) <- contr.sum(contr_N)
+    }
+    return(svy)
+})
+
+## Estimate parameters of full model
+tert_model <- function(svy, vars) {
+    with(svy, svyglm(
+        as.formula(paste('satisfied ~', vars)), family=binomial
+    ))
+}
+
+m3tert <- lapply(svytert, tert_model, m3) # Full model
+m4tert <- lapply(svytert, tert_model, m4) # Without race
+
+```
+
+The parameter estimates, standard errors, and AIC values for the models re-estimating Models 2 and 3 from Table 6 of the manuscript are reported in Table \@ref(tab:chgtert). Model 2 in each of the tertiles includes race as a predictor of satisfaction. No effect exists that can be statistically distinguished from the null in any of the three models. In the two lowest tertiles, the data fit Model 3, which does not include race, than they fit Model 2. The data for the highest tertile fit the model that includes race better than the model that does not, but none of the race coefficients approach statistical significance. 
+
+```{r supp-lntotchg-analysis-tbl, echo=FALSE}
+## Function to gather and tidy imputed results and report summary statistics
+combine_tertiles <- function(res){
+    lapply(res, function(res){
+        cmb <- MIcombine_aic(res)
+        nobs <- nrow(res[[1]]$data)
+        cmb$nobs <- nobs
+        return(cmb)
+    })
+}
+
+## Report models
+m3comb <- combine_tertiles(m3tert)
+m4comb <- combine_tertiles(m4tert)
+cap = paste(
+    "Logistic regression coefficients and standard errors predicted",
+    "from models estimating neighborhood satisfaction among residents", 
+    "of mulitracial neighborhoods by tertile of white population change"
+)
+
+chgtert_tbl <- report_models(
+    m3comb[[1]], m4comb[[1]], m3comb[[2]], m4comb[[2]], m3comb[[3]], m4comb[[3]],
+    reglabels = regression_labels,
+    use.headers = TRUE
+)
+statrow <- nrow(chgtert_tbl)-3
+chgtert_tbl <- chgtert_tbl %>%
+    insert_row(c("Tract fixed effects", rep("X", 6)),after=statrow) %>%
+    set_top_border(statrow+1, everywhere, TRUE) %>%
+    set_top_border(statrow+2, everywhere, FALSE) %>% 
+    insert_row(c("", "First", "", "Second", "", "Third", ""), after=0) %>%
+    merge_cells(1, c(2:3)) %>% 
+    merge_cells(1, c(4:5)) %>%
+    merge_cells(1, c(6:7)) %>%
+    set_align(1, everywhere, 'center') %>%
+    set_bottom_border(2, everywhere, TRUE) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+chgtert_tbl[2,] <- c("", "(2)", "(3)", "(2)", "(3)", "(2)", "(3)")
+
+## Print to HTML
+chgtert_tbl %>%
+    set_caption(paste("(#tab:chgtert)", cap))
+
+## Save to LaTeX
+chgtert_tbl <- chgtert_tbl %>%
+    set_latex_float("!h") %>%
+    set_caption(cap) %>%
+    set_label("tab:chgtert")
+gsub("```(.+\\n)?", "", to_latex(chgtert_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-chgtert.tex")
+
+```
+
+The disparate intercepts across tertiles in Table \@ref(tab:chgtert) cause concern about the potential for satisfaction to vary substantially by white population change. The large intercepts are not caused by the race of the respondent, but by respondent education. Table \@ref(tab:eductert) shows that 90.5 percent of residents with high school degrees were satisfied living in neighborhoods with the largest white declines. Satisfaction was substantially higher among high school graduates than all other groups (range 14.5-37.3 percentage points). Since high school graduates represented the reference category, the intercept in the parameter estimates with data from the first tertile of racial change was extremely high. 
+
+```{r supp-lntotchg-intercepts}
+## Warnings issued because of missingness on educational attainment leads
+## subsets to be different across tertiles
+educdfs <- list(
+    subset(dcas16svy, educ=="H.S."),
+    subset(dcas16svy, educ=="<H.S."),
+    subset(dcas16svy, educ=="Some college, no B.A."),
+    subset(dcas16svy, educ=="B.A."),
+    subset(dcas16svy, educ=="M.A.+")
+)
+eductert <- lapply(educdfs, function(df){
+    res <- with(df, svyby(~satisfied, ~educ + chgtert, svymean)) %>%
+        MIcombine()
+    n <- nrow(df$designs$imp1)
+    list(Percent=coef(res)*100)
+}) %>%
+    bind_rows() %>%
+    mutate(
+        Education = rep(levels(dcas16$educ), each = 3),
+        tertile = rep(1:3, 5)
+    ) 
+
+eductert_tbl <- eductert %>%
+    pivot_wider(id_cols = "Education",
+                names_from = "tertile", values_from = "Percent") %>%
+    as_huxtable() %>%
+    insert_row(c("", "Tertile of White Change", "" ,"")) %>%
+    set_align(1, everywhere, "center") %>%
+    merge_across(1, 2:4) %>%
+    set_bold(1:2, everywhere, TRUE) %>%
+    set_bottom_border(c(2, nrow(.)), everywhere, TRUE) %>%
+    set_caption(paste(
+        "Mean percent of residents satisfied by educational attainment",
+        "in each tertile of white population change")) %>%
+    set_label("tab:eductert") 
+eductert_tbl
+
+```
+
+### Summary of within-neighborhood robustness analyses 
+
+While the analyses above cannot definitively reject selection effects, they mitigate concerns that selection effects are responsible for finding shared satisfaction among residents in multiracial neighborhoods. Among whites---the group that previous research suggests would be the most likely to be affected by integration---the inclusion of the variable measuring length of residence did not improve the fit of the model. About half of white residents moved into multiracial neighborhoods in the past 10 years. They were not more satisfied than whites who moved into multiracial neighborhoods 20, 30, or 40 years prior. Although the data cannot disprove the exit of dissatisfied white residents, the results provide evidence that the share of satisfied long-term white residents are similar to white newcomers. Evidence against selection effects was further bolstered by the fact that interracial differences in satifaction were not systematically related to white losses in multiracial neighborhoods. Whites were not less likely than other groups to be satisfied in neighborhoods that lost more whites. 
+
+Together, these findings provide some assurance that selection effects are not solely responsible for shared satisfaction. Further data that measures satisfaction among people over time would, of course, provide data to answer the question. Even without these data, however, these results provide evidence of shared satisfaction among *current* residents, regardless of how they ended up living in multiracial neighborhoods. 
+
+## Between Neighborhood Robustness Analysis
+
+I also conducted two supplemental analyses to confirm the plausibility of the findings in the comparative analysis. The comparative analysis examined satisfaction levels, by race, between residents of multiracial neighborhoods and residents of DC-area neighborhoods generally. The findings reported in the article showed that a larger proportion of whites were satisfied living in the DC area neighborhoods relative to whites living in multiracial nieghborhoods while satisfaction levels were similar for non-white racial groups. I first analyzed whether neighborhood racial diversity predicted satisfaction among the DCAS 2018 sample and what effect a changing white population had on residents in both samples. 
+
+### Satisfaction in DC area by neighborhood entropy
+
+A different way to approach the between-neighborhood analysis reported in Figure 3 of the manuscript is to analyze the influence of racial composition on the sample that represents all DC-area residents using the DCAS 2018 data. The DCAS 2018 data, which represented residents in the entire DC area, offered an opportunity to assess the influence of multiracial diversity on satisfaction across the DC area. The between neighborhood analysis showed:
+
+#. satisfaction among white residents of multiracial neighborhoods is lower than satisfaction among white residents in general; and
+#. satisfaction does not differ between residents of multiracial and other neighborhoods among Black, Latinx, and Asian residents in the DC area.
+
+I use entropy to measure racial integration. Entropy reaches its maximum when each group makes up an equal share of residents in a neighborhood. Entropy offers a useful measure of multiracial diversity, however it does not account for differences between racial compositions at the same level of entropy (an all-white and all-Black neighborhood would, for example, both have entropy scores of zero). An alternative would be to categorize neighborhoods by presence of racial groups. Unfortunately sample sizes within different categories of racial composition do not allow me to meaningfully compare neighborhoods by composition. In addition to approaching the comparitive satisfaction differently, the analysis allowed me to ascertain the validity of the internal satisfaction associations found in the manuscript (i.e., Tables 5 & 6 and Figure 2 in the manuscript).  
+
+```{r supp-entropy-dcas2018, warning=FALSE}
+## Warnings are suppressed
+## Recenter entropy at mean level in DCAS 2016 neighborhoods
+dcas16_mean_H <- mean(sampled_nhoods$H, na.rm=TRUE)
+dcarea_sigma_H <- sd(dcarea$H, na.rm=TRUE)
+dcas18svy <- dcas18svy %>%
+    update(Hc = (H - dcas16_mean_H)/dcarea_sigma_H)
+
+## Define models and estimate parameters
+m5bn <- paste(m3bn, "+ Hc")
+m5bn_ixn <- paste(m3bn, "+ Hc*raceeth")
+
+m518 <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m5bn)), family=binomial)
+    )
+m518_ixn <- with(dcas18svy, svyglm(
+    as.formula(paste('satisfied ~', m5bn_ixn)), family=binomial)
+    )
+```
+
+I centered entropy around the mean value of neighborhood entropy among DCAS 2016 respondents (H=`r round(dcas16_mean_H, 2)` out of a maximum of `r round(log(4), 2)`) and rescaled the variable so that values equal standard deviations based on all DC-area neighborhoods. Centering around the mean neighborhood included in the DCAS 2016 value allowed the intercept of the model to equal the average exposure used to predict values in Figure 3. I estimated two models, one that included entropy as an independent variable and a second that included interactions between entropy and respondent race. 
+
+```{r supp-entropy-dcas2018-lincom}
+## Calculate average entropy exposure among whites in DC area
+dcarea <- dcarea %>%
+    mutate(nhwwgt = nhw15/sum(nhw15))
+nhwH <- sum(dcarea$H * dcarea$nhwwgt, na.rm=TRUE)
+nhwHc <- nhwH - dcas16_mean_H
+nhwHsd <- nhwHc / dcarea_sigma_H
+
+## Calculate total influence of entropy on satisfaction for non-white groups
+m518_ixnc <- MIcombine_aic(m518_ixn)
+entropy_satisfaction <- function(
+    r,
+    desmat = NULL,
+    coefs = NULL
+    ) {
+    if(is.null(coefs)) coefs <- c('Hc', paste0('raceeth', r, ':Hc'))
+    if(is.null(desmat)) desmat <- desmat <- rep(1, length(coefs))
+    beta_r <- coef(m518_ixnc)[coefs]
+    yhat_r <- t(desmat) %*% beta_r
+    se_r   <- sqrt(t(desmat %*% vcov(m518_ixnc)[coefs, coefs] %*% desmat))
+    p_r    <- pt(yhat_r / se_r, df = m518[[1]]$df.residual)
+    ci_r   <- c(yhat_r - 1.96*se_r, yhat_r + 1.96*se_r) %>%
+        sapply(plogis)
+    return(list(yhat=yhat_r, se=se_r, pval = p_r, ci=ci_r))
+}
+nhw_quad <- entropy_satisfaction('white', coefs=c(1), desmat = c(1))
+nhw_avg  <- entropy_satisfaction('white', coefs=c('(Intercept)', 'Hc'),
+                                 desmat = c(1, nhwHsd))
+entfx <- sapply(racelevs[2:4], entropy_satisfaction, desmat = c(-1, -1))
+
+
+```
+
+The estimated values of both models can be found in Table \@ref(tab:entropy). The model that includes the interaction between the race of resident with neighborhood entropy is consistent with the findings reported in Figure 3. At the mean level of entropy in multiracial neighborhoods, Model (2) predicts that `r round(plogis(nhw_quad$yhat), 2)*100` percent of white residents would be satisfied (95% confidence interval: [`r round(nhw_quad$ci,2)*100`]), while `r round(plogis(nhw_avg$yhat), 2)*100` percent of white residents with the average white exposure in the DC area would be satisfied (95% confidence interval: [`r round(nhw_avg$ci, 2)*100`]). The respective corresponding values of white satisfaction reported in Figure 3 were `r round(as.numeric(bn_pred_tbl[2, 3]))` and `r round(as.numeric(bn_pred_tbl[2, 2]))` percent. The association of entropy on satisfaction among whites did not have an association statistically distinguishable from the null, despite the point estimate being relatively large. 
+
+```{r supp-entropy-dcas2018-tbl, echo=FALSE}
+raceixn_labs <- c("", "x Asian", "x Black", "x Latinx")
+cap = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "of models estimating neighborhood satisfaction among DC-area", 
+        "residents including entropy index"
+    )
+entropy_tbl <- report_models(
+    MIcombine_aic(m518), MIcombine_aic(m518_ixn),
+    reglabels = c(regression_labels,paste("Entropy", raceixn_labs))
+) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0)
+
+entropy_tbl %>%
+    set_caption(paste("(#tab:entropy)", cap))
+
+## Save to LaTeX
+entropy_tbl <- entropy_tbl %>%
+    set_latex_float("!h") %>%
+    set_caption(cap) %>%
+    set_label("tab:entropy")
+gsub("```(.+\\n)?", "", to_latex(entropy_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-entropy.tex")
+```
+
+Entropy had almost no influence on the satisfaction expressed by Blacks and Latinos. A one standard deviation decrease in entropy only reduced the odds of satisfaction among Black residents `r entfx[,'black'][['yhat']] %>% exp() %>% round(2)` (p$\approx$ `r entfx[,'black'][['pval']] %>% round(2)`) times and among Latinx residents `r entfx[,'latino'][['yhat']] %>% exp() %>% round(2)` (p$\approx$ `r entfx[,'latino'][['pval']] %>% round(2)`) times. Asian residents appeared to be more satisfied in less diverse neighborhoods; the odds of an Asian resident being satisfied were `r entfx[,'asian'][['yhat']] %>% exp() %>% round(2)` times higher for each standard deviation decrease in entropy and were marginally significant (p$\approx$ `r entfx[,'asian'][['pval']] %>% round(2)`).
+
+Finally, Model (1) shows that white DC-area residents were more likely to be satisfied living in their neighborhoods than Asian, Black, and Latinx residents. The coefficients for Asian, Black, and Latinx respondents were negative in the model, though the difference from white residents was only statistically significant for Black residents despite relatively large coefficients for Asian and Latinx residents. Controlling for the interaction of race by entropy almost eliminated differences between whites and both Black and Latinx residents when entropy equaled the mean level found in multiracial neighborhoods.
+
+In summary, this supplemental analysis shows:
+
+#. that whites and Asians are less satisfied in multiracial neighborhoods with some possibility that the difference reflects a statistical artifact (roughly consistent with Figure 3), and
+#. that satisfaction did not differ by level of neighborhood diversity among Black and Latino residents (consistent with Figure 3).
+
+### Differences in white population change between multiracial and other neighborhoods
+
+```{r supp-lntotchg-plt, fig.cap="Distribution of logged ratio of white population, 2015 to 2000", echo=FALSE}
+stacked <- select(dcas16, lntotchg) %>% 
+    mutate(year = 2016) %>%
+    bind_rows(select(dcas18, lntotchg) %>% mutate(year = 2018))
+
+lntotchg_plt <- ggplot(filter(stacked, !is.infinite(lntotchg)), 
+                       aes(x=lntotchg)) +
+    geom_histogram(binwidth=.125) +
+    scale_x_continuous(breaks=-7:7) +
+    facet_wrap(~year, ncol = 1) +
+    labs(
+        title="Distribution of logged ratio of white population, 2015 to 2000",
+        x = "Logged ratio of white change",
+        y = "Count"
+    ) +
+    theme_minimal()
+lntotchg_plt
+
+ggsave("images/supp-lntotchg.pdf", plot=lntotchg_plt,
+       width = 6.75, units="in")
+```
+
+A second analysis assessed the influence of changing white population on satisfaction among residents of the DC area. Using the same measure that I used above (the logged ratio of the white populations in 2015 to those in 2000), I examined the distribution of changes respondents in the DCAS 2016 experienced compared to those that the DCAS 2018 experienced. Figure \@ref(fig:supp-lntotchg-plt) plots these two distributions and Table \@ref(tab:supp-white-change-tbl) reports descriptive statistics of the changes. 
+
+```{r supp-white-change-tbl, echo=FALSE}
+kable(bind_cols(tibble(Year=c(2016,2018)), bind_rows(
+    summary(dcas16$lntotchg[!is.infinite(dcas16$lntotchg)]),
+    summary(dcas18$lntotchg[!is.infinite(dcas18$lntotchg)])
+)), digits = 2, caption="Descriptive statistics of logged white change, 2016 and 2018 DCAS respondents") %>%
+    kable_styling(full_width = FALSE)
+```
+
+One can see from both Figure \@ref(fig:supp-lntotchg-plt) and Table \@ref(tab:supp-white-change-tbl) that respondents to the DCAS 2018 live in neighborhoods that experienced a much larger distribution of change than the respondents to the DCAS 2016. Ignoring the one outlying neighborhood where the logged change ratio equaled almost seven, the standard deviation of logged white change among DCAS 2018 respondents was `r sd(filter(stacked, year==2018, lntotchg<6, !is.infinite(lntotchg))$lntotchg, na.rm=TRUE) %>% round(2)` while the standard deviation among DCAS 2016 residents was `r sd(filter(stacked, year==2016, !is.infinite(lntotchg))$lntotchg, na.rm=TRUE) %>% round(2)`.[^king-farm]
+
+[^king-farm]: The census tract with the dramatic change was where a new subdivision was built where previously a single family lived on a family-owned farm. 
+
+```{r supp-lntotchg, warning=FALSE}
+## Warnings are suppressed
+## Create datasets that remove impossible values of lntotchg
+dcas16svyln <- subset(dcas16svy, !is.infinite(lntotchg), lntotchg < 6)
+dcas18svyln <- subset(dcas18svy, !is.infinite(lntotchg), lntotchg < 6)
+
+mean16 <- with(dcas16svyln, svymean(~lntotchg)) %>% MIcombine() %>% coef()
+var16  <- with(dcas16svyln, svyvar(~lntotchg)) %>% MIcombine() %>% coef()
+
+dcas16svyln <- update(dcas16svyln, whiterat = (lntotchg - mean16)/sqrt(var16))
+dcas18svyln <- update(dcas18svyln, whiterat = (lntotchg - mean16)/sqrt(var16))
+
+## Estimate models of satisfaction with interactions by white change
+m6bn <- paste(m3bn, "+ race.pnhw + whiterat")
+m7bn <- paste(m3bn, "+ race.pnhw + whiterat*raceeth")
+
+m616 <- with(dcas16svyln, svyglm(
+    as.formula(paste('satisfied ~', m3bn)), family=binomial)
+)
+m716 <- with(dcas16svyln, svyglm(
+    as.formula(paste('satisfied ~', m7bn)), family=binomial)
+)
+
+m618 <- with(dcas18svyln, svyglm(
+    as.formula(paste('satisfied ~', m6bn)), family=binomial)
+)
+m718 <- with(dcas18svyln, svyglm(
+    as.formula(paste('satisfied ~', m7bn)), family=binomial)
+)
+
+## Calculate predicted satisfaction at -1 s.d. of white change
+sat1sig <- plogis(
+    diff(coef(MIcombine(m616))[c('whiterat', '(Intercept)')]))
+
+## Calculate exposure to white loss among whites in DCAS 2018
+
+mean18nhw <- with(subset(dcas18svyln, raceeth=="white"), svymean(~lntotchg)) %>% MIcombine() %>% coef()
+var18nhw  <- with(subset(dcas18svyln, raceeth=="white"), svyvar(~lntotchg)) %>% MIcombine() %>% coef()
+```
+
+
+I examined whether the white population change from 2000 to 2015 affected the results reported in Figure 3. I added the logged change ratio to models for both respondents representing residents of multiracial neighborhoods (DCAS 2016 respondents) and those representing residents of the entire DC area (DCAS 2018 respondents). I centered the variable around the mean change experienced by DCAS 2018 respondents and scaled the variable by the standard deviation of the DCAS 2018 respondents.  I estimated two models for each set of data, one each with and without interactions with race. The interactions would account for the different sensitivity white residents have to the loss of white neighbors. The parameter estimates and standard errors are reported in Table \@ref(tab:lnchgtot). 
+
+The first two columns of Table \@ref(tab:lnchgtot) report parameter estimates using data representing residents of multiracial neighborhoods. The results in the first column show that residents were more satisfied in neighborhoods that gained more whites---or, inversely, lost fewer whites. The odds of being satisfied among residents of multiracial neighborhoods where white change was one standard deviation above the DC-area mean were `r exp(coef(MIcombine_aic(m616))['whiterat']) %>% round(2)` times higher than residents of multiracial neighborhoods that matched the DC-area-wide mean. Consistent with the findings reported in Table \@ref(tab:chgtert) above showing no racial differences across tertiles of white population change, I found that the data fit the model with an interaction worse than the model without. The results imply that white growth (or the absence of white loss) increases satisfaction, but *it does so equally across all racial groups*.  
+
+```{r supp-lntotchg-tbl, echo=FALSE}
+cap = paste(
+        "Logistic regression coefficients and standard errors predicted",
+        "of models estimating neighborhood satisfaction among",
+        "residents of multiracial neighborhoods and the DC-area, including",
+        "logged change ratio of white population"
+    )
+lnchgtot_tbl <- report_models(
+    MIcombine_aic(m616), MIcombine_aic(m716), 
+    MIcombine_aic(m618), MIcombine_aic(m718),
+    reglabels = c(regression_labels,
+                  "Percent white (2015)", 
+                  paste("Logged white change", raceixn_labs))
+) %>%
+    set_top_padding(0) %>%
+    set_bottom_padding(0) %>%
+    insert_row(c("", "Multiracial", "", "DC area", ""), after=0) %>%
+    merge_cells(1, 2:3) %>%
+    merge_cells(1, 4:5) %>%
+    set_align(1, everywhere, 'center') %>%
+    set_bottom_border(2, everywhere)
+lnchgtot_tbl[2, 4:5] <- c("(1)", "(2)")
+
+lnchgtot_tbl %>%
+    set_caption(paste('(#tab:lnchgtot)', cap)) 
+
+## Save to LaTeX
+lnchgtot_tbl <- lnchgtot_tbl %>%
+    set_latex_float("!h") %>%
+    set_caption(cap) %>%
+    set_label("tab:lnchgtot")
+gsub("```(.+\\n)?", "", to_latex(lnchgtot_tbl), perl=TRUE) %>% 
+    cat(file="tables/supp-lnchgtot.tex")
+```
+
+The second two columns of Table \@ref(tab:lnchgtot) report parameter estimates using data representing all DC-area residents. The amount of what change that occurred in the neighborhood had little influence on satisfaction of residents, though in the case of residents from the entire DC-area the data fit the model with an interaction better. The fourth column shows that the influence of white population growth was higher for Asian and Latinx residents was higher than the influence on whites, though only the the association for Latinx residents could be distingushed from the null. 
+
+### Summary of between-neighborhood robustness analysis
+
+The analyses of entropy among only DCAS 2018 respondents showed that satisfaction among White residents correlates with the racial diversity of neighborhoods. Satisfaction among other racial groups appeared be insensitive or less senstive than whites to the racial diversity of neighborhood residents. These results comport with the findings reported in Figure 3 that compared the results of the two surveys. 
+
+The influence of white population change were different in multiracial neighborhoods than DC-area neighborhoods generall. Residents of multiracial neighborhoods, regardless of race, were more likely to be satisfied in neighborhoods where white populations had increased. This finding supports the notion of shared satisfaction across racial groups living in multiracial neighborhoods. 
+
+Among neighborhoods in the DC area generally, Asian and Latinx were more likely satisfied than white and Black residents. The satisfaction of White and Black residents seemed unassociated with white population change. The differences between groups among neighborhoods in general do not contradict any of the conclusions of this paper, but do shed light on an area for further research. 
+
+## Neighborhood Change Robustness Analysis
+
+<!--
+### Multinomial Logistic Regression of Neighborhood Change Questions
+```{r supp-change-multinomial, message=FALSE}
+library(svrepmisc)
+dcas16svy <- dcas16svy %>%
+    update(
+        nhdchg = relevel(nhdchg, ref = 'Same')
+    )
+des <- as.svrepdesign(dcas16svy$designs[[1]], type="bootstrap" , replicates=250)
+m3m_bet <- svymultinom(as.formula(paste('nhdchg ~', m3)),
+                       design = des)
+tbl <- tidy(m3m_bet)[1:8,] %>%
+    mutate(star = if_else(p.value < .001, '***',
+                          if_else(p.value < .01, '**',
+                                  if_else(p.value < 0.05, '*', ''))))
+vals <- function(i) {
+    c(sprintf("%5.3f", tbl[i,2]), sprintf("(%5.3f)", tbl[i,3]))
+}
+
+df <- tibble(
+    Variable = c("Intercept", "", "Asian", "", "Black", "", "Latinx", ""),
+    Better = c(sapply(seq(1, 7, 2), vals)),
+    ` `  = c(sapply(tbl[seq(1, 7, 2), 6], c, "")),
+    Worse  = c(sapply(seq(2, 8, 2), vals)),
+    `  `  = c(sapply(tbl[seq(2, 8, 2), 6], c, ""))
+)
+
+kable(df, align = 'lrlrl', format = 'pandoc')
+```
+-->
+
+```{r supp-cleanup, include=FALSE, echo=FALSE}
+## Removes fence blocks and replaces booktabs labels in .tex files
+fs <- list.files("tables", "\\.tex")
+for(f in fs) {
+    ll <- readLines(file.path("tables", f)) %>%
+        sapply(function(.) gsub("```(.+)?$", "", .)) %>%
+        sapply(function(.) sub(
+            "\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", .
+        )) %>%
+        # cat(file = file.path("tables", f))
+        writeLines(file.path("tables", f))
+}
+```
