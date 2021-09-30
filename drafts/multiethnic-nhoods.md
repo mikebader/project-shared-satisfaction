@@ -161,9 +161,9 @@ I used logistic regression analysis to test the hypotheses above. The general mo
 
 Analyses based exclusively on the 2016 data of residents living in multiracial neighborhoods included a fixed effect, $\mathbf{\delta_j}$, for the neighborhood of residence. Neighborhoods were defined as residents' census tracts. Including neighborhood fixed effects makes the estimates, $\mathbf{\beta}$, reflect the differences between white outcomes and those of Asian, Black, and Latino residents *living in the same neighborhood*. 
 
-\revision{The median neighborhood included five respondents and the maximum reached twenty residents. Nine neighborhoods had only a single respondent. The nine respondents from these neighborhoods were dropped from analyses that included fixed effects. Eight of 103 neighborhoods contained only one race of respondent; three contained only Asian respondents and five contained only white respondents. Twenty-six neighborhoods had at least one respondent from all four groups.}
+\label{rev:nhood-desc}\revision{The median neighborhood included five respondents and the maximum reached twenty residents. Nine neighborhoods had only a single respondent. The nine respondents from these neighborhoods were dropped from analyses that included fixed effects. Eight of 103 neighborhoods contained only one race of respondent; three contained only Asian respondents (N=8 respondents) and five contained only white respondents (N=16 respondents). Twenty-six neighborhoods had at least one respondent from all four groups.}
 
-All analyses were conducted in R (version 3.6.3), and they all accounted for missing data and the complex survey design. I used the `Amelia` package [@honaker_amelia_2011] to impute missing values in five datasets. I conducted all analyses using these five datasets weighting outcomes to account for the complex sample design using the `survey` library [@lumley_analysis_2004]. I combined all results using Rubin's [-@rubin_multiple_2004] rules. A replication package that includes all data and code used for the models is available at \[redacted\].
+All analyses were conducted in R (version 3.6.3), and they all accounted for missing data and the complex survey design. I used the `Amelia` package [@honaker_amelia_2011] to impute missing values in five datasets. I conducted all analyses using these five datasets weighting outcomes to account for the complex sample design using the `survey` library [@lumley_analysis_2004]. I combined all results using Rubin's [-@rubin_multiple_2004] rules. A replication package that includes all data and code used for the models is available at \[redacted\].
 
 # Results
 
@@ -195,23 +195,21 @@ Due to the cross-sectional source of data, the selection of diversity-seeking re
 
 I compared the difference between neighborhood satisfaction among residents of multiracial neighborhoods to neighborhood satisfaction among residents in general. In particular, I focused on comparisons between same-race residents. The traditional theories of neighborhood change predict lower satisfaction in multiracial neighborhoods. Recall, however, that two separate hypotheses predict different patterns: Putnam's -@putnam_e_2007 constrict theory predicts lower satisfaction among all racial groups while Abascal and Baldassarri -@abascal_love_2015 white exceptionalism predicts lower satisfaction only among whites. In contrast to both, the strongest form of the shared satisfaction perspective predicts that residents of multiracial neighborhoods will be as satisfied as residents elsewhere in the region. 
 
-
-
 To examine these hypotheses, I compared estimates of a model using the multiracial sample from the 2016 DCAS to estimates that used the DC area-wide sample from the 2018 DCAS. I used the model in Equation \ref{eqn:model} without neighborhood fixed-effects. 
 
 \revision{To examine these hypotheses, I first compared the percentage of satisfied residents in multiracial neighborhoods, calculated from the 2016 DCAS, to the percentage of satisfied residents in all DC-area neighborhoods from the 2018 DCAS. Table} \ref{tab:descbn} \revision{reports these values}. Among residents of the entire DC area, 78.3 percent were satisfied in their neighborhoods. Consistent with the social disorganization hypothesis, the percentage was 7.6 percentage points higher than satisfaction felt among residents of multiracial neighborhoods ($p{<}0.05$ from a two-sample t-test). But Table \ref{tab:descbn} also shows that the lower satisfaction levels can be largely attributed to white residents. White residents of multiracial neighborhoods were 16.2 percent less likely to be satisfied with their neighborhoods than white residents in the DC area ($p{<}0.001$). Asian residents of multiracial neighborhoods were also less likely to be satisfied than DC-area Asian residents, but the difference was insufficiently large to be confident that it did not arise from sampling variation ($p{=}0.200$). Black multiracial neighborhood residents were 2.1 percentage points less likely to be satisfied than Black DC-area residents generally, while Latinos were about equally likely to be satisfied living in multiracial neighborhoods as elsewhere in the DC area. 
 
 \abouthere{Table}{tab:descbn}
 
-\revision{To further examine differences across multiracial and all DC-area neighborhoods by race, I combined the DCAS 2016 data with the DCAS 2018 data. I estimated a model that included an interaction between being part of the 2016 multiracial neighborhood sample. Figure }\ref{fig:between}\revision{ reports the average marginal effect of living in a multiracial neighborhood compared to the DC area as a whole.}[^AME]\revision{ The plot confirms the lack of difference among Latinx and Black residents living in multiracial neighborhoods compared to DC-area neighborhoods generally. Black residents of multiracial neighborhoods were only one percentage point more satisfied than the average Black residents of the DC-area and Latinx residents of multiracial neighborhoods were only two percentage points less satisfied than Latinx residents of the DC area. In contrast, both white and Asian residents of multiracial neighborhoods were 16 percentage points less satisfied than the respective residents of the DC area. The effect was unlikely due to sampling error among white residents while the results were borderline statistically insignificant among Asian residents.}[^combined-p]
+\label{rev:comparative}\revision{To further examine differences across multiracial and all DC-area neighborhoods by race, I combined the DCAS 2016 data with the DCAS 2018 data. I estimated a model that included an interaction between being part of the 2016 multiracial neighborhood sample. Figure }\ref{fig:between}\revision{ reports the average marginal effect of living in a multiracial neighborhood compared to the DC area as a whole.}[^AME]\revision{ The plot confirms the lack of difference among Latinx and Black residents living in multiracial neighborhoods compared to DC-area neighborhoods generally. Black residents of multiracial neighborhoods were only one percentage point more satisfied than the average Black residents of the DC-area and Latinx residents of multiracial neighborhoods were only two percentage points less satisfied than Latinx residents of the DC area. In contrast, both white and Asian residents of multiracial neighborhoods were 16 percentage points less satisfied than the respective residents of the DC area. The effect was unlikely due to sampling error among white residents while the results were borderline statistically insignificant among Asian residents.}[^combined-p]
 
 \abouthere{Figure}{fig:between}
 
-[^AME]: \revision{The point estimates in Figure }\ref{fig:between}\revision{ represent the mean average marginal effect across the five imputed datasets and the confidence intervals represent the largest absolute value across the five imputed datasets. Table }\ref{tab:combined}\revision{ in the supplement reports all parameter estimates for the model.} 
+[^AME]: \label{rev:ame}\revision{The point estimates in Figure }\ref{fig:between}\revision{ represent the mean average marginal effect across the five imputed datasets and the confidence intervals represent the largest absolute value across the five imputed datasets. Table }\ref{tab:combined}\revision{ in the supplement reports all parameter estimates for the model.} 
 
 [^combined-p]: \revision{The $p$-values for the difference between white residents of multiracial neighborhoods and all DC-area white residents had a range of 0.003 to 0.005 between the five imputations, while the range of $p$-values for differences among Asian residents was 0.052 to 0.063.}
 
-The results cast doubt on the universality of the Putnam's -@putnam_e_2007 constrict theory. Black and Latino residents of multiracial neighborhoods were equally or more satisfied than their counterparts elsewhere in the metropolitan area. \revision{Living in a multiracial neighborhood predict lower levels of satisfaction among white and Asian residents. The result mostly affirms Abascal and Baldassarri's -@abascal_love_2015 prediction of white exceptionalism, \revision{with the caveat that no differences existed between white and Asian residents.} In addition to providing evidence against the constrict theory, the results also cast doubt on the strongest view of the shared satisfaction perspective that white residents find as much satisfaction in multiracial neighborhoods as other neighborhoods.[^entropy] 
+The results cast doubt on the universality of the Putnam's -@putnam_e_2007 constrict theory. Black and Latino residents of multiracial neighborhoods were equally or more satisfied than their counterparts elsewhere in the metropolitan area. \revision{Living in a multiracial neighborhood predicts lower levels of satisfaction among white and Asian residents. The result mostly affirms Abascal and Baldassarri's -@abascal_love_2015 prediction of white exceptionalism, \label{rev:ab-caveat}\revision{with the caveat that no differences existed between white and Asian residents.} In addition to providing evidence against the constrict theory, the results also cast doubt on the strongest view of the shared satisfaction perspective that white residents find as much satisfaction in multiracial neighborhoods as other neighborhoods.[^entropy] 
 
 [^entropy]: I also analyzed the association between entropy and satisfaction among groups using only the DC area-wide data from the DCAS 2018. The results were consistent with the findings presented in Figure \ref{fig:between}. 
 
@@ -370,7 +368,7 @@ The latter subgroup, the "dissatisfied stayers" would perceive neighbohroods sim
 
 Figure @fig:supp-satisfied-years-whites shows the (unweighted) smoothed percent of white residents satisified by length of residence in their neighborhoods. Given the importance of white residents to the theories, and the fact that the neighborhoods in the sample were almost all predominantly white neighborhoods that integrated over time, I focus on white respondents. Just under 70 percent of whites who lived in the neighborhood fewer than 40 years reported being satisfied, with a possible modest increase among those who lived in the neighborhood from 10 to 20 years. A consistent downward trend existed among the five percent of white residents who lived in the neighborhood for at least 40 years (but even then, more of those residents were satisfied than dissatisfied). 
 
-![Satisfaction by length of residence among white resdients in multiracial neighborhoods](../analysis/images/supp-nhwsat.pdf){#fig:supp-satisfied-years-whites}
+![Satisfaction by length of residence among white residents in multiracial neighborhoods](../analysis/images/supp-nhwsat.pdf){#fig:supp-satisfied-years-whites}
 
 The descriptive plot above does not, however, account for other factors that might correlate with satisfaction and length of residents, especially age, which mechanically correlates with length of residence. I created models that include a categorical variable for how long respondents have lived in multiracial neighborhoods and estimated parameters based only among white respondents. 
 
@@ -392,11 +390,11 @@ I  calculated tertiles of change based on the distribution of white population c
 
 Table: Values of white population change ratio ranges by tertiles {#tbl:tertiles}
 
-Tertile   Range of change ratio
---------- -----------------------
-First     0.21-0.71
-Second    0.71-0.88
-Third     0.88-3.42
+Tertile      Range of change ratio
+---------  -----------------------
+First                    0.21-0.71
+Second                   0.71-0.88
+Third                    0.88-3.42
 
 
 Table @tbl:tertiles and @fig:supp-chgtert show considerable variation in how much white population change occurred in multiracial neighborhoods. Some neighborhoods lost a large number of whites, but even in the tertile representing the largest white losses, the upper limit of neighborhoods kept 71 percent of white residents. This value is consistent with average annual mobility rates among whites, which in 2010 were 10.0 percent [@us_census_bureau_geographical_2011]. Although multiracial neighborhoods in the data lost whites, there were still 20 percent of neighborhoods that *gained* white residents over 15 years. The data used in the manuscript, therefore, reflect neighborhoods with a large distribution of white population losses and gains. These descriptive analysies show that the data used in the manuscript, therefore, reflect neighborhoods with a large distribution of white population losses and gains. 
@@ -404,7 +402,7 @@ Table @tbl:tertiles and @fig:supp-chgtert show considerable variation in how muc
 ![Distribution of neighborhood white population change](../analysis/images/supp-chgtert.pdf){#fig:supp-chgtert}
 
 
-\revision{Table} \ref{tab:desctert} \revision{reports the shares of residents of each race who report being satisfied by the tertile of white population change in their neighborhoods. Residents of all racial groups were less satisfied in neighborhoods that lost the largest share of whites than those that lost the fewest (or even gained white residents). The differences between the lowest and highest tertiles of white population change ranged from a 10 percentage point difference among white and Latinx residents to a 15.5 percentage point difference among Black residents (the difference among Asian residents was 13 percentage points).}
+\label{rev:desctert}\revision{Table} \ref{tab:desctert} \revision{reports the shares of residents of each race who report being satisfied by the tertile of white population change in their neighborhoods. Residents of all racial groups were less satisfied in neighborhoods that lost the largest share of whites than those that lost the fewest (or even gained white residents). The differences between the lowest and highest tertiles of white population change ranged from a 10 percentage point difference among white and Latinx residents to a 15.5 percentage point difference among Black residents (the difference among Asian residents was 13 percentage points).}
 
 \input{../analysis/tables/supp-desctert.tex} 
 
@@ -412,9 +410,9 @@ Table @tbl:tertiles and @fig:supp-chgtert show considerable variation in how muc
 
 \input{../analysis/tables/supp-chgtert.tex}
 
-[^education]: \revision{Educational differences in satisfaction caused the substantial differences between the estimated intercept parameters across the three tertiles. Differences between groups defined by educational attainment spanned a 44.3 percent range, from a low of 52.4 percent among those with an M.A. degree or equivalent to 96.7 percent among those with less than a high school degree. The large intercept parameter estimate ended up being so high because high school graduates were on the high end of the distribution (85.6 percent were satisfied).}
+[^education]: \label{rev:education}\revision{Educational differences in satisfaction caused the substantial differences between the estimated intercept parameters across the three tertiles. Differences between groups defined by educational attainment spanned a 44.3 percent range, from a low of 52.4 percent among those with an M.A. degree or equivalent to 96.7 percent among those with less than a high school degree. The large intercept parameter estimate ended up being so high because high school graduates were on the high end of the distribution (85.6 percent were satisfied).}
 
-\revision{Another concern might be that an insufficient number of white respondents lived in neighborhoods that lost white residents from 2000 to 2015. The lack of white respondents across the distribution of white change could indicate a problem with selection out of multiracial neighborhoods. Even in the neighborhoods that lost the most whites (i.e., the first tertile), there were still 90 white respondents (out of 227, or 40 percent).}
+\label{rev:chgsat}\revision{Another concern might be that an insufficient number of white respondents lived in neighborhoods that lost white residents from 2000 to 2015. The lack of white respondents across the distribution of white change could indicate a problem with selection out of multiracial neighborhoods. Even in the neighborhoods that lost the most whites (i.e., the first tertile), there were still 90 white respondents (out of 227, or 40 percent).}
 
 \revision{Figure \@ref(fig:supp-chgsat) shows further evidence that white respondents lived in neighborhoods throughout the distribution of white population changes. The top panel shows the smoothed satisfaction among whites across neighborhoods with different changes to the white population. It confirms that white residents in neighborhoods that gained whites were more satisfied than those in neighborhoods that lost whites. The bottom panel of Figure \@ref(fig:supp-chgsat) shows that whites were well-represented in all three tertiles of white population change. As a result, the confidence intervals around estimates were much narrower in the middle of the distribution of white neighborhood population change than on the two extremes. The clustering of white residents in the middle of the distribution of white change further allays concerns that selection causes the finding of shared satisfaction (but does not alleviate them entirely).} 
 
@@ -430,7 +428,7 @@ Together, these findings provide some assurance that selection effects are not s
 
 I combined the data from the DCAS 2016 and DCAS 2018 into a single dataset. The two datasets were combined into a single file and re-weighted to be representative of the DC area population based on the 2014-2018 American Community Survey. 
 
-I used a similar model, shown in Equation \ref{eqn:combined} below, to that which led to the results reported in Figure \ref{fig:between}. To the model shown in Equation \ref{eqn:model}, I added a term, $\mathbf{\zeta}$, that measured the association of being in each of the three samples---the DCAS 2016 multiracial neighborhood sample, the DCAS 2016 predominantly Latino sample, and the DCAS 2018 sample representative of the entire DC area---measured by a vector of indicators, $\mathbf{W}$. I also included a vector of interaction terms, $\mathbf{\theta}$, between respondent race and this sample variable. 
+\label{rev:eqn}\revision{I used a similar model, shown in Equation} \ref{eqn:combined} \revision{below, to that which led to the results reported in Figure} \ref{fig:between}. \revision{To the model shown in Equation} \ref{eqn:model}, \revision{I added a term, $\mathbf{\zeta}$, that measured the association of being in each of the three samples---the DCAS 2016 multiracial neighborhood sample, the DCAS 2016 predominantly Latino sample, and the DCAS 2018 sample representative of the entire DC area---measured by a vector of indicators, $\mathbf{W}$. I also included a vector of interaction terms, $\mathbf{\theta}$, between respondent race and this sample variable.}
 
 \begin{equation}
 \mathbf{\eta} = \alpha + \mathbf{\beta^T X} + \mathbf{\zeta^T W} + \mathbf{\theta^T (X)(W)} + \mathbf{\gamma^T Z}
@@ -443,7 +441,7 @@ Table \ref{tab:combined} reports the parameter estimates of the model that were 
 
 ## Comparative Satisfaction Robustness Analysis{#rob:comparative}
 
-I also conducted three supplemental analyses to confirm the plausibility of the findings in the comparative analysis. The comparative analysis examined satisfaction levels, by race, between residents of multiracial neighborhoods and residents of DC-area neighborhoods generally. The findings reported in the article showed that a larger proportion of whites were satisfied living in the DC area neighborhoods relative to whites living in multiracial nieghborhoods while satisfaction levels were similar for non-white racial groups. I first analyzed whether neighborhood racial diversity predicted satisfaction among the DCAS 2018 sample and what effect a changing white population had on residents in both samples. 
+I also conducted three supplemental analyses to confirm the plausibility of the findings in the comparative analysis. The comparative analysis examined satisfaction levels, by race, between residents of multiracial neighborhoods and residents of DC-area neighborhoods generally. The findings reported in the article showed that a larger proportion of whites were satisfied living in the DC area neighborhoods relative to whites living in multiracial neighborhoods while satisfaction levels were similar for non-white racial groups. I first analyzed whether neighborhood racial diversity predicted satisfaction among the DCAS 2018 sample and what effect a changing white population had on residents in both samples. 
 
 #### Satisfaction in DC area by neighborhood entropy.{#rob:entropy}
 
@@ -509,120 +507,46 @@ Among neighborhoods in the DC area generally, Asian and Latinx were more likely 
 
 # Reviewer Memo
 
-I appreciate the reviewers' thoughtful and insightful comments on this manuscript. The comments helped me clarify elements that were not sufficiently clear in the first draft of this manuscript and have pushed me to improve how my paper engages with the existing literature on the topic. 
-
-Two large issues seem to connect many of the individual comments: the problem of selection effects of who enters (and stays) in multiracial neighborhoods and the ability to compare across the sample of multiracial neighborhood residents and region-wide residents. I have tried, in the words of Reviewer 2, to "do anything else\ldots to convince readers that the results are 'real'\ldots" I briefly address these two general concerns here, and then I provide responses to individual comments that the reviewers provided below.
-
-I have worked to assuage concerns about selection effects into multiracial neighborhoods in the revised manuscript and supplemental robustness analysis. I considered two forms of selection: who chooses *to move into* multiracial neighborhoods and who chooses *to stay* in multiracial neighborhoods (conditional on living in multiracial neighborhoods). The first supplemental analysis shows that white incoming white residents (who chose multiracial neighborhoods) did not differ from longer-term residents (who moved in when different racial compositions existed). I describe in the supplement why this empirical evidence combined with existing theory provides evidence against selection. In the second analysis, I found little evidence that interracial differences in satisfaction varied by the share of whites who left the neighborhood over the previous 15 years. While I cannot overcome the fact that the study design prevents me from fully eliminating selection effects, I believe that triangulating the original and supplemental analyses provide evidence that the analyses are robust to any obvious signs of selection effects. 
-
-The supplement also addresses concerns about the comparative dimension of the analysis. The problem here arises from comparing results from two different samples. In one supplemental analysis, I used only the DCAS 2018 data that represented the entire DC area to estimate the association between neighborhood racial diversity and satisfaction. Measuring racial diversity using entropy, I found similar results using only the DCAS 2018 data to those reported in the original manuscript. 
-
-In the same vein, Reviewer 3 correctly suggested that the best analysis would come from combining the 2016 and 2018 data together and then testing for an interaction effect between neighborhood type and race. Because the two surveys were weighted to different populations, this was not possible with the data available for the original paper. Based on the reviewer's suggestion, I contracted the survey research firm to combine and re-weight the data such that the combined data represented the entire DC area. Analyzing models using these data also ended with similar results to those reported in the original manuscript.
-
-I opted to provide a supplement containing detailed descriptions of the robustness analyses with brief descriptions of the analyses in the text of the manuscript. Introducing all of the additional variables and analyses would substantially add to the length of the paper while, in my opinion, making it harder to read. At the same time, I felt it important to provide a complete and detailed description of the analyses for readers who are interested or who want to test the conclusions in the future. Providing brief descriptions of the robustness analyses in the manuscript and then including detailed descriptions in the supplement seemed like the best way to proceed. 
-
-Below, I respond in detail to the specific concerns raised by each reviewer. 
+I thank the reviewers for once again engaging with the manuscript. I respond to the specific comments of reviewers below. 
 
 ## Responses to Reviewer 1 Comments
 
-#### Multiracial neighborhood inclusion criteria.
-
-The reviewer points out the proliferation of definitions in the literature and asked for clarity on the definition used in the DCAS. I used a combination of factors to arrive at the two criteria (10% to measure the presence of a racial group and no majority group). The data were collected to be used for both academic research and to inform policymakers. Having a clear definition that was easy to communicate while remaining consistent with the existing literature (even if not exactly the same as existing definitions). A 10% threshold was easy to communicate and was small enough that all racial groups could surpass the threshold without disproportionate clustering given the racial diversity of the region (which could, paradoxically, exacerbate segregation). 
-
-I based the requirement that no majority was present on research by Krysan and her colleagues that racial composition exerts a large influence on perceptions of places. Having no majority increased the probability that the neighborhoods would be perceived as multiracial (though perceptions lag) rather than being dominated by one racial group. 
-
-#### Stability of multiracial neighborhoods. 
-
-I appreciate that the original manuscript overstated evidence in favor of multiracial stability. In addition to citing Ellen & colleague's paper, I also rewrote the final part of the "Shared Satisfaction with Multiracial Integration" section. I now devote the final paragraph to evidence contradicting the stability of multiracial integration and that the instability of multiracial integration calls into question the sense of shared satisfaction in multiracial neighborhoods (page \pageref{rev:shared-satisfaction} of the revised manuscript). In addition, I removed "and stability" from the first sentence of the third paragraph (that had previously read "The recent growth and stability of multiracial neighborhoods \ldots").
-
-#### Multiracial neighborhoods in transition.
-
-The existing evidence showing that multiracial neighborhoods commonly undergo transitions could undermine evidence of shared satisfaction. I empirically examined white loss since that is the dominant form of transition for multiracial neighborhoods (cf., Kye and Halpern-Manners (2019). Figure S3 shows the distribution of white population loss in the sampled multiracial neighborhoods. The neighborhoods lost, on average, 20 percent of the white population from 2000 to 2015. That 20 percent, however, should be put in the context that, in the US, 31 percent of non-Hispanic whites moved from 2010 to 2015.[^15-year] The loss of whites causing transitions appear, therefore, to be the result of whites *not entering* multiracial neighborhoods, an observation consistent with the socially structured search process of Krysan and Crowder (2016). This observation is further supported by Figure S1 that shows that whites made up only 29 percent of residents who moved into these neighborhoods in the past ten years, a rate lower than replacement in multiracial neighborhoods. It is also worth noting that residents living in a fifth of the neighborhoods included in the sample *gained* white population from 2000 to 2015. 
-
-[^15-year]: At a constant mobility rate of 31 percent, we would have expected only a third of the white residents present in 2000 to have remained in multiracial neighborhoods (i.e, $[1-0.31]^3=0.33$). 
-
-The range of the distribution indicates that the neighborhoods have experienced a variety of changes. The range speaks to a benefit of data that represent residents of multiracial neighborhoods, what I believe to be one of the strengths of this manuscript and analysis. 
-
-In addition to the range of transitions, the reviewer raises a different important point: white losses transitions could signal higher dissatisfaction among whites than other groups. Pages S4-S8 of the Supplement address this concern by examining whether white satisfaction differs as a function of white population loss. The results in Table S3 show little evidence that white residents are less satisfied than their neighbors of color in neighborhoods that lost a larger share of white residents. In the bottom two tertiles of white loss, the data fit the model that included race worse than the model without race. Both the overall context of transition coming from moves into neighborhoods and the lack of racial differences in satisfaction by the rate of white loss increase my confidence that a sense of shared satisfaction exists in multiracial neighborhoods. 
-
-I include a summary of this robustness analysis on page \pageref{rev:internal} of the revised manuscript with a reference to the supplement for those who wish to examine the evidence further.
-
-#### Issues with map in Figure 1.
-
-I am embarrassed that the basic elements the reviewer suggested were not in the original manuscript (and I'm sure my GIS instructors would be ashamed!). I have added the components that the reviewer mentioned. I have also removed reference to "quadrivial" as the reviewer mentioned; this was a remnant from a previous version of the manuscript. I struggled with terminology throughout drafting the paper for precisely the reasons that the reviewer wrote. I decided against using the term quadrivial because, as the reviewer notes, it implies stability that was not a criterion for inclusion. I neglected to revise the term in the map after revising it in the paper. 
-
-#### Walton's (2018/2021) "habits of whiteness".
-
-Walton's (2021) "habits of whiteness" likely affects the perceptions that residents develop about their multiracial neighborhoods and, as a result, their satisfaction. As such, they would be part of the amalgam of experiences that affect satisfaction among residents. It would be valuable, for example, to test whether shared satisfaction depends on the norms of behaviors within multiracial neighborhoods. That analysis, however, differs from the research questions in this manuscript. That said, Walton's contribution lies in the *relationships* between residents and how norms default to those that make white residents comfortable. This interpretative lens is one that should be explored further. I appreciate the reviewer helping me to draw this connection, and I now include the habits of whiteness as a potential issue associated with racial integration on page \pageref{rev:habits} of the revised manuscript.
-
-#### Citing Pinto-Coelho & Zuberi (2015).
-
-I now reference their paper in the discussion of the DC-area context on page \pageref{rev:pinto-coelho}.
-
-#### Commonness of multiracial neighborhoods. 
-
-The reviewer raises an important point about the (lack of) commonness of multiracial neighborhoods even as their numbers have grown. I have edited the sentence to now read "Multiracial neighborhoods---those neighborhoods shared among Asian, Black, Latino, and white neighbors---are no longer anomalies in many metropolitan areas" that I believe addresses the concern. 
-
-#### Figure 2 is unnecessary.
-
-I have kept Figure 2 because I think that it helps readers interpret the findings and it also demonstrates the similarity in preferences after accounting for the different distributions of independent variables across racial groups within multiracial neighborhoods. The average marginal effects take into account the fact that, because the models are not linear, the predicted probabilities depend on the distribution of the independent variables [@long_regression_2005].
-
-#### Rename discussion.
-
-I have renamed the final section "Discussion and Conclusions" -- thank you for this helpful advice.
-
-#### Uniqueness of DC area multiracial neighborhoods.
-
-The reviewer raises an important point about addressing how the Washington, DC area fits in relation to other metropolitan areas in both describing the context of the study and the conclusions. I have followed the reviewer's advice and now explain how many highly diverse neighborhoods exist in the Washington, DC area, and also I describe how the number of highly diverse neighborhoods have grown in the DC area while shrinking in number in other metropolitan areas on \pageref{rev:dc-data} of the revised manuscript.
-
-I also added several sentences to the conclusions on page \pageref{rev:dc-conclusions} arguing for more comparative analysis between metro areas. I found it difficult to say much more with so little data on the experiences of residents living in multiracial neighborhoods. I do note that the experience might be similar to other "new immigration destination" metropolitan areas that have seen a growth in knowledge work and increases in the number of multiracial neighborhoods, drawing on the types of metros where Wright, et al. (2020, *Sociol Race Ethn*) growing numbers of highly diverse neighborhoods. 
-
-#### Cite Matsumoto(2020).
-
-I appreciate the reviewer informing me of this piece. I now cite it in the discussion of qualitative studies about multiracial neighborhoods on page \pageref{rev:matsumoto} of the revised manuscript.
-
-## Responses to Reviewer 2 Comments
-
-#### Survey details.
-
-I have provided more information, including response rates, for the surveys on page \pageref{rev:survey} of the revised manuscript.
-
-#### Figure 1 (map). 
-
-I appreciate the reviewer's comments about the map. I have chosen to keep the map in the manuscript for two reasons. First, I believe that it depicts the location and geographic dispersion of multiracial neighborhoods. In revising the text, I found that text-based descriptions did not provide this context as well, especially among readers unfamiliar with the DC area. Second, the map provides a basis to compare the locations described in Pinto-Coelho & Zuberi's (2015) analysis that Reviewer 1 sagely suggested referencing. 
-
-The reviewer identified several problems with the map that likely made it less useful. As I describe in the response to Reviewer 1 above, the term "quadrivial" mistakenly remained from previous versions of the manuscript. The named communities referred to places also used in a previous version of the manuscript and ended up distracting readers. I also added text (starting on page \pageref{rev:map} of the revised manuscript) to provide the reader with more detail about what the map shows relative to the research questions posed in this paper. 
-
-I believe with these changes and amendments, the map now provides an appropriate and useful context for readers to understand the area being studied. 
-
-#### Differences in context for the two surveys.
-
-The reviewer notes three differences between the two surveys, with the latter two potentially contaminating the comparison:
-
-#. multi-racial neighborhood residents versus non-multiracial residents;
-#. the passage of two years; and
-#. likely differences in survey instruments
-
-No major events disrupted the housing market or would likely have had an influence on reports of neighborhood satisfaction between 2016 and 2018. Furthermore, all of the dependent variables for the analysis were measured using questions on the first page of the respective questionnaires that were very similar to one another (I now note this in the manuscript in the description of the surveys on \pageref{rev:survey}), limiting potential priming effects that would have caused measurement artifacts to cause different responses. In addition, I conducted the sensitivity analysis using only the DCAS 2018 data that the reviewer recommended (I describe the results and revisions in the following comment).
-
-#### Compare multiracial neighborhoods to other neighborhoods using DCAS 2018 data.
-
-I followed the reviewer's suggestion and I analyzed the 2018 data using a model that included entropy as a measure of diversity. The comparison helped to ensure that the estimates from the two surveys were plausible despite differences between the surveys. The results are described in the supplement, starting on page \pageref{rob:entropy}. I used entropy because the sample size of different neighborhood racial compositions (e.g., measured based on racial groups present) was too small to allow meaningful comparisons. At the mean entropy level of multiracial neighborhoods, 76 percent of white residents were satisfied, while 84 percent of white residents were satisfied at the average level of entropy among white residents in the DC area. Though the difference is not statistically significant, the magnitudes and direction are consistent with the results reported in Figure \ref{fig:between} of the manuscript. Meanwhile entropy did not predict different levels of satisfaction among Black and Latinx residents. Asian residents were *more* likely than whites to be satisfied with lower levels of entropy (though not significantly so). 
+\TK
 
 ## Responses to Reviewer 3 Comments
 
-#### Heterogeneity in white population change.
+#### Multiracial neighborhood stability\slash change.
 
-The supplement now describes white population change among multiracial neighborhoods (pp. \pageref{rob:internal}--\pageref{rob:comparative}). As I wrote in response to Reviewer 1, neighborhood change appears to be the result of disproportionately low rates of white residents moving in than current white residents moving out. The share of white residents leaving multiracial neighborhoods did not influence interracial differences in neighborhood satisfaction.
+The reviewer raises the concern that satisfaction may vary by the change in the white neighborhood population. The reviewer offers the suggestion to report the unconditional levels of satisfaction by race across the three tertiles of population loss. I have added Table \ref{tab:desctert} in the Supplement as well as a description of the table (starting on page \pageref{rev:desctert}) reporting these unconditional levels of satisfaction. Satisfaction was lower across all four racial groups in neighborhoods that lost the largest shares of white population from 2000 to 2015 (Tertile #1) compared to neighborhoods that lost the fewest or gained white residents (Tertile #3). 
 
-#### Comparison of white population change in multiracial neighborhoods to other neighborhoods.
+While fewer residents were, indeed, satisfied, at least three in five residents across all four racial groups were still satisfied living in multiracial neighborhoods. I believe that these results provide support to the shared satisfaction perspective. 
 
-To address the reviewer's comment about neighborhood stability, I have added analyses in the supplement to assess the association between neighborhood change and neighborhood satisfaction (pp. \pageref{rob:comparative}--\pageref{rob:comparative-summary}). Table \ref{tab:lnchgtot} shows that white gains in population increased the share of satisfied residents of multiracial neighborhoods, but did so across all racial groups (the model with race-by-change interactions fit the data worse than the model without, a finding consistent with the internal satisfaction supplemental analysis in Table \ref{tab:nhwyrs}). In the region-wide sample, the data fit the model including interactions better than the model without, but none of the individual coefficients was significantly different than zero. White residents were more satisfied in neighborhoods that lost smaller shares of the white population; losing whites affected the satisfaction of Asian and Latino residents (the Latino-by-change interaction coefficient was close to statistical significance, $p=0.062$) more than whites, but that was after those two groups started from lower probabilities of satisfaction initially. 
+#### Multiracial neighborhood change *as it relates to selection*.
 
-I also take to heart the reviewer's larger point about comparison across neighborhoods and, as a result, have been more explicit about the limitations that these data pose for a full comparative analysis. Given the consistency of findings from the comparison reported in Figure \ref{fig:between} and the estimates of the model that included entropy in Table \ref{tab:entropy} (suggested by Reviewer 2), I feel confident stating that a difference in white satisfaction exists. I do not, however, feel confident that the differences aren't explained by various neighborhood changes occurring simultaneously. Unfortunately, the data I have are not suited to analyze these simultaneous changes because the region-wide data lack clustering in neighborhoods that would allow me to disentangle individual from neighborhood associations. As a result, I have tried to be more circumspect in the discussion and to identify this as an area in need of more research, including specific suggestions on the type of data and analysis needed (revision on page \pageref{rev:comparative-conclusions} of the manuscript).
+The reviewer's second point addresses the possibility that selection, particularly among white residents. The reviewer writes: "the author has demonstrated that multiracial neighborhoods exhibit a wide range of white population change, they have not summarized how *this sample's whites* [emphasis in original] are distributed across neighborhood types."
 
-#### Estimates from analysis pooling both surveys. 
+The reviewer suggested adding a figure like Figure \ref{fig:supp-satisfied-years-whites} that swaps white population change for length of residence on the horizontal axis. The reviewer noted that concerns about selection would be mitigated if the the confidence intervals were narrow in the middle of the distribution and widened on both extremes of the distribution. I have added Figure \ref{fig:supp-chgsat} that takes the reviewer's suggestion. It indeed shows that that the confidence intervals are narrow in the middle of the distribution and widen at the edges of the range. Following on the topic raised in the section above, I also note on page \pageref{rev:chgsat} the number of white respondents (90 out of 227) from which my conclusions are based. 
 
-As I wrote in my general summary of changes above, the reviewer correctly notes that a pooled analysis provides the best way to test statistical differences between DC-area residents and multiracial residents. Given that the weights of the two datasets led both to represent different populations, I could not simply combine the two datasets. After purchasing the combined weights from the survey research company, I was able to show that the results were actually stronger in the pooled analysis than what appears in Figure \ref{fig:between}.
+The reviewer pointed to the disparate intercepts in Table \ref{tab:chgtert} as one motivation for the concern. The changing intercepts do not reflect differences in satisfaction among white residents across tertiles. Instead, the extremely large intercept came about because of differences in satisfaction among residents with different educational attainments. I now explain this pattern in the footnote on page \pageref{rev:education} of the Supplement. 
 
-I have included an explanation of the results of the pooled samples in the supplement (beginning on page \pageref{rob:combined}). The point estimates of neighborhood satisfaction estimated from the pooled sample are similar to those reported in the separate analyses. The standard errors of the difference between white residents of multiracial neighborhoods and white residents in the DC area are *smaller* in the pooled sample than in the separate samples. I chose to retain the results of the unpooled samples in the manuscript since the point estimates are similar in the pooled an unpooled samples, the unpooled sample provided a more conservative estimate of the statistical significance of the difference, and because the pooled sample introduces another source of data (a pooled, reweighted sample) and include predominantly Latino neighborhoods (that are not currently described in the manuscript). I refer interested readers to the pooled samples to the supplement where I report the estimates and describe the results using the pooled sample. 
+#### Comparative satisfaction robustness analysis.
+
+The reviewer presents two critiques regarding the comparative satisfaction. First, the reviewer raises the concern that the results of the model combining the data should be used in the paper. Second, the reviewer points to the problems that arise in comparing statistical significance in nonlinear models. 
+
+I address both points by substituting the analysis from the combined analysis into the paper and presenting the results using the average marginal effects of living in a multiracial neighborhood (compared to living in the DC-area generally). The revised text describing the new analysis starts on page \pageref{rev:comparative} and Figure \ref{fig:between} now shows a plot of the average marginal effects across neighborhood samples by race. Since I now use the results of the combined data in the main paper, I also provided a more in-depth explanation of the model in the Supplement that starts on page \pageref{}
+
+The reviewer correctly notes the problems caused by interaction effects in nonlinear models raised by Long and Mustillo and others (the difficulty interpreting nonlinear models was the reason that I opted to plot the average marginal effects in Figure \ref{fig:within} in the original paper). An issue arose, however, due to the fact that I was using multiply imputed values. No packages exist to estimate and then combine the standard errors of marginal effects of nonlinear models across multiple imputations. I solved this in Figure \ref{fig:within} by creating a custom script, but could do so for the model estimated in Table \ref{tab:combined} because of the straightforwardness of the math behind finding the marginal effect for main effects. Adding interactions makes finding the mathematical solution to the problem much more difficult. 
+
+The reviewer asked why I did not present the results of estimated values for the analysis. The problem associated with the estimation using multiply imputed datasets was the reason that I chose to interpret the results from the table in the last revision. 
+
+Given the reviewer's excellent points, I opted for a strategy of plotting the maximum standard errors across the five imputed datasets (the point estimates are unaffected because they represent the mean of the average marginal effects across the imputations). I believe that this provides a sufficient compromise that allows me to conduct significance tests and predicted values within the framework of multiple imputation. I note that I used this strategy in a footnote on page \pageref{rev:ame}. 
+
+The major difference between the original figure and the new figure relate to Asian residents. In the new analysis, Asian residents look more like white residents than Black and Latinx residents. I now note this caveat to the otherwise general support for Abasacal and Baldassarri's theory of white exceptionalism on page \pageref{rev:ab-caveat}.
+
+#### Listing of Ns by race in samples.
+
+The reviewer suggested reporting the number of respondents by race. I have added those values to footnotes in Tables \ref{tab:descriptives16} and \ref{tab:descriptives18}.
+
+#### Overlap by race among respondents in multiracial neighborhoods.
+
+The reviewer noted that a summary of the overlap among the race of respondents within the same neighborhoods would help them to interpret the fixed effects results. I have added a paragraph summarizing the numbers of neighborhoods containing only responses from a single race and those containing respondents from all four racial groups. Over 92 percent of neighborhoods containing at least two respondents contain respondents who identify as different races. 
