@@ -717,7 +717,7 @@ Among neighborhoods in the DC area generally, Asian and Latinx were more likely 
 
 ## Neighborhood Change Robustness Analysis
 
-<!--
+
 ### Multinomial Logistic Regression of Neighborhood Change Questions
 ```{r supp-change-multinomial, message=FALSE}
 library(svrepmisc)
@@ -725,7 +725,7 @@ dcas16svy <- dcas16svy %>%
     update(
         nhdchg = relevel(nhdchg, ref = 'Same')
     )
-des <- as.svrepdesign(dcas16svy$designs[[1]], type="bootstrap" , replicates=250)
+des <- as.svrepdesign(dcas16svy$designs[[1]], type="bootstrap" , replicates=1000)
 m3m_bet <- svymultinom(as.formula(paste('nhdchg ~', m3)),
                        design = des)
 tbl <- tidy(m3m_bet)[1:8,] %>%
@@ -746,7 +746,7 @@ df <- tibble(
 
 kable(df, align = 'lrlrl', format = 'pandoc')
 ```
--->
+
 
 ```{r supp-cleanup, include=FALSE, echo=FALSE}
 ## Removes fence blocks and replaces booktabs labels in .tex files
