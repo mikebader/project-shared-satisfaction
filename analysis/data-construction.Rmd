@@ -499,10 +499,10 @@ dcas18svy <- svy.center(dcas18svy)
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
 ```{r save-data}
-# save(vars, dataDIR, texcmds, dcarea,
-#      dcas16svy, dcas16, dcas16mi, 
-#      dcas18svy, dcas18, dcas18mi,
-#      file = '../data/dcassvy.Rdata')
+save(vars, texcmds, dcarea,
+     dcas16svy, dcas16, dcas16mi,
+     dcas18svy, dcas18, dcas18mi,
+     file = '../data/dcassvy.Rdata')
 
 ```
 
