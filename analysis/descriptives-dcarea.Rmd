@@ -8,8 +8,7 @@ The following provides information about the DC Area cited in the manuscript. It
 
 Set up environment for analyzing data from the Census. Note the difference between `DATADIR` created here and `dataDIR` created in [Data Construction]. The data files are separated by category and are stored in separate directories, whose names are stored in `vartypes`. 
 ```{r dcarea-setup}
-DIR <- '~/work/projects/multiethnic_nhoods/'
-DATADIR <- '~/work/data/nhgis/DCArea/tracts/2010/tabular/'
+DATADIR <- '../data/dcarea/tracts/'
 
 vartypes <- c(
     'children-present',
@@ -23,7 +22,8 @@ vartypes <- c(
 ## HELPER FUNCTIONS
 ## Load DC Area data for category of variable
 dcarea.data <- function(vartype) {
-    f <- paste0(DATADIR, vartype, '/dataset/tracts-2010TIGER-', vartype, '.csv')
+    f <- paste0(DATADIR, '2010/tabular/', vartype, '/dataset/tracts-2010TIGER-', 
+                vartype, '.csv')
     return(read.csv(f))
 }
 
@@ -42,7 +42,7 @@ dcarea <- lapply(vartypes, dcarea.data) %>%
     select('GISJOIN', ends_with('15'))
 
 ## Load data from 1980
-fname <- paste(DATADIR, '../..', '1980/tabular/race-ethnicity/dataset',
+fname <- paste(DATADIR, '1980/tabular/', 'race-ethnicity/dataset',
                 'tracts-1980TIGER-race-ethnicity.csv', sep='/')
 dcarea80 <- read.csv(fname)
 
