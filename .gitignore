@@ -41,7 +41,6 @@ analysis/_multiethnic-nhoods-analysis
 # Excel files
 *.xlsx
 
-*.Rproj
 .Rproj.user
 .Rhistory
 
