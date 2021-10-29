@@ -1,0 +1,54 @@
+*.bak
+.hg
+
+# LaTeX files
+*.pdf
+*.out
+*.aux
+*.gz
+*.log
+*.bbl
+*.blg
+*.toc
+*.ps
+*.dvi
+
+# Image files
+*.png
+
+# Geography files
+analysis/geographic
+
+# Description of DC Area files not used
+analysis/dcarea/country-of-origin.R
+analysis/dcarea/employment-by-sector.R
+analysis/dcarea/employmentsector1990-201902.csv
+analysis/dcarea/industry.txt
+analysis/dcarea/nhgis0005_csv/
+analysis/dcarea/nhgis0006_csv/
+analysis/dcarea/split-violin-functions.R
+analysis/dcarea/supersector.txt
+
+# LTDB Files
+# These need to be downloaded separately and should not be saved with repository
+data/ltdb_*
+
+# Bookdown files
+analysis/_book
+analysis/_bookdown_files
+analysis/_multiethnic-nhoods-analysis
+
+# Excel files
+*.xlsx
+
+*.Rproj
+.Rproj.user
+.Rhistory
+
+* Directories
+tmp/*
+drafts/submissions/*
+drafts/tmp/*
+analysis/tmp/*
+notes/*
+# data/*
