@@ -306,7 +306,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Marginal effects of race on being satisfied in multiracial neighborhoods compared to white residents of multiracial neighborhoods}
 \label{fig:within}
-\includegraphics[width=6in]{../analysis/images/marginal_effects_within.png}
+\includegraphics[width=6in]{../analysis/images/marginal_effects_within.pdf}
 \end{figure}
 
 \clearpage
@@ -322,7 +322,7 @@ This article finds that a large share of residents are satisfied living in multi
 \begin{figure}
 \caption{Percent of respondents who report how neighborhood has changed in past five years by race}
 \label{fig:change}
-\includegraphics[width=6in]{../analysis/images/nhood_change.png}
+\includegraphics[width=6in]{../analysis/images/nhood_change.pdf}
 \end{figure}
 
 \clearpage
@@ -346,7 +346,7 @@ The data from the DCAS 2016 raise the issue that I, by construction, only receiv
 
 The first robustness analysis considers length of residence in neighborhoods by race. One element of selection would exist if whites were so disinterested in moving to multiracial neighborhoods that no new whites moved in. If this were true, then multiracial integration would be the exclusive result of incumbents remaining in integrated neighborhoods. 
 
-![Distribution of years lived in current neighborhood by race](../analysis/images/supp-nhdyears-race.png){#fig:supp-nhdyrs-race}
+![Distribution of years lived in current neighborhood by race](../analysis/images/supp-nhdyears-race.pdf){#fig:supp-nhdyrs-race}
 
 Figure @fig:supp-nhdyrs-race shows evidence against the dynamic of total white avoidance. Figure @fig:supp-nhdyrs-race plots the distribution of years lived in their current neighborhood by the race of the respondent. While it is true that whites exclusively account for residents who have lived in neighborhoods longer than 40 years, *about half of white respondents* moved into multiracial neighborhoods in the past 10 years. The mixture of long-term and short-term white residents does not suggest that neighborhoods have become anathema to whites as they have become more integrated. Of DCAS 2016 respondents who had moved into their neighborhoods in the previous 10 years, 29 percent were white (in fact, approximately equal shares of newcomers identified by each race: 23 percent were Asian, 26 percent were Black, and 22 percent were Latinx).
 

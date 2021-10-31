@@ -51,6 +51,8 @@
 
 
 
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
 
 <style type="text/css">
@@ -153,8 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="4" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Sample Descriptive Statistics</a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#number-of-respondents-by-race"><i class="fa fa-check"></i><b>4.1</b> Number of respondents by race</a></li>
-<li class="chapter" data-level="4.2" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#assign-labels-to-be-used-throughout-analyses"><i class="fa fa-check"></i><b>4.2</b> Assign labels to be used throughout analyses</a></li>
+<li class="chapter" data-level="4.1" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#assign-labels-to-be-used-throughout-analyses"><i class="fa fa-check"></i><b>4.1</b> Assign labels to be used throughout analyses</a></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html"><i class="fa fa-check"></i><b>5</b> Satisfaction <em>Within</em> Multiracial Neighborhoods</a>
 <ul>
@@ -307,6 +308,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>

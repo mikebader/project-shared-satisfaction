@@ -49,7 +49,7 @@ nhdyrs_race_plt <- ggplot(
     theme_minimal()
 nhdyrs_race_plt
 
-ggsave("images/supp-nhdyears-race.png", plot = nhdyrs_race_plt,
+ggsave("images/supp-nhdyears-race.pdf", plot = nhdyrs_race_plt,
        width=6.75, units='in')
 ```
 
