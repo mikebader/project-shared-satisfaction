@@ -24,7 +24,7 @@
 <meta name="author" content="Michael Bader" />
 
 
-<meta name="date" content="2021-10-31" />
+<meta name="date" content="2021-11-01" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -226,10 +226,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’</h1>
 <p class="author"><em>Michael Bader</em></p>
-<p class="date"><em>2021-10-31</em></p>
+<p class="date"><em>2021-11-01</em></p>
 </div>
 <div id="set-up" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Set Up</h1>
+<p>In order to replicate these analyses, you must download and save the 2000 full-count data from the <a href="https://s4.ad.brown.edu/projects/diversity/Researcher/Bridging.htm">Longitudinal Tract Database</a> by John Logan and colleagues. The <code>README.md</code> file in the repository provides instructions for doing so.</p>
+<p><strong>R Version.</strong> The analyses were built with R version 3.6.3 (2020-02-29).</p>
 <p>Load the libraries necessary for the analysis and presentation of data.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Amelia)</span>
 <span id="cb1-2"><a href="index.html#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
@@ -246,7 +248,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-13"><a href="index.html#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xtable)</span>
 <span id="cb1-14"><a href="index.html#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="index.html#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="st">&#39;huxtable.bookdown&#39;</span><span class="ot">=</span><span class="cn">TRUE</span>)</span></code></pre></div>
-<p><strong>R Version.</strong> The analyses were built with R version 3.6.3 (2020-02-29), as reported on page 13 of the manuscript.</p>
 <p>Create a list to hold results that will be reported to LaTeX later.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a>texcmds <span class="ot">&lt;-</span> <span class="fu">list</span>()</span></code></pre></div>
 
