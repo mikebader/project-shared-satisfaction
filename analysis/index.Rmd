@@ -21,7 +21,12 @@ knitr::opts_chunk$set(echo=TRUE, include=TRUE, message=FALSE, cache = FALSE)
 
 # Set Up
 
+In order to replicate these analyses, you must download and save the 2000 full-count data from the [Longitudinal Tract Database](https://s4.ad.brown.edu/projects/diversity/Researcher/Bridging.htm) by John Logan and colleagues. The `README.md` file in the repository provides instructions for doing so. 
+
+**R Version.** The analyses were built with `r R.version.string`.
+
 Load the libraries necessary for the analysis and presentation of data. 
+
 ```{r libraries, message=FALSE, warning=FALSE}
 library(Amelia)
 library(broom)
@@ -39,8 +44,6 @@ library(xtable)
 
 options('huxtable.bookdown'=TRUE)
 ```
-
-**R Version.** The analyses were built with `r R.version.string`, as reported on page 13 of the manuscript.
 
 Create a list to hold results that will be reported to LaTeX later. 
 ```{r tex-commands}
