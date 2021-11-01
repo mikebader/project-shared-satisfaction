@@ -58,7 +58,7 @@ chg_plt_cap <- paste(
 ```{r chg-plt, fig.cap=chg_plt_cap, echo=FALSE}
 chg_plt
 
-ggsave("images/nhood_change.png", plot = chg_plt,
+ggsave("images/nhood_change.pdf", plot = chg_plt,
        width=6.75, units='in')
 
 ```

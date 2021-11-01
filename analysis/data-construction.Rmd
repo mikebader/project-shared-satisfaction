@@ -3,11 +3,10 @@
 Data for this manuscript come from the 2016 and 2018 DC Area Surveys. More information about the 2016 DC Area Survey can be found [here](http://bit.ly/dcas2016) and the 2018 DC Area Survey can be found [here](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3567219).
 
 ```{r load-data}
-dataDIR <- '~/work/data/dcas/'
-load(paste0(dataDIR,'dcas2016/Dataset/R/DCAS_2016_weighted.Rdata'))
+load('../data/dcas/DCAS_2016_weighted.Rdata')
 dcas16 <- dcas
 
-load(paste0(dataDIR,'dcas2018/dataset/DCAreaSurvey2018.Rdata'))
+load('../data/dcas/DCAreaSurvey2018.Rdata')
 dcas18 <- dcas
 rm(dcas)
 
@@ -368,15 +367,10 @@ dcas16 <- dcas16 %>%
     mutate(trtid10 = sample_tract) %>%
     left_join(nhoods, by='trtid10')
     
-
-## Merge combined 2000 Census/2015 ACS data into 2018 DC Area Survey data
-dcas18bg_fname <- 'dcas2018/source/CensusBlockData_R1049.xlsx'
-dcas18bg <- readxl::read_xlsx(paste0(dataDIR, dcas18bg_fname)) %>%
-    rename_with(tolower) 
-
 dcas18 <- dcas18 %>%
-    full_join(dcas18bg, by='rid') %>%
-    mutate(trtid10 = substr(cbg, 1, 11)) %>%
+    full_join(read_csv("../data/dcas/census_tract_R1049.csv", col_types = 'cc'), 
+              by='rid') %>%
+    rename(trtid10 = tract) %>%
     left_join(nhoods, by='trtid10') 
 ```
 
@@ -504,11 +498,12 @@ dcas18svy <- svy.center(dcas18svy)
 ## Save Data
 
 Save R object containing the multiply-imputed survey-weighted data (`dcassvy`), variable names (`vars`), imputation list upon which survey data were created (`dcasmi`), a string representing the diretory containing data (`dataDIR`), and the list of values to export to LaTeX (`texcmds`). 
+
 ```{r save-data}
-save(vars, dataDIR, texcmds, dcarea,
-     dcas16svy, dcas16, dcas16mi, 
-     dcas18svy, dcas18, dcas18mi,
-     file = '../data/dcassvy.Rdata')
+# save(vars, texcmds, dcarea,
+#      dcas16svy, dcas16, dcas16mi,
+#      dcas18svy, dcas18, dcas18mi,
+#      file = '../data/dcassvy.Rdata')
 
 ```
 

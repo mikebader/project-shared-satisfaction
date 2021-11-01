@@ -1,5 +1,5 @@
-output_dir: "_multiethnic-nhoods-analysis"
-book_filename: "_multiethnic-nhoods-analysis.Rmd"
+output_dir: "../docs"
+book_filename: "_shared-satisfaction-analysis.Rmd"
 clean:
     - "_main.log"
 delete_merged_file: true
@@ -8,8 +8,8 @@ rmd_files: [
     "descriptives-dcarea.Rmd",
     "data-construction.Rmd",
     "descriptives-survey.Rmd",
-    "analysis-within.Rmd",
-    "analysis-between.Rmd",
+    "analysis-internal.Rmd",
+    "analysis-comparative.Rmd",
     "analysis-change.Rmd",
     "supplement.Rmd"
     ]

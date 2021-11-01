@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Data Construction | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’</title>
+  <meta name="description" content="3 Data Construction | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’" />
+  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Data Construction | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Data Construction | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’" />
+  
+  
+  
+
+<meta name="author" content="Michael Bader" />
+
+
+<meta name="date" content="2021-11-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="description-of-dc-area-multiracial-neighborhood-populations.html"/>
+<link rel="next" href="sample-descriptive-statistics.html"/>
+<script src="libs/header-attrs-2.6/header-attrs.js"></script>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Set Up</a></li>
+<li class="chapter" data-level="2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html"><i class="fa fa-check"></i><b>2</b> Description of DC-Area &amp; Multiracial Neighborhood Populations</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#dc-area-characteristics"><i class="fa fa-check"></i><b>2.1</b> DC-area characteristics</a></li>
+<li class="chapter" data-level="2.2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#multiracial-neighborhood-characteristics"><i class="fa fa-check"></i><b>2.2</b> Multiracial neighborhood characteristics</a></li>
+<li class="chapter" data-level="2.3" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#diverse-neighborhoods-excluded-for-having-a-majority-race"><i class="fa fa-check"></i><b>2.3</b> Diverse neighborhoods excluded for having a majority race</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="data-construction.html"><a href="data-construction.html"><i class="fa fa-check"></i><b>3</b> Data Construction</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="data-construction.html"><a href="data-construction.html#respondent-selection"><i class="fa fa-check"></i><b>3.1</b> Respondent Selection</a></li>
+<li class="chapter" data-level="3.2" data-path="data-construction.html"><a href="data-construction.html#variable-construction"><i class="fa fa-check"></i><b>3.2</b> Variable Construction</a>
+<ul>
+<li class="chapter" data-level="3.2.1" data-path="data-construction.html"><a href="data-construction.html#dependent-variables"><i class="fa fa-check"></i><b>3.2.1</b> Dependent Variables</a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-construction.html"><a href="data-construction.html#independent-variable"><i class="fa fa-check"></i><b>3.2.2</b> Independent Variable</a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-construction.html"><a href="data-construction.html#control-variables"><i class="fa fa-check"></i><b>3.2.3</b> Control Variables</a></li>
+</ul></li>
+<li class="chapter" data-level="3.3" data-path="data-construction.html"><a href="data-construction.html#add-neighborhood-context-onto-survey-data"><i class="fa fa-check"></i><b>3.3</b> Add Neighborhood Context onto Survey Data</a></li>
+<li class="chapter" data-level="3.4" data-path="data-construction.html"><a href="data-construction.html#data-imputation-and-weighting"><i class="fa fa-check"></i><b>3.4</b> Data Imputation and Weighting</a></li>
+<li class="chapter" data-level="3.5" data-path="data-construction.html"><a href="data-construction.html#center-variables"><i class="fa fa-check"></i><b>3.5</b> Center Variables</a></li>
+<li class="chapter" data-level="3.6" data-path="data-construction.html"><a href="data-construction.html#save-data"><i class="fa fa-check"></i><b>3.6</b> Save Data</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Sample Descriptive Statistics</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#assign-labels-to-be-used-throughout-analyses"><i class="fa fa-check"></i><b>4.1</b> Assign labels to be used throughout analyses</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html"><i class="fa fa-check"></i><b>5</b> Satisfaction <em>Within</em> Multiracial Neighborhoods</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1</b> Distribution of respondents across neighborhoods</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#median-satisfaction-level-in-tracts"><i class="fa fa-check"></i><b>5.1.1</b> Median satisfaction level in tracts</a></li>
+<li class="chapter" data-level="5.1.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#count-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1.2</b> Count of respondents across neighborhoods</a></li>
+<li class="chapter" data-level="5.1.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-by-race"><i class="fa fa-check"></i><b>5.1.3</b> Distribution of respondents by race</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#descriptive-analysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.2</b> Descriptive analysis of neighborhood satisfaction</a></li>
+<li class="chapter" data-level="5.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#regression-anaysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.3</b> Regression anaysis of neighborhood satisfaction</a></li>
+<li class="chapter" data-level="5.4" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#marginal-effect-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.4</b> Marginal Effect of Race on Neighborhood Satisfaction</a></li>
+<li class="chapter" data-level="5.5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#partial-predicted-probabilities"><i class="fa fa-check"></i><b>5.5</b> Partial Predicted Probabilities</a></li>
+<li class="chapter" data-level="5.6" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#wald-statistics-of-model-fit"><i class="fa fa-check"></i><b>5.6</b> Wald Statistics of Model Fit</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><i class="fa fa-check"></i><b>6</b> Satisfaction Comparison <em>Between</em> Multiethnic Neighborhoods and DC-Area Population</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#descriptive-analysis-of-satisfaction-by-race"><i class="fa fa-check"></i><b>6.1</b> Descriptive analysis of satisfaction by race</a></li>
+<li class="chapter" data-level="6.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#multivariable-influence-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>6.2</b> Multivariable influence of race on neighborhood satisfaction</a>
+<ul>
+<li class="chapter" data-level="6.2.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#combining-dcas-2016-and-dcas-2018-data-for-analysis"><i class="fa fa-check"></i><b>6.2.1</b> Combining DCAS 2016 and DCAS 2018 data for analysis</a></li>
+<li class="chapter" data-level="6.2.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#estimate-model-of-satisfaction-using-combined-dcas-2016-and-dcas-2018-data"><i class="fa fa-check"></i><b>6.2.2</b> Estimate model of satisfaction using combined DCAS 2016 and DCAS 2018 data</a></li>
+<li class="chapter" data-level="6.2.3" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#calculate-predicted-probabilities-and-marginal-effects-from-between-data-comparison"><i class="fa fa-check"></i><b>6.2.3</b> Calculate predicted probabilities and marginal effects from between-data comparison</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html"><i class="fa fa-check"></i><b>7</b> Perceptions of Neighborhood Change</a>
+<ul>
+<li class="chapter" data-level="7.1" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#descriptive-analysis-of-percieved-neighborhood-change"><i class="fa fa-check"></i><b>7.1</b> Descriptive analysis of percieved neighborhood change</a></li>
+<li class="chapter" data-level="7.2" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#regression-analyses-of-perceived-neighborhood-change"><i class="fa fa-check"></i><b>7.2</b> Regression analyses of perceived neighborhood change</a></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="supplement.html"><a href="supplement.html"><i class="fa fa-check"></i><b>8</b> Supplement</a>
+<ul>
+<li class="chapter" data-level="8.1" data-path="supplement.html"><a href="supplement.html#data-construction-1"><i class="fa fa-check"></i><b>8.1</b> Data Construction</a></li>
+<li class="chapter" data-level="8.2" data-path="supplement.html"><a href="supplement.html#within-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.2</b> Within Neighborhood Robustness Analysis</a>
+<ul>
+<li class="chapter" data-level="8.2.1" data-path="supplement.html"><a href="supplement.html#influence-of-length-of-residence-on-satisfaction"><i class="fa fa-check"></i><b>8.2.1</b> Influence of length of residence on satisfaction</a></li>
+<li class="chapter" data-level="8.2.2" data-path="supplement.html"><a href="supplement.html#influence-of-white-population-change"><i class="fa fa-check"></i><b>8.2.2</b> Influence of white population change</a></li>
+<li class="chapter" data-level="8.2.3" data-path="supplement.html"><a href="supplement.html#summary-of-within-neighborhood-robustness-analyses"><i class="fa fa-check"></i><b>8.2.3</b> Summary of within-neighborhood robustness analyses</a></li>
+</ul></li>
+<li class="chapter" data-level="8.3" data-path="supplement.html"><a href="supplement.html#between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3</b> Between Neighborhood Robustness Analysis</a>
+<ul>
+<li class="chapter" data-level="8.3.1" data-path="supplement.html"><a href="supplement.html#satisfaction-in-dc-area-by-neighborhood-entropy"><i class="fa fa-check"></i><b>8.3.1</b> Satisfaction in DC area by neighborhood entropy</a></li>
+<li class="chapter" data-level="8.3.2" data-path="supplement.html"><a href="supplement.html#differences-in-white-population-change-between-multiracial-and-other-neighborhoods"><i class="fa fa-check"></i><b>8.3.2</b> Differences in white population change between multiracial and other neighborhoods</a></li>
+<li class="chapter" data-level="8.3.3" data-path="supplement.html"><a href="supplement.html#summary-of-between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3.3</b> Summary of between-neighborhood robustness analysis</a></li>
+</ul></li>
+<li class="chapter" data-level="8.4" data-path="supplement.html"><a href="supplement.html#neighborhood-change-robustness-analysis"><i class="fa fa-check"></i><b>8.4</b> Neighborhood Change Robustness Analysis</a>
+<ul>
+<li class="chapter" data-level="8.4.1" data-path="supplement.html"><a href="supplement.html#multinomial-logistic-regression-of-neighborhood-change-questions"><i class="fa fa-check"></i><b>8.4.1</b> Multinomial Logistic Regression of Neighborhood Change Questions</a></li>
+</ul></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="data-construction" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Data Construction</h1>
+<p>Data for this manuscript come from the 2016 and 2018 DC Area Surveys. More information about the 2016 DC Area Survey can be found <a href="http://bit.ly/dcas2016">here</a> and the 2018 DC Area Survey can be found <a href="https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3567219">here</a>.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="data-construction.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&#39;../data/dcas/DCAS_2016_weighted.Rdata&#39;</span>)</span>
+<span id="cb21-2"><a href="data-construction.html#cb21-2" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas</span>
+<span id="cb21-3"><a href="data-construction.html#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="data-construction.html#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&#39;../data/dcas/DCAreaSurvey2018.Rdata&#39;</span>)</span>
+<span id="cb21-5"><a href="data-construction.html#cb21-5" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas</span>
+<span id="cb21-6"><a href="data-construction.html#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(dcas)</span></code></pre></div>
+<div id="respondent-selection" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Respondent Selection</h2>
+<p><strong>Respondents Living in Multiracial Neighborhoods (DCAS 2016).</strong> The DCAS 2016 data represent two populations: those living in multiracial neighborhoods and those living in disproportionately Latino neighborhoods. This manuscript only used data from the multiracial neighborhoods. I create a variable <code>quad</code> to represent these variables (‘quad’ comes from my <a href="http://bit.ly/nhoodTrajPaper">previous description</a> of stable multiracial neighborhoods as ‘quadrivial neighborhoods’).</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="data-construction.html#cb22-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>quad <span class="ot">&lt;-</span> dcas16<span class="sc">$</span>neighborhood<span class="sc">==</span><span class="st">&#39;Global Neighborhood&#39;</span></span>
+<span id="cb22-2"><a href="data-construction.html#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[,<span class="fu">c</span>(<span class="st">&#39;neighborhood&#39;</span>,<span class="st">&#39;quad&#39;</span>)]) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                      quad
+## neighborhood          FALSE TRUE
+##   Global Neighborhood     0  674
+##   Latino Enclave        548    0</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="data-construction.html#cb24-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>sample_tract <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(dcas16<span class="sc">$</span>sample_tract)</span></code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="data-construction.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dcas16$quad &lt;- dcas16$neighborhood==&#39;Global Neighborhood&#39;</span></span>
+<span id="cb25-2"><a href="data-construction.html#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="co"># table(dcas16[,c(&#39;neighborhood&#39;,&#39;quad&#39;)])</span></span>
+<span id="cb25-3"><a href="data-construction.html#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="co"># N_norace &lt;- sum(is.na(dcas$dem.race) &amp; dcas$quad==TRUE)</span></span>
+<span id="cb25-4"><a href="data-construction.html#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dcas &lt;- dcas[!is.na(dcas$dem.race) &amp; dcas$quad==TRUE,]</span></span>
+<span id="cb25-5"><a href="data-construction.html#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="co"># dcas$sample_tract &lt;- droplevels(dcas$sample_tract)</span></span>
+<span id="cb25-6"><a href="data-construction.html#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="co"># N_quad &lt;- length(dcas$studycase)</span></span>
+<span id="cb25-7"><a href="data-construction.html#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="co"># N &lt;- sum(!is.na(dcas$dem.race))</span></span>
+<span id="cb25-8"><a href="data-construction.html#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># texcmds[[&#39;N&#39;]] &lt;- N</span></span></code></pre></div>
+</div>
+<div id="variable-construction" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Variable Construction</h2>
+<div id="dependent-variables" class="section level3" number="3.2.1">
+<h3><span class="header-section-number">3.2.1</span> Dependent Variables</h3>
+<p><strong>Neighborhood Satisfaction.</strong> Create neighborhood satisfaction variable (<code>satisfied</code>) to represent responses of “Extremely Satisfied” or “Very Satisfied”. Check that the variable was created correctly.</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="data-construction.html#cb26-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>satisfied <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(dcas16<span class="sc">$</span>nhd.satisfaction <span class="sc">%in%</span> <span class="fu">c</span>(</span>
+<span id="cb26-2"><a href="data-construction.html#cb26-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Extremely satisfied&#39;</span>,<span class="st">&#39;Very satisfied&#39;</span>)<span class="sc">*</span><span class="dv">1</span>)</span>
+<span id="cb26-3"><a href="data-construction.html#cb26-3" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>nhdsat <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot; satisfied&quot;</span>, <span class="st">&quot;&quot;</span>, dcas16<span class="sc">$</span>nhd.satisfaction) <span class="sc">%&gt;%</span></span>
+<span id="cb26-4"><a href="data-construction.html#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ordered</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Not at all&quot;</span>, <span class="st">&quot;Somewhat&quot;</span>, <span class="st">&quot;Very&quot;</span>, <span class="st">&quot;Extremely&quot;</span>))</span>
+<span id="cb26-5"><a href="data-construction.html#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;nhd.satisfaction&#39;</span>,<span class="st">&#39;satisfied&#39;</span>)]) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                       satisfied
+## nhd.satisfaction         0   1
+##   Extremely satisfied    0 231
+##   Very satisfied         0 591
+##   Somewhat satisfied   362   0
+##   Not at all satisfied  26   0</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="data-construction.html#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;nhd.satisfaction&#39;</span>,<span class="st">&#39;nhdsat&#39;</span>)]) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                       nhdsat
+## nhd.satisfaction       Not at all Somewhat Very Extremely
+##   Extremely satisfied           0        0    0       231
+##   Very satisfied                0        0  591         0
+##   Somewhat satisfied            0      362    0         0
+##   Not at all satisfied         26        0    0         0</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="data-construction.html#cb30-1" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>satisfied <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>nhdsat <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&#39;Extremely&#39;</span>, <span class="st">&#39;Very&#39;</span>)<span class="sc">*</span><span class="dv">1</span></span>
+<span id="cb30-2"><a href="data-construction.html#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;nhdsat&#39;</span>, <span class="st">&#39;satisfied&#39;</span>)]) <span class="do">##Checkvariable</span></span></code></pre></div>
+<pre><code>##             satisfied
+## nhdsat         0   1
+##   Not at all  22   0
+##   Somewhat   214   0
+##   Very         0 468
+##   Extremely    0 351</code></pre>
+<p><strong>Neighborhood improvement.</strong> Create variable (<code>better</code>) measuring whether respondent perceives that the neighborhood has improved. Include responses “Much better” and “Somewhat better”. Check that variable was created correctly.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="data-construction.html#cb32-1" aria-hidden="true" tabindex="-1"></a>betterlabs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Much better&quot;</span>, <span class="st">&quot;Somewhat better&quot;</span>)</span>
+<span id="cb32-2"><a href="data-construction.html#cb32-2" aria-hidden="true" tabindex="-1"></a>changelabs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb32-3"><a href="data-construction.html#cb32-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Much worse&quot;</span> <span class="ot">=</span> <span class="st">&quot;Worse&quot;</span>,</span>
+<span id="cb32-4"><a href="data-construction.html#cb32-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Somewhat worse&quot;</span> <span class="ot">=</span> <span class="st">&quot;Worse&quot;</span>,</span>
+<span id="cb32-5"><a href="data-construction.html#cb32-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;About the same&quot;</span> <span class="ot">=</span> <span class="st">&quot;Same&quot;</span>,</span>
+<span id="cb32-6"><a href="data-construction.html#cb32-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Somewhat better&quot;</span> <span class="ot">=</span> <span class="st">&quot;Better&quot;</span>,</span>
+<span id="cb32-7"><a href="data-construction.html#cb32-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Much better&quot;</span> <span class="ot">=</span> <span class="st">&quot;Better&quot;</span></span>
+<span id="cb32-8"><a href="data-construction.html#cb32-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb32-9"><a href="data-construction.html#cb32-9" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb32-10"><a href="data-construction.html#cb32-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb32-11"><a href="data-construction.html#cb32-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">better =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb32-12"><a href="data-construction.html#cb32-12" aria-hidden="true" tabindex="-1"></a>            <span class="fu">is.na</span>(nhd.change), <span class="cn">NA</span>, </span>
+<span id="cb32-13"><a href="data-construction.html#cb32-13" aria-hidden="true" tabindex="-1"></a>            dcas16<span class="sc">$</span>nhd.change <span class="sc">%in%</span> betterlabs),</span>
+<span id="cb32-14"><a href="data-construction.html#cb32-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdchg =</span> <span class="fu">recode_factor</span>(nhd.change, <span class="sc">!!!</span>changelabs)</span>
+<span id="cb32-15"><a href="data-construction.html#cb32-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb32-16"><a href="data-construction.html#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&quot;nhd.change&quot;</span>, <span class="st">&quot;better&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                  better
+## nhd.change        FALSE TRUE &lt;NA&gt;
+##   Much better         0  155    0
+##   Somewhat better     0  285    0
+##   About the same    624    0    0
+##   Somewhat worse    124    0    0
+##   Much worse         15    0    0
+##   &lt;NA&gt;                0    0   19</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="data-construction.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&quot;nhd.change&quot;</span>, <span class="st">&quot;nhdchg&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                  nhdchg
+## nhd.change        Worse Same Better &lt;NA&gt;
+##   Much better         0    0    155    0
+##   Somewhat better     0    0    285    0
+##   About the same      0  624      0    0
+##   Somewhat worse    124    0      0    0
+##   Much worse         15    0      0    0
+##   &lt;NA&gt;                0    0      0   19</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="data-construction.html#cb36-1" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="data-construction.html#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb36-3"><a href="data-construction.html#cb36-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdchgbak =</span> nhdchg,</span>
+<span id="cb36-4"><a href="data-construction.html#cb36-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">better =</span> <span class="fu">ifelse</span>(</span>
+<span id="cb36-5"><a href="data-construction.html#cb36-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">is.na</span>(nhdchgbak), <span class="cn">NA</span>, </span>
+<span id="cb36-6"><a href="data-construction.html#cb36-6" aria-hidden="true" tabindex="-1"></a>            nhdchgbak <span class="sc">%in%</span> betterlabs),</span>
+<span id="cb36-7"><a href="data-construction.html#cb36-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdchg =</span> <span class="fu">recode_factor</span>(nhdchgbak, <span class="sc">!!!</span>changelabs)</span>
+<span id="cb36-8"><a href="data-construction.html#cb36-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-9"><a href="data-construction.html#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;nhdchgbak&quot;</span>, <span class="st">&quot;better&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                  better
+## nhdchgbak         FALSE TRUE &lt;NA&gt;
+##   Much worse         16    0    0
+##   Somewhat worse     84    0    0
+##   About the same    482    0    0
+##   Somewhat better     0  260    0
+##   Much better         0  138    0
+##   &lt;NA&gt;                0    0   81</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="data-construction.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;nhdchgbak&quot;</span>, <span class="st">&quot;nhdchg&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                  nhdchg
+## nhdchgbak         Worse Same Better &lt;NA&gt;
+##   Much worse         16    0      0    0
+##   Somewhat worse     84    0      0    0
+##   About the same      0  482      0    0
+##   Somewhat better     0    0    260    0
+##   Much better         0    0    138    0
+##   &lt;NA&gt;                0    0      0   81</code></pre>
+</div>
+<div id="independent-variable" class="section level3" number="3.2.2">
+<h3><span class="header-section-number">3.2.2</span> Independent Variable</h3>
+<p><strong>Race.</strong> Create a race variable measuring four-category, mutually exclusive racial categories.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="data-construction.html#cb40-1" aria-hidden="true" tabindex="-1"></a>fourraces <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;white&#39;</span>, <span class="st">&#39;asian&#39;</span>, <span class="st">&#39;black&#39;</span>, <span class="st">&#39;latino&#39;</span>)</span>
+<span id="cb40-2"><a href="data-construction.html#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="data-construction.html#cb40-3" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb40-4"><a href="data-construction.html#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb40-5"><a href="data-construction.html#cb40-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth =</span> <span class="fu">recode_factor</span>(dem.race, <span class="at">api =</span> <span class="st">&quot;asian&quot;</span>),</span>
+<span id="cb40-6"><a href="data-construction.html#cb40-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth =</span> <span class="fu">relevel</span>(raceeth, <span class="at">ref=</span><span class="st">&quot;white&quot;</span>),</span>
+<span id="cb40-7"><a href="data-construction.html#cb40-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth_mi =</span> <span class="fu">is.na</span>(raceeth),</span>
+<span id="cb40-8"><a href="data-construction.html#cb40-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">anarace =</span> raceeth <span class="sc">%in%</span> fourraces</span>
+<span id="cb40-9"><a href="data-construction.html#cb40-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb40-10"><a href="data-construction.html#cb40-10" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;dem.race&#39;</span>, <span class="st">&#39;raceeth&#39;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##         raceeth
+## dem.race white asian black latino &lt;NA&gt;
+##   api        0   277     0      0    0
+##   black      0     0   253      0    0
+##   latino     0     0     0    215    0
+##   white    417     0     0      0    0
+##   &lt;NA&gt;       0     0     0      0   60</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="data-construction.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;dem.race&#39;</span>, <span class="st">&#39;raceeth_mi&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##         raceeth_mi
+## dem.race FALSE TRUE &lt;NA&gt;
+##   api      277    0    0
+##   black    253    0    0
+##   latino   215    0    0
+##   white    417    0    0
+##   &lt;NA&gt;       0   60    0</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="data-construction.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;dem.race&#39;</span>, <span class="st">&#39;anarace&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##         anarace
+## dem.race FALSE TRUE &lt;NA&gt;
+##   api        0  277    0
+##   black      0  253    0
+##   latino     0  215    0
+##   white      0  417    0
+##   &lt;NA&gt;      60    0    0</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="data-construction.html#cb46-1" aria-hidden="true" tabindex="-1"></a>racelabs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb46-2"><a href="data-construction.html#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;White&quot;</span> <span class="ot">=</span> <span class="st">&quot;white&quot;</span>,</span>
+<span id="cb46-3"><a href="data-construction.html#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Asian/Pac. Islander&quot;</span> <span class="ot">=</span> <span class="st">&quot;asian&quot;</span>,</span>
+<span id="cb46-4"><a href="data-construction.html#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Black&quot;</span> <span class="ot">=</span> <span class="st">&quot;black&quot;</span>,</span>
+<span id="cb46-5"><a href="data-construction.html#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Latinx&quot;</span> <span class="ot">=</span> <span class="st">&quot;latino&quot;</span>,</span>
+<span id="cb46-6"><a href="data-construction.html#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Native American&quot;</span> <span class="ot">=</span> <span class="st">&quot;other&quot;</span>,</span>
+<span id="cb46-7"><a href="data-construction.html#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Other&quot;</span> <span class="ot">=</span> <span class="st">&quot;other&quot;</span></span>
+<span id="cb46-8"><a href="data-construction.html#cb46-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-9"><a href="data-construction.html#cb46-9" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb46-10"><a href="data-construction.html#cb46-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb46-11"><a href="data-construction.html#cb46-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceethbak =</span> raceeth,</span>
+<span id="cb46-12"><a href="data-construction.html#cb46-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth =</span> <span class="fu">recode_factor</span>(raceeth, <span class="sc">!!!</span>racelabs),</span>
+<span id="cb46-13"><a href="data-construction.html#cb46-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth =</span> <span class="fu">relevel</span>(raceeth, <span class="at">ref=</span><span class="st">&quot;white&quot;</span>),</span>
+<span id="cb46-14"><a href="data-construction.html#cb46-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">raceeth_mi =</span> <span class="fu">is.na</span>(raceeth),</span>
+<span id="cb46-15"><a href="data-construction.html#cb46-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">anarace =</span> raceeth <span class="sc">%in%</span> fourraces</span>
+<span id="cb46-16"><a href="data-construction.html#cb46-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb46-17"><a href="data-construction.html#cb46-17" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;raceethbak&#39;</span>, <span class="st">&#39;raceeth&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                      raceeth
+## raceethbak            white asian black latino other &lt;NA&gt;
+##   Asian/Pac. Islander     0    93     0      0     0    0
+##   Black                   0     0   308      0     0    0
+##   Latinx                  0     0     0     75     0    0
+##   Native American         0     0     0      0     8    0
+##   Other                   0     0     0      0    21    0
+##   White                 513     0     0      0     0    0
+##   &lt;NA&gt;                    0     0     0      0     0   43</code></pre>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="data-construction.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;raceethbak&#39;</span>, <span class="st">&#39;raceeth_mi&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##                      raceeth_mi
+## raceethbak            FALSE TRUE &lt;NA&gt;
+##   Asian/Pac. Islander    93    0    0
+##   Black                 308    0    0
+##   Latinx                 75    0    0
+##   Native American         8    0    0
+##   Other                  21    0    0
+##   White                 513    0    0
+##   &lt;NA&gt;                    0   43    0</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="data-construction.html#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;raceethbak&#39;</span>, <span class="st">&#39;anarace&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##                      anarace
+## raceethbak            FALSE TRUE &lt;NA&gt;
+##   Asian/Pac. Islander     0   93    0
+##   Black                   0  308    0
+##   Latinx                  0   75    0
+##   Native American         8    0    0
+##   Other                  21    0    0
+##   White                   0  513    0
+##   &lt;NA&gt;                   43    0    0</code></pre>
+</div>
+<div id="control-variables" class="section level3" number="3.2.3">
+<h3><span class="header-section-number">3.2.3</span> Control Variables</h3>
+<div id="demographic-variables" class="section level4" number="3.2.3.1">
+<h4><span class="header-section-number">3.2.3.1</span> Demographic variables</h4>
+<p>Create variables for demographic controls.</p>
+<p><strong>Age.</strong> The age variable (<code>age</code>) was calculated by subtracting birth year from 2016. Represents age on December 31, 2016. Center age at 50.</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="data-construction.html#cb52-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>age <span class="ot">&lt;-</span> dcas16<span class="sc">$</span>dem.age <span class="sc">-</span> <span class="dv">50</span> <span class="do">## Center at age 50</span></span>
+<span id="cb52-2"><a href="data-construction.html#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dcas16<span class="sc">$</span>age, <span class="at">labs=</span><span class="fu">c</span>(<span class="at">title=</span><span class="st">&quot;2016&quot;</span>))</span></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: labs</code></pre>
+<pre><code>## Warning: Removed 58 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="_shared-satisfaction-analysis_files/figure-html/demographic-variables-age-1.png" width="45%" /></p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="data-construction.html#cb55-1" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>age <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>age <span class="sc">-</span> <span class="dv">50</span></span>
+<span id="cb55-2"><a href="data-construction.html#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dcas18<span class="sc">$</span>age, <span class="at">labs=</span><span class="fu">c</span>(<span class="at">title=</span><span class="st">&quot;2018&quot;</span>))</span></code></pre></div>
+<pre><code>## Warning: Ignoring unknown parameters: labs</code></pre>
+<pre><code>## Warning: Removed 49 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="_shared-satisfaction-analysis_files/figure-html/demographic-variables-age-2.png" width="45%" /></p>
+<p><strong>Foreign born.</strong> Variable (<code>forborn</code>) measuring whether respondent reported being born outside of the United States (reference=no).</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="data-construction.html#cb58-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>forborn <span class="ot">&lt;-</span> dcas16<span class="sc">$</span>dem.forborn</span>
+<span id="cb58-2"><a href="data-construction.html#cb58-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&quot;dem.forborn&quot;</span>, <span class="st">&quot;forborn&quot;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##            forborn
+## dem.forborn FALSE TRUE &lt;NA&gt;
+##       FALSE   657    0    0
+##       TRUE      0  530    0
+##       &lt;NA&gt;      0    0   35</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="data-construction.html#cb60-1" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb60-2"><a href="data-construction.html#cb60-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">forborn =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(usborn), <span class="cn">NA</span>, usborn<span class="sc">==</span><span class="st">&quot;Another country&quot;</span>))</span>
+<span id="cb60-3"><a href="data-construction.html#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;usborn&quot;</span>, <span class="st">&quot;forborn&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                  forborn
+## usborn            FALSE TRUE &lt;NA&gt;
+##   United States     793    0    0
+##   Puerto Rico         2    0    0
+##   Another country     0  205    0
+##   &lt;NA&gt;                0    0   61</code></pre>
+<p><strong>Male.</strong> Variable measures whether the respondent reported being male. The option “other” was offered to respondents. Two respondents in 2016 and five respondents in 2018 reported other and were counted as missing on this variable.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="data-construction.html#cb62-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>man <span class="ot">&lt;-</span> dcas16<span class="sc">$</span>dem.gender.mf<span class="sc">==</span><span class="st">&#39;Male&#39;</span></span>
+<span id="cb62-2"><a href="data-construction.html#cb62-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;dem.gender&#39;</span>, <span class="st">&#39;man&#39;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>)</span></code></pre></div>
+<pre><code>##           man
+## dem.gender FALSE TRUE &lt;NA&gt;
+##     Male       0  553    0
+##     Female   635    0    0
+##     Other      0    0    2
+##     &lt;NA&gt;       0    0   32</code></pre>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="data-construction.html#cb64-1" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb64-2"><a href="data-construction.html#cb64-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb64-3"><a href="data-construction.html#cb64-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">man =</span> <span class="fu">if_else</span>(gender<span class="sc">==</span><span class="st">&#39;Male&#39;</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)</span>
+<span id="cb64-4"><a href="data-construction.html#cb64-4" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb64-5"><a href="data-construction.html#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;gender&quot;</span>,<span class="st">&quot;man&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##                 man
+## gender           FALSE TRUE &lt;NA&gt;
+##   Male               0  456    0
+##   Female           575    0    0
+##   In another way     5    0    0
+##   &lt;NA&gt;               0    0   25</code></pre>
+<p><strong>Kids.</strong> Variable (<code>kids</code>) measures whether the respondent has any children under the age of 18 living at home. Recode unreasonable values to be missing.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="data-construction.html#cb66-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>kids <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(dcas16<span class="sc">$</span>q2)) <span class="sc">&gt;</span> <span class="dv">0</span></span></code></pre></div>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="data-construction.html#cb68-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>kids[<span class="fu">as.numeric</span>(<span class="fu">as.character</span>(dcas16<span class="sc">$</span>q2)) <span class="sc">&gt;</span> <span class="dv">90</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code></pre></div>
+<pre><code>## Warning in dcas16$kids[as.numeric(as.character(dcas16$q2)) &gt; 90] &lt;- NA: NAs
+## introduced by coercion</code></pre>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="data-construction.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;q2&#39;</span>, <span class="st">&#39;kids&#39;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>)</span></code></pre></div>
+<pre><code>##            kids
+## q2          FALSE TRUE &lt;NA&gt;
+##   0           813    0    0
+##   1             0  172    0
+##   10            0    1    0
+##   2             0  137    0
+##   3             0   32    0
+##   4             0   13    0
+##   5             0    4    0
+##   7             0    2    0
+##   8             0    1    0
+##   No Answer     0    0   45
+##   99            0    0    2
+##   &lt;NA&gt;          0    0    0</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="data-construction.html#cb72-1" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>kidsbak <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>kids</span>
+<span id="cb72-2"><a href="data-construction.html#cb72-2" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>kids <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(<span class="sc">!</span><span class="fu">is.na</span>(dcas18<span class="sc">$</span>kidsbak), dcas18<span class="sc">$</span>kidsbak<span class="sc">&gt;</span><span class="dv">0</span>, <span class="cn">NA</span>)</span>
+<span id="cb72-3"><a href="data-construction.html#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;kidsbak&#39;</span>, <span class="st">&#39;kids&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##        kids
+## kidsbak FALSE TRUE &lt;NA&gt;
+##    0      783    0    0
+##    1        0  119    0
+##    2        0   97    0
+##    3        0   19    0
+##    4        0    8    0
+##    5        0    1    0
+##    6        0    1    0
+##    7        0    1    0
+##    10       0    1    0
+##    &lt;NA&gt;     0    0   31</code></pre>
+<p><strong>Married.</strong> Variable (<code>married</code>) measures whether respondent is married or in a married-like relationship.</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="data-construction.html#cb74-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>married <span class="ot">&lt;-</span> <span class="fu">grepl</span>(<span class="st">&quot;Now married&quot;</span>, dcas16<span class="sc">$</span>dem.marital.stat)</span>
+<span id="cb74-2"><a href="data-construction.html#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[,<span class="fu">c</span>(<span class="st">&#39;dem.marital.stat&#39;</span>,<span class="st">&#39;married&#39;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>) <span class="do">##Check recoding</span></span></code></pre></div>
+<pre><code>##                                                married
+## dem.marital.stat                                FALSE TRUE &lt;NA&gt;
+##   Now married or in a married-style arrangement     0  714    0
+##   Widowed                                          97    0    0
+##   Divorced                                        130    0    0
+##   Separated                                        25    0    0
+##   Never married                                   235    0    0
+##   &lt;NA&gt;                                             21    0    0</code></pre>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="data-construction.html#cb76-1" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>marriedbak <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>married</span>
+<span id="cb76-2"><a href="data-construction.html#cb76-2" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>married <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>marriedbak <span class="sc">==</span> <span class="st">&quot;Married&quot;</span></span>
+<span id="cb76-3"><a href="data-construction.html#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;marriedbak&quot;</span>, <span class="st">&quot;married&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">##Check variable</span></span></code></pre></div>
+<pre><code>##                married
+## marriedbak      FALSE TRUE &lt;NA&gt;
+##   Married           0  540    0
+##   Widowed          82    0    0
+##   Divorced        149    0    0
+##   Separated        21    0    0
+##   Never married   239    0    0
+##   &lt;NA&gt;              0    0   30</code></pre>
+</div>
+<div id="socioeconomic-variables" class="section level4" number="3.2.3.2">
+<h4><span class="header-section-number">3.2.3.2</span> Socioeconomic Variables</h4>
+<p><strong>Educational attainment.</strong> Create variable (<code>educ</code>) measuring educational attainment. Check variable was created correctly.</p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="data-construction.html#cb78-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>educ <span class="ot">&lt;-</span> <span class="fu">factor</span>(dcas16<span class="sc">$</span>dem.educ.attain, <span class="at">order=</span><span class="cn">FALSE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb78-2"><a href="data-construction.html#cb78-2" aria-hidden="true" tabindex="-1"></a>                <span class="fu">relevel</span>(<span class="at">ref=</span><span class="st">&#39;H.S.&#39;</span>)</span>
+<span id="cb78-3"><a href="data-construction.html#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;dem.educ.attain&#39;</span>, <span class="st">&#39;educ&#39;</span>)], <span class="at">useNA=</span><span class="st">&#39;always&#39;</span>)</span></code></pre></div>
+<pre><code>##                        educ
+## dem.educ.attain         H.S. &lt;H.S. Some college, no B.A. B.A. M.A.+ &lt;NA&gt;
+##   &lt;H.S.                    0    79                     0    0     0    0
+##   H.S.                   129     0                     0    0     0    0
+##   Some college, no B.A.    0     0                   281    0     0    0
+##   B.A.                     0     0                     0  366     0    0
+##   M.A.+                    0     0                     0    0   342    0
+##   &lt;NA&gt;                     0     0                     0    0     0   25</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="data-construction.html#cb80-1" aria-hidden="true" tabindex="-1"></a>educlabs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb80-2"><a href="data-construction.html#cb80-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Less than HS&quot;</span> <span class="ot">=</span> <span class="st">&quot;&lt;H.S.&quot;</span>,</span>
+<span id="cb80-3"><a href="data-construction.html#cb80-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Did not finish HS&quot;</span> <span class="ot">=</span> <span class="st">&quot;&lt;H.S.&quot;</span>,</span>
+<span id="cb80-4"><a href="data-construction.html#cb80-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;HS diploma or GED&quot;</span> <span class="ot">=</span> <span class="st">&quot;H.S.&quot;</span>,</span>
+<span id="cb80-5"><a href="data-construction.html#cb80-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Some college, no degree&quot;</span> <span class="ot">=</span> <span class="st">&quot;Some college, no B.A.&quot;</span>,</span>
+<span id="cb80-6"><a href="data-construction.html#cb80-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Associate</span><span class="sc">\&#39;</span><span class="st">s degree&quot;</span> <span class="ot">=</span> <span class="st">&quot;Some college, no B.A.&quot;</span>,</span>
+<span id="cb80-7"><a href="data-construction.html#cb80-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Bachelor</span><span class="sc">\&#39;</span><span class="st">s degree&quot;</span> <span class="ot">=</span> <span class="st">&quot;B.A.&quot;</span>,</span>
+<span id="cb80-8"><a href="data-construction.html#cb80-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Advanced degree&quot;</span> <span class="ot">=</span> <span class="st">&quot;M.A.+&quot;</span></span>
+<span id="cb80-9"><a href="data-construction.html#cb80-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-10"><a href="data-construction.html#cb80-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-11"><a href="data-construction.html#cb80-11" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb80-12"><a href="data-construction.html#cb80-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb80-13"><a href="data-construction.html#cb80-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">educbak =</span> educ,</span>
+<span id="cb80-14"><a href="data-construction.html#cb80-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ =</span> <span class="fu">recode_factor</span>(educbak, <span class="sc">!!!</span>educlabs),</span>
+<span id="cb80-15"><a href="data-construction.html#cb80-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ =</span> <span class="fu">relevel</span>(educ, <span class="at">ref=</span><span class="st">&quot;H.S.&quot;</span>)</span>
+<span id="cb80-16"><a href="data-construction.html#cb80-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb80-17"><a href="data-construction.html#cb80-17" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;educbak&quot;</span>, <span class="st">&quot;educ&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##                          educ
+## educbak                   H.S. &lt;H.S. Some college, no B.A. B.A. M.A.+ &lt;NA&gt;
+##   Less than HS               0     7                     0    0     0    0
+##   Did not finish HS          0    21                     0    0     0    0
+##   HS diploma or GED        103     0                     0    0     0    0
+##   Some college, no degree    0     0                   147    0     0    0
+##   Associate&#39;s degree         0     0                    55    0     0    0
+##   Bachelor&#39;s degree          0     0                     0  285     0    0
+##   Advanced degree            0     0                     0    0   418    0
+##   &lt;NA&gt;                       0     0                     0    0     0   25</code></pre>
+<p><strong>Income.</strong> Create variable (<code>inc</code>) measuring income using four levels.</p>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="data-construction.html#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dcas16$inc &lt;- dcas16$dem.income.cat4</span></span>
+<span id="cb82-2"><a href="data-construction.html#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="co"># table(dcas16$inc, useNA=&#39;always&#39;)</span></span>
+<span id="cb82-3"><a href="data-construction.html#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="co"># inc_dummies &lt;- paste0(&#39;inc&#39;,1:4)</span></span>
+<span id="cb82-4"><a href="data-construction.html#cb82-4" aria-hidden="true" tabindex="-1"></a><span class="co"># dcas[,inc_dummies] &lt;- lapply(1:4,</span></span>
+<span id="cb82-5"><a href="data-construction.html#cb82-5" aria-hidden="true" tabindex="-1"></a><span class="co">#         function(i) {unclass(dcas$dem.income.cat4)==i})</span></span>
+<span id="cb82-6"><a href="data-construction.html#cb82-6" aria-hidden="true" tabindex="-1"></a><span class="co"># for(i in 1:4) { ## Check recoding</span></span>
+<span id="cb82-7"><a href="data-construction.html#cb82-7" aria-hidden="true" tabindex="-1"></a><span class="co">#     print(table(dcas[,c(&#39;dem.income.cat4&#39;,paste0(&#39;inc&#39;,i))]))</span></span>
+<span id="cb82-8"><a href="data-construction.html#cb82-8" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb82-9"><a href="data-construction.html#cb82-9" aria-hidden="true" tabindex="-1"></a><span class="co"># inc_names &lt;- sanitize(levels(dcas$dem.income.cat4))</span></span>
+<span id="cb82-10"><a href="data-construction.html#cb82-10" aria-hidden="true" tabindex="-1"></a><span class="co"># inc_names[1] &lt;- paste0(&quot;\\emph{Income}&amp;&amp;\\\\&quot;, inc_names[1])</span></span>
+<span id="cb82-11"><a href="data-construction.html#cb82-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-12"><a href="data-construction.html#cb82-12" aria-hidden="true" tabindex="-1"></a><span class="co"># table(dcas18$income, useNA=&quot;always&quot;)</span></span></code></pre></div>
+<p><em>Missingness on Socioeconomic Variables.</em> Record how many respondents were missing educational attaiment and income data.</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="data-construction.html#cb83-1" aria-hidden="true" tabindex="-1"></a>texcmds[[<span class="st">&#39;miinc16&#39;</span>]] <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(dcas16<span class="sc">$</span>dem.income.cat4))</span>
+<span id="cb83-2"><a href="data-construction.html#cb83-2" aria-hidden="true" tabindex="-1"></a>texcmds[[<span class="st">&#39;miedu16&#39;</span>]] <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(dcas16<span class="sc">$</span>dem.educ.attain))</span>
+<span id="cb83-3"><a href="data-construction.html#cb83-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-4"><a href="data-construction.html#cb83-4" aria-hidden="true" tabindex="-1"></a>texcmds[[<span class="st">&#39;miinc18&#39;</span>]] <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(dcas18<span class="sc">$</span>income))</span>
+<span id="cb83-5"><a href="data-construction.html#cb83-5" aria-hidden="true" tabindex="-1"></a>texcmds[[<span class="st">&#39;miedu18&#39;</span>]] <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(dcas18<span class="sc">$</span>educ))</span></code></pre></div>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Variable</th>
+<th align="left">Missing 2016</th>
+<th align="left">Missing 2018</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Education</td>
+<td align="left">25 25</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Income</td>
+<td align="left">109 79</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Housing tenure.</strong> Create indicator for whether respondent owns their home.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="data-construction.html#cb84-1" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb84-2"><a href="data-construction.html#cb84-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">own =</span> hh.own)</span>
+<span id="cb84-3"><a href="data-construction.html#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&quot;hh.own&quot;</span>, <span class="st">&quot;own&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##        own
+## hh.own  FALSE TRUE &lt;NA&gt;
+##   FALSE   354    0    0
+##   TRUE      0  859    0
+##   &lt;NA&gt;      0    0    9</code></pre>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="data-construction.html#cb86-1" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb86-2"><a href="data-construction.html#cb86-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">own =</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(tenure), <span class="cn">NA</span>, tenure<span class="sc">==</span><span class="st">&quot;Own&quot;</span>))</span>
+<span id="cb86-3"><a href="data-construction.html#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&quot;tenure&quot;</span>, <span class="st">&quot;own&quot;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>)</span></code></pre></div>
+<pre><code>##        own
+## tenure  FALSE TRUE &lt;NA&gt;
+##   Rent    326    0    0
+##   Own       0  701    0
+##   Other    30    0    0
+##   &lt;NA&gt;      0    0    4</code></pre>
+</div>
+<div id="neighborhood-experience-variables" class="section level4" number="3.2.3.3">
+<h4><span class="header-section-number">3.2.3.3</span> Neighborhood Experience Variables</h4>
+<p><strong>Years in the neighborhood.</strong> Variable (<code>nhdyrs</code>) measures how long the respondent reported living in neighborhood.</p>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="data-construction.html#cb88-1" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>nhdyrs <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">as.character</span>(dcas16<span class="sc">$</span>q4)) </span></code></pre></div>
+<pre><code>## Warning: NAs introduced by coercion</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="data-construction.html#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dcas16<span class="sc">$</span>nhdyrs, <span class="at">binwidth=</span><span class="dv">5</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 18 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="_shared-satisfaction-analysis_files/figure-html/nhood-variables-years-1.png" width="45%" /></p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="data-construction.html#cb92-1" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>nhdyrs <span class="ot">&lt;-</span> dcas18<span class="sc">$</span>yrsnhd</span>
+<span id="cb92-2"><a href="data-construction.html#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qplot</span>(dcas18<span class="sc">$</span>nhdyrs)</span></code></pre></div>
+<pre><code>## Warning: Removed 8 rows containing non-finite values (stat_bin).</code></pre>
+<p><img src="_shared-satisfaction-analysis_files/figure-html/nhood-variables-years-2.png" width="45%" /></p>
+<p><strong>Perceived size of neighborhood.</strong> Create three-category variable that measures perceived neighborhood size. Check that variable was created correctly.</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="data-construction.html#cb94-1" aria-hidden="true" tabindex="-1"></a>sizelabs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb94-2"><a href="data-construction.html#cb94-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">1 to 4 blocks</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;1-9 blocks&quot;</span>,</span>
+<span id="cb94-3"><a href="data-construction.html#cb94-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">5 to 9 blocks</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;1-9 blocks&quot;</span>,</span>
+<span id="cb94-4"><a href="data-construction.html#cb94-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">10 to 25 blocks</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;10-50 blocks&quot;</span>,</span>
+<span id="cb94-5"><a href="data-construction.html#cb94-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">25 to 50 blocks</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;10-50 blocks&quot;</span>,</span>
+<span id="cb94-6"><a href="data-construction.html#cb94-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">More than 50 blocks</span><span class="st">`</span> <span class="ot">=</span> <span class="st">&quot;&gt;50 blocks&quot;</span></span>
+<span id="cb94-7"><a href="data-construction.html#cb94-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb94-8"><a href="data-construction.html#cb94-8" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">=</span> <span class="fu">mutate</span>(dcas16, <span class="at">nhdsize =</span> <span class="fu">recode_factor</span>(nhd.size, <span class="sc">!!!</span>sizelabs))</span>
+<span id="cb94-9"><a href="data-construction.html#cb94-9" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas16[, <span class="fu">c</span>(<span class="st">&#39;nhd.size&#39;</span>, <span class="st">&#39;nhdsize&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="do">## Check variable</span></span></code></pre></div>
+<pre><code>##                      nhdsize
+## nhd.size              1-9 blocks 10-50 blocks &gt;50 blocks &lt;NA&gt;
+##   1 to 4 blocks              395            0          0    0
+##   5 to 9 blocks              343            0          0    0
+##   10 to 25 blocks              0          298          0    0
+##   25 to 50 blocks              0          105          0    0
+##   More than 50 blocks          0            0         58    0
+##   &lt;NA&gt;                         0            0          0   23</code></pre>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="data-construction.html#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(sizelabs) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">&quot; to &quot;</span>, <span class="st">&quot;-&quot;</span>, <span class="fu">names</span>(sizelabs))</span>
+<span id="cb96-2"><a href="data-construction.html#cb96-2" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb96-3"><a href="data-construction.html#cb96-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb96-4"><a href="data-construction.html#cb96-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsizebak =</span> nhdsize, </span>
+<span id="cb96-5"><a href="data-construction.html#cb96-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsize =</span> <span class="fu">recode_factor</span>(nhdsize, <span class="sc">!!!</span>sizelabs)</span>
+<span id="cb96-6"><a href="data-construction.html#cb96-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb96-7"><a href="data-construction.html#cb96-7" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(dcas18[, <span class="fu">c</span>(<span class="st">&#39;nhdsizebak&#39;</span>,<span class="st">&#39;nhdsize&#39;</span>)], <span class="at">useNA=</span><span class="st">&quot;always&quot;</span>) <span class="co">#Check variable</span></span></code></pre></div>
+<pre><code>##               nhdsize
+## nhdsizebak     1-9 blocks 10-50 blocks &gt;50 blocks &lt;NA&gt;
+##   1-4 blocks          267            0          0    0
+##   5-9 blocks          307            0          0    0
+##   10-25 blocks          0          254          0    0
+##   25-50 blocks          0          109          0    0
+##   &gt;50 blocks            0            0         46    0
+##   &lt;NA&gt;                  0            0          0   78</code></pre>
+</div>
+</div>
+</div>
+<div id="add-neighborhood-context-onto-survey-data" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Add Neighborhood Context onto Survey Data</h2>
+<p>Create variables containing neighborhood racial composition types by Census tract. These will be used to analyze data by different racial compositions in 2015.</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="data-construction.html#cb98-1" aria-hidden="true" tabindex="-1"></a>dcarea <span class="ot">&lt;-</span> dcarea <span class="sc">%&gt;%</span></span>
+<span id="cb98-2"><a href="data-construction.html#cb98-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb98-3"><a href="data-construction.html#cb98-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">w =</span> race.pnhw <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb98-4"><a href="data-construction.html#cb98-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">b =</span> race.pnhb <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb98-5"><a href="data-construction.html#cb98-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">l =</span> race.phsp <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb98-6"><a href="data-construction.html#cb98-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">a =</span> race.papi <span class="sc">&gt;=</span> <span class="dv">10</span>,</span>
+<span id="cb98-7"><a href="data-construction.html#cb98-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">q =</span> quad15 <span class="sc">==</span> <span class="cn">TRUE</span>,</span>
+<span id="cb98-8"><a href="data-construction.html#cb98-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-9"><a href="data-construction.html#cb98-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="st">&#39;&#39;</span>,</span>
+<span id="cb98-10"><a href="data-construction.html#cb98-10" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(w, <span class="st">&#39;w&#39;</span>, nhdtype),</span>
+<span id="cb98-11"><a href="data-construction.html#cb98-11" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(b, <span class="fu">paste0</span>(nhdtype,<span class="st">&#39;b&#39;</span>), nhdtype),</span>
+<span id="cb98-12"><a href="data-construction.html#cb98-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(l, <span class="fu">paste0</span>(nhdtype,<span class="st">&#39;l&#39;</span>), nhdtype),</span>
+<span id="cb98-13"><a href="data-construction.html#cb98-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(a, <span class="fu">paste0</span>(nhdtype,<span class="st">&#39;a&#39;</span>), nhdtype),</span>
+<span id="cb98-14"><a href="data-construction.html#cb98-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(race.pnhw <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="st">&#39;w&#39;</span>, nhdtype),</span>
+<span id="cb98-15"><a href="data-construction.html#cb98-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(race.pnhb <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="st">&#39;b&#39;</span>, nhdtype),</span>
+<span id="cb98-16"><a href="data-construction.html#cb98-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(race.phsp <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="st">&#39;l&#39;</span>, nhdtype),</span>
+<span id="cb98-17"><a href="data-construction.html#cb98-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(race.papi <span class="sc">&gt;</span> <span class="dv">50</span>, <span class="st">&#39;a&#39;</span>, nhdtype),</span>
+<span id="cb98-18"><a href="data-construction.html#cb98-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdtype =</span> <span class="fu">ifelse</span>(quad15, <span class="st">&#39;quad&#39;</span>, nhdtype),</span>
+<span id="cb98-19"><a href="data-construction.html#cb98-19" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb98-20"><a href="data-construction.html#cb98-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">wtype =</span> <span class="fu">ifelse</span>(nhdtype<span class="sc">==</span><span class="st">&#39;quad&#39;</span>, <span class="st">&#39;quad&#39;</span>, <span class="st">&#39;&#39;</span>),</span>
+<span id="cb98-21"><a href="data-construction.html#cb98-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">wtype =</span> <span class="fu">ifelse</span>(nhdtype<span class="sc">==</span><span class="st">&#39;w&#39;</span>, <span class="st">&#39;white&#39;</span>, wtype),</span>
+<span id="cb98-22"><a href="data-construction.html#cb98-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">wtype =</span> <span class="fu">ifelse</span>(wtype<span class="sc">==</span><span class="st">&#39;&#39;</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&#39;w</span><span class="sc">\\</span><span class="st">w{1}$&#39;</span>, nhdtype), <span class="st">&#39;white-1&#39;</span>, wtype),</span>
+<span id="cb98-23"><a href="data-construction.html#cb98-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">wtype =</span> <span class="fu">ifelse</span>(wtype<span class="sc">==</span><span class="st">&#39;&#39;</span> <span class="sc">&amp;</span> <span class="fu">grepl</span>(<span class="st">&#39;w</span><span class="sc">\\</span><span class="st">w{2}$&#39;</span>, nhdtype), <span class="st">&#39;white-2&#39;</span>, wtype),</span>
+<span id="cb98-24"><a href="data-construction.html#cb98-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">wtype =</span> <span class="fu">ifelse</span>(wtype<span class="sc">==</span><span class="st">&#39;&#39;</span>, <span class="st">&#39;non-white&#39;</span>, wtype),</span>
+<span id="cb98-25"><a href="data-construction.html#cb98-25" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb98-26"><a href="data-construction.html#cb98-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">across</span>(<span class="fu">starts_with</span>(<span class="st">&#39;race&#39;</span>), <span class="sc">~</span><span class="fu">ifelse</span>(.<span class="sc">==</span><span class="dv">0</span>, <span class="dv">0</span>, <span class="fu">log</span>(.<span class="sc">/</span><span class="dv">100</span>)), </span>
+<span id="cb98-27"><a href="data-construction.html#cb98-27" aria-hidden="true" tabindex="-1"></a>               <span class="at">.names=</span><span class="st">&#39;ln{.col}&#39;</span>),</span>
+<span id="cb98-28"><a href="data-construction.html#cb98-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">H =</span> (<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> (<span class="fu">exp</span>(lnrace.pnhw) <span class="sc">*</span> lnrace.pnhw <span class="sc">+</span></span>
+<span id="cb98-29"><a href="data-construction.html#cb98-29" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">exp</span>(lnrace.pnhb) <span class="sc">*</span> lnrace.pnhb <span class="sc">+</span></span>
+<span id="cb98-30"><a href="data-construction.html#cb98-30" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">exp</span>(lnrace.phsp) <span class="sc">*</span> lnrace.phsp <span class="sc">+</span></span>
+<span id="cb98-31"><a href="data-construction.html#cb98-31" aria-hidden="true" tabindex="-1"></a>                   <span class="fu">exp</span>(lnrace.papi) <span class="sc">*</span> lnrace.papi  )),</span>
+<span id="cb98-32"><a href="data-construction.html#cb98-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">Hc=</span> (H <span class="sc">-</span> <span class="fu">mean</span>(H, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">/</span> <span class="fu">sd</span>(H, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb98-33"><a href="data-construction.html#cb98-33" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb98-34"><a href="data-construction.html#cb98-34" aria-hidden="true" tabindex="-1"></a>                </span>
+<span id="cb98-35"><a href="data-construction.html#cb98-35" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb98-36"><a href="data-construction.html#cb98-36" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span><span class="fu">starts_with</span>(<span class="st">&#39;lnrace&#39;</span>))</span></code></pre></div>
+<p>Append the LTDB 2000 values of Census characteristics and the 2015 values of ACS characterisitcs to each of the DCAS dataframes. The code below constructs a variable, <code>lntotchg</code>, that equals the natural log of the change in the non-Hispanic white population from 2000 to 2015. This creates a linearly scaled variable that measures change in the white population that accounts for the size of neighborhoods.
+The 2018 DCAS requires an additional step of appending a list of block-groups for each respondent and then merging based on tracts of sampled respondents.</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="data-construction.html#cb99-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Load LTDB 2000 and merge into DC Area neighborhood tract-level dataset</span></span>
+<span id="cb99-2"><a href="data-construction.html#cb99-2" aria-hidden="true" tabindex="-1"></a>ltdb <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&#39;../data/ltdb_std_2000_fullcount.csv&#39;</span>,</span>
+<span id="cb99-3"><a href="data-construction.html#cb99-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">col_types =</span> <span class="fu">cols</span>(<span class="at">TRTID10 =</span> <span class="st">&#39;c&#39;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb99-4"><a href="data-construction.html#cb99-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename_with</span>(tolower) </span>
+<span id="cb99-5"><a href="data-construction.html#cb99-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-6"><a href="data-construction.html#cb99-6" aria-hidden="true" tabindex="-1"></a>nhoods <span class="ot">&lt;-</span> dcarea <span class="sc">%&gt;%</span></span>
+<span id="cb99-7"><a href="data-construction.html#cb99-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">trtid10 =</span> <span class="fu">sub</span>(<span class="st">&#39;G(</span><span class="sc">\\</span><span class="st">d{2})0(</span><span class="sc">\\</span><span class="st">d{3})0(</span><span class="sc">\\</span><span class="st">d{6})&#39;</span>, <span class="st">&#39;</span><span class="sc">\\</span><span class="st">1</span><span class="sc">\\</span><span class="st">2</span><span class="sc">\\</span><span class="st">3&#39;</span>, GISJOIN)) <span class="sc">%&gt;%</span></span>
+<span id="cb99-8"><a href="data-construction.html#cb99-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(<span class="fu">select</span>(ltdb, trtid10, nhwht00), <span class="at">by=</span><span class="st">&#39;trtid10&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb99-9"><a href="data-construction.html#cb99-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">lntotchg =</span> <span class="fu">log</span>(nhw15<span class="sc">/</span>nhwht00))</span>
+<span id="cb99-10"><a href="data-construction.html#cb99-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb99-11"><a href="data-construction.html#cb99-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Merge combined 2000 Census/2015 ACS data into 2016 DC Area Survey data</span></span>
+<span id="cb99-12"><a href="data-construction.html#cb99-12" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb99-13"><a href="data-construction.html#cb99-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">trtid10 =</span> sample_tract) <span class="sc">%&gt;%</span></span>
+<span id="cb99-14"><a href="data-construction.html#cb99-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(nhoods, <span class="at">by=</span><span class="st">&#39;trtid10&#39;</span>)</span>
+<span id="cb99-15"><a href="data-construction.html#cb99-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb99-16"><a href="data-construction.html#cb99-16" aria-hidden="true" tabindex="-1"></a>dcas18 <span class="ot">&lt;-</span> dcas18 <span class="sc">%&gt;%</span></span>
+<span id="cb99-17"><a href="data-construction.html#cb99-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">full_join</span>(<span class="fu">read_csv</span>(<span class="st">&quot;../data/dcas/census_tract_R1049.csv&quot;</span>, <span class="at">col_types =</span> <span class="st">&#39;cc&#39;</span>), </span>
+<span id="cb99-18"><a href="data-construction.html#cb99-18" aria-hidden="true" tabindex="-1"></a>              <span class="at">by=</span><span class="st">&#39;rid&#39;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb99-19"><a href="data-construction.html#cb99-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="at">trtid10 =</span> tract) <span class="sc">%&gt;%</span></span>
+<span id="cb99-20"><a href="data-construction.html#cb99-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">left_join</span>(nhoods, <span class="at">by=</span><span class="st">&#39;trtid10&#39;</span>) </span></code></pre></div>
+</div>
+<div id="data-imputation-and-weighting" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Data Imputation and Weighting</h2>
+<p>Select variables to keep that will be used in analysis. Define vectors of identification and numeric variables that will be used for imputation.</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="data-construction.html#cb100-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb100-2"><a href="data-construction.html#cb100-2" aria-hidden="true" tabindex="-1"></a>          <span class="co"># &#39;satisfied&#39;, &#39;better&#39;,</span></span>
+<span id="cb100-3"><a href="data-construction.html#cb100-3" aria-hidden="true" tabindex="-1"></a>          <span class="st">&#39;nhdsat&#39;</span>, <span class="st">&#39;nhdchg&#39;</span></span>
+<span id="cb100-4"><a href="data-construction.html#cb100-4" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;raceeth&#39;</span></span>
+<span id="cb100-5"><a href="data-construction.html#cb100-5" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;age&#39;</span></span>
+<span id="cb100-6"><a href="data-construction.html#cb100-6" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;forborn&#39;</span></span>
+<span id="cb100-7"><a href="data-construction.html#cb100-7" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;man&#39;</span></span>
+<span id="cb100-8"><a href="data-construction.html#cb100-8" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;kids&#39;</span></span>
+<span id="cb100-9"><a href="data-construction.html#cb100-9" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;married&#39;</span></span>
+<span id="cb100-10"><a href="data-construction.html#cb100-10" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;educ&#39;</span></span>
+<span id="cb100-11"><a href="data-construction.html#cb100-11" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;own&#39;</span></span>
+<span id="cb100-12"><a href="data-construction.html#cb100-12" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;nhdyrs&#39;</span></span>
+<span id="cb100-13"><a href="data-construction.html#cb100-13" aria-hidden="true" tabindex="-1"></a>          , <span class="st">&#39;nhdsize&#39;</span></span>
+<span id="cb100-14"><a href="data-construction.html#cb100-14" aria-hidden="true" tabindex="-1"></a>          <span class="co"># , &#39;inc&#39;</span></span>
+<span id="cb100-15"><a href="data-construction.html#cb100-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb100-16"><a href="data-construction.html#cb100-16" aria-hidden="true" tabindex="-1"></a>dcas16 <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb100-17"><a href="data-construction.html#cb100-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb100-18"><a href="data-construction.html#cb100-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">rid =</span> <span class="fu">as.character</span>(studycase),</span>
+<span id="cb100-19"><a href="data-construction.html#cb100-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">strata =</span> sample_strata</span>
+<span id="cb100-20"><a href="data-construction.html#cb100-20" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb100-21"><a href="data-construction.html#cb100-21" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>rid <span class="ot">&lt;-</span> <span class="fu">as.character</span>(dcas16<span class="sc">$</span>studycase)</span>
+<span id="cb100-22"><a href="data-construction.html#cb100-22" aria-hidden="true" tabindex="-1"></a>idvars16 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;rid&#39;</span>,<span class="st">&#39;weight&#39;</span>, <span class="st">&#39;strata&#39;</span>, <span class="st">&#39;sample_tract&#39;</span>)</span>
+<span id="cb100-23"><a href="data-construction.html#cb100-23" aria-hidden="true" tabindex="-1"></a>nominals <span class="ot">&lt;-</span> vars[<span class="sc">!</span>(vars <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&#39;age&#39;</span>, <span class="st">&#39;nhdyrs&#39;</span>))]</span>
+<span id="cb100-24"><a href="data-construction.html#cb100-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb100-25"><a href="data-construction.html#cb100-25" aria-hidden="true" tabindex="-1"></a>dcas18<span class="sc">$</span>rid <span class="ot">&lt;-</span> <span class="fu">as.character</span>(dcas18<span class="sc">$</span>rid)</span>
+<span id="cb100-26"><a href="data-construction.html#cb100-26" aria-hidden="true" tabindex="-1"></a>idvars18 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;rid&quot;</span>, <span class="st">&quot;weight&quot;</span>, <span class="st">&quot;strata&quot;</span>)</span></code></pre></div>
+<p>Re-level the tract identification number used for fixed effects to the reference tract is that which has the median level of satisfaction.</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="data-construction.html#cb101-1" aria-hidden="true" tabindex="-1"></a>satmu <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
+<span id="cb101-2"><a href="data-construction.html#cb101-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(sample_tract, satisfied) <span class="sc">%&gt;%</span></span>
+<span id="cb101-3"><a href="data-construction.html#cb101-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(sample_tract) <span class="sc">%&gt;%</span></span>
+<span id="cb101-4"><a href="data-construction.html#cb101-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(<span class="at">meansat =</span> <span class="fu">mean</span>(satisfied, <span class="at">na.rm=</span><span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb101-5"><a href="data-construction.html#cb101-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">arrange</span>(meansat) </span>
+<span id="cb101-6"><a href="data-construction.html#cb101-6" aria-hidden="true" tabindex="-1"></a>medsatid <span class="ot">&lt;-</span> satmu<span class="sc">$</span>sample_tract[<span class="fu">round</span>(<span class="fu">nrow</span>(satmu)<span class="sc">/</span><span class="dv">2</span>)] <span class="sc">%&gt;%</span> <span class="fu">as.character</span>()</span>
+<span id="cb101-7"><a href="data-construction.html#cb101-7" aria-hidden="true" tabindex="-1"></a>dcas16<span class="sc">$</span>sample_tract <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dcas16<span class="sc">$</span>sample_tract, <span class="at">ref=</span>medsatid)</span>
+<span id="cb101-8"><a href="data-construction.html#cb101-8" aria-hidden="true" tabindex="-1"></a><span class="co"># levels(dcas16$sample_tract) ## Not run: Check referencing</span></span></code></pre></div>
+<p>Prepare data to be imputed based on different datasets.</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="data-construction.html#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">214518</span>)</span>
+<span id="cb102-2"><a href="data-construction.html#cb102-2" aria-hidden="true" tabindex="-1"></a>idvars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;satisfied&#39;</span>, <span class="st">&#39;better&#39;</span>, <span class="st">&#39;anarace&#39;</span>)</span>
+<span id="cb102-3"><a href="data-construction.html#cb102-3" aria-hidden="true" tabindex="-1"></a>nhoodvars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&#39;nhwht00&#39;</span>, <span class="st">&#39;lntotchg&#39;</span>, <span class="st">&#39;nhdtype&#39;</span>, <span class="st">&#39;wtype&#39;</span>, <span class="st">&#39;H&#39;</span>, <span class="st">&#39;Hc&#39;</span>, </span>
+<span id="cb102-4"><a href="data-construction.html#cb102-4" aria-hidden="true" tabindex="-1"></a>               <span class="st">&#39;race.pnhw&#39;</span>)</span>
+<span id="cb102-5"><a href="data-construction.html#cb102-5" aria-hidden="true" tabindex="-1"></a>nivars <span class="ot">&lt;-</span> <span class="fu">c</span>(idvars, nhoodvars)</span></code></pre></div>
+<p>Create five imputation datasets of survey-weighted data and assign to object <code>dcas&lt;YR&gt;svy</code>. For the DCAS 2016 data, include only respondents who live in multiracial neighborhoods in the multiple imputation. Create vectors of variable names for different types of variables to be used as parameters for multiple imputation.</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="data-construction.html#cb103-1" aria-hidden="true" tabindex="-1"></a>dcas16q <span class="ot">&lt;-</span> <span class="fu">subset</span>(dcas16, neighborhood<span class="sc">==</span><span class="st">&quot;Global Neighborhood&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb103-2"><a href="data-construction.html#cb103-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sample_tract=</span><span class="fu">factor</span>(sample_tract))</span>
+<span id="cb103-3"><a href="data-construction.html#cb103-3" aria-hidden="true" tabindex="-1"></a>dcas16mi <span class="ot">&lt;-</span> <span class="fu">amelia</span>(dcas16q[dcas16q<span class="sc">$</span>neighborhood<span class="sc">==</span><span class="st">&quot;Global Neighborhood&quot;</span>, </span>
+<span id="cb103-4"><a href="data-construction.html#cb103-4" aria-hidden="true" tabindex="-1"></a>                          <span class="fu">unique</span>(<span class="fu">c</span>(vars, nominals, nivars, idvars16))], </span>
+<span id="cb103-5"><a href="data-construction.html#cb103-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">m=</span><span class="dv">5</span>, <span class="at">noms=</span>nominals, <span class="at">emburn=</span><span class="fu">c</span>(<span class="dv">500</span>, <span class="dv">500</span>), <span class="at">p2s=</span><span class="cn">FALSE</span>, </span>
+<span id="cb103-6"><a href="data-construction.html#cb103-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">idvars=</span><span class="fu">c</span>(nivars, idvars16))</span>
+<span id="cb103-7"><a href="data-construction.html#cb103-7" aria-hidden="true" tabindex="-1"></a>dcas16svy <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id=</span><span class="sc">~</span>rid, <span class="at">strata=</span><span class="sc">~</span>strata, <span class="at">weights=</span><span class="sc">~</span>weight,</span>
+<span id="cb103-8"><a href="data-construction.html#cb103-8" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data=</span><span class="fu">imputationList</span>(dcas16mi<span class="sc">$</span>imputations))</span>
+<span id="cb103-9"><a href="data-construction.html#cb103-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb103-10"><a href="data-construction.html#cb103-10" aria-hidden="true" tabindex="-1"></a>dcas18mi <span class="ot">&lt;-</span> <span class="fu">amelia</span>(dcas18[, <span class="fu">unique</span>(<span class="fu">c</span>(vars, nominals, nivars, idvars18))], </span>
+<span id="cb103-11"><a href="data-construction.html#cb103-11" aria-hidden="true" tabindex="-1"></a>                   <span class="at">m=</span><span class="dv">5</span>, <span class="at">noms=</span>nominals, <span class="at">emburn=</span><span class="fu">c</span>(<span class="dv">500</span>,<span class="dv">500</span>), <span class="at">p2s=</span><span class="cn">FALSE</span>, </span>
+<span id="cb103-12"><a href="data-construction.html#cb103-12" aria-hidden="true" tabindex="-1"></a>                   <span class="at">idvars=</span><span class="fu">c</span>(nivars, idvars18))</span>
+<span id="cb103-13"><a href="data-construction.html#cb103-13" aria-hidden="true" tabindex="-1"></a>dcas18svy <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id=</span><span class="sc">~</span>rid, <span class="at">strata=</span><span class="sc">~</span>strata, <span class="at">weights=</span><span class="sc">~</span>weight,</span>
+<span id="cb103-14"><a href="data-construction.html#cb103-14" aria-hidden="true" tabindex="-1"></a>                       <span class="at">data=</span><span class="fu">imputationList</span>(dcas18mi<span class="sc">$</span>imputations))</span></code></pre></div>
+</div>
+<div id="center-variables" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Center Variables</h2>
+<p>Center all variables on their DC-area-wide values (estimated using the DCAS 2018 data) in order to create comparable regression values across the two data sets, Subtract the mean of the weighted DCAS 2018 variables from the corresponding variables in both the DCAS 2016 (multiracial neighborhoods) and DCAS 2018 (DC-area) data. This sets the intercept across the two data sets at a corresponding value that represents a white resident with DC-area-wide mean values on all other measures.</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="data-construction.html#cb104-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;forborn&quot;</span>, <span class="st">&quot;man&quot;</span>, <span class="st">&quot;kids&quot;</span>, <span class="st">&quot;married&quot;</span>, <span class="st">&quot;own&quot;</span>, <span class="st">&quot;nhdyrs&quot;</span>)</span>
+<span id="cb104-2"><a href="data-construction.html#cb104-2" aria-hidden="true" tabindex="-1"></a>mu18 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(vars, <span class="cf">function</span>(var){</span>
+<span id="cb104-3"><a href="data-construction.html#cb104-3" aria-hidden="true" tabindex="-1"></a>    fm <span class="ot">&lt;-</span> <span class="fu">as.formula</span>(<span class="fu">paste</span>(<span class="st">&quot;~&quot;</span>, var))</span>
+<span id="cb104-4"><a href="data-construction.html#cb104-4" aria-hidden="true" tabindex="-1"></a>    mu <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">MIcombine</span>(<span class="fu">with</span>(dcas18svy, <span class="fu">svymean</span>(fm, <span class="at">na.rm=</span><span class="cn">TRUE</span>))))</span>
+<span id="cb104-5"><a href="data-construction.html#cb104-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">length</span>(mu)<span class="sc">==</span><span class="dv">1</span>) <span class="fu">return</span>(mu[[<span class="dv">1</span>]])</span>
+<span id="cb104-6"><a href="data-construction.html#cb104-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(mu[[<span class="fu">grep</span>(<span class="st">&quot;TRUE$&quot;</span>, <span class="fu">names</span>(mu))]])</span>
+<span id="cb104-7"><a href="data-construction.html#cb104-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb104-8"><a href="data-construction.html#cb104-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(mu18) <span class="ot">&lt;-</span> vars</span>
+<span id="cb104-9"><a href="data-construction.html#cb104-9" aria-hidden="true" tabindex="-1"></a>educ <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">MIcombine</span>(<span class="fu">with</span>(dcas18svy, <span class="fu">svymean</span>(<span class="sc">~</span>educ, <span class="at">na.rm=</span><span class="cn">TRUE</span>))))</span>
+<span id="cb104-10"><a href="data-construction.html#cb104-10" aria-hidden="true" tabindex="-1"></a>mu18[<span class="fu">paste0</span>(<span class="st">&quot;educ&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>)] <span class="ot">&lt;-</span> educ</span>
+<span id="cb104-11"><a href="data-construction.html#cb104-11" aria-hidden="true" tabindex="-1"></a>nhdsize <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">MIcombine</span>(<span class="fu">with</span>(dcas18svy, <span class="fu">svymean</span>(<span class="sc">~</span>nhdsize, <span class="at">na.rm=</span><span class="cn">TRUE</span>))))</span>
+<span id="cb104-12"><a href="data-construction.html#cb104-12" aria-hidden="true" tabindex="-1"></a>mu18[<span class="fu">paste0</span>(<span class="st">&quot;nhdsize&quot;</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)] <span class="ot">&lt;-</span> nhdsize</span>
+<span id="cb104-13"><a href="data-construction.html#cb104-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-14"><a href="data-construction.html#cb104-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb104-15"><a href="data-construction.html#cb104-15" aria-hidden="true" tabindex="-1"></a>svy.center <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb104-16"><a href="data-construction.html#cb104-16" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">%&gt;%</span> <span class="fu">update</span>(</span>
+<span id="cb104-17"><a href="data-construction.html#cb104-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">agec       =</span> age <span class="sc">-</span> mu18[[<span class="st">&quot;age&quot;</span>]],</span>
+<span id="cb104-18"><a href="data-construction.html#cb104-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">forbornc   =</span> <span class="fu">as.integer</span>(forborn) <span class="sc">-</span> mu18[[<span class="st">&quot;forborn&quot;</span>]],</span>
+<span id="cb104-19"><a href="data-construction.html#cb104-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">manc       =</span> <span class="fu">as.integer</span>(man) <span class="sc">-</span> mu18[[<span class="st">&quot;man&quot;</span>]],</span>
+<span id="cb104-20"><a href="data-construction.html#cb104-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">kidsc      =</span> <span class="fu">as.integer</span>(kids) <span class="sc">-</span> mu18[[<span class="st">&quot;kids&quot;</span>]],</span>
+<span id="cb104-21"><a href="data-construction.html#cb104-21" aria-hidden="true" tabindex="-1"></a>        <span class="at">marriedc   =</span> <span class="fu">as.integer</span>(married) <span class="sc">-</span> mu18[[<span class="st">&quot;married&quot;</span>]],</span>
+<span id="cb104-22"><a href="data-construction.html#cb104-22" aria-hidden="true" tabindex="-1"></a>        <span class="at">educall    =</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>educ),</span>
+<span id="cb104-23"><a href="data-construction.html#cb104-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ1c     =</span> educall[, <span class="dv">2</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;educ1&quot;</span>]],</span>
+<span id="cb104-24"><a href="data-construction.html#cb104-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ3c     =</span> educall[, <span class="dv">3</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;educ3&quot;</span>]],</span>
+<span id="cb104-25"><a href="data-construction.html#cb104-25" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ4c     =</span> educall[, <span class="dv">4</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;educ4&quot;</span>]],</span>
+<span id="cb104-26"><a href="data-construction.html#cb104-26" aria-hidden="true" tabindex="-1"></a>        <span class="at">educ5c     =</span> educall[, <span class="dv">5</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;educ5&quot;</span>]],</span>
+<span id="cb104-27"><a href="data-construction.html#cb104-27" aria-hidden="true" tabindex="-1"></a>        <span class="at">educall    =</span> <span class="dv">1</span>,</span>
+<span id="cb104-28"><a href="data-construction.html#cb104-28" aria-hidden="true" tabindex="-1"></a>        <span class="at">ownc       =</span> <span class="fu">as.integer</span>(own) <span class="sc">-</span> mu18[[<span class="st">&quot;own&quot;</span>]],</span>
+<span id="cb104-29"><a href="data-construction.html#cb104-29" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdyrsc    =</span> nhdyrs <span class="sc">-</span> mu18[[<span class="st">&quot;nhdyrs&quot;</span>]],</span>
+<span id="cb104-30"><a href="data-construction.html#cb104-30" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsizeall =</span> <span class="fu">model.matrix</span>(<span class="sc">~</span>nhdsize),</span>
+<span id="cb104-31"><a href="data-construction.html#cb104-31" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsize2c  =</span> nhdsizeall[, <span class="dv">2</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;nhdsize2&quot;</span>]],</span>
+<span id="cb104-32"><a href="data-construction.html#cb104-32" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsize3c  =</span> nhdsizeall[, <span class="dv">3</span>] <span class="sc">-</span> mu18[[<span class="st">&quot;nhdsize3&quot;</span>]],</span>
+<span id="cb104-33"><a href="data-construction.html#cb104-33" aria-hidden="true" tabindex="-1"></a>        <span class="at">nhdsizeall =</span> <span class="dv">1</span></span>
+<span id="cb104-34"><a href="data-construction.html#cb104-34" aria-hidden="true" tabindex="-1"></a>    ) </span>
+<span id="cb104-35"><a href="data-construction.html#cb104-35" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb104-36"><a href="data-construction.html#cb104-36" aria-hidden="true" tabindex="-1"></a>dcas16svy <span class="ot">&lt;-</span> <span class="fu">svy.center</span>(dcas16svy)</span>
+<span id="cb104-37"><a href="data-construction.html#cb104-37" aria-hidden="true" tabindex="-1"></a>dcas18svy <span class="ot">&lt;-</span> <span class="fu">svy.center</span>(dcas18svy)</span></code></pre></div>
+</div>
+<div id="save-data" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Save Data</h2>
+<p>Save R object containing the multiply-imputed survey-weighted data (<code>dcassvy</code>), variable names (<code>vars</code>), imputation list upon which survey data were created (<code>dcasmi</code>), a string representing the diretory containing data (<code>dataDIR</code>), and the list of values to export to LaTeX (<code>texcmds</code>).</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="data-construction.html#cb105-1" aria-hidden="true" tabindex="-1"></a><span class="co"># save(vars, texcmds, dcarea,</span></span>
+<span id="cb105-2"><a href="data-construction.html#cb105-2" aria-hidden="true" tabindex="-1"></a><span class="co">#      dcas16svy, dcas16, dcas16mi,</span></span>
+<span id="cb105-3"><a href="data-construction.html#cb105-3" aria-hidden="true" tabindex="-1"></a><span class="co">#      dcas18svy, dcas18, dcas18mi,</span></span>
+<span id="cb105-4"><a href="data-construction.html#cb105-4" aria-hidden="true" tabindex="-1"></a><span class="co">#      file = &#39;../data/dcassvy.Rdata&#39;)</span></span></code></pre></div>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="description-of-dc-area-multiracial-neighborhood-populations.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sample-descriptive-statistics.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "subsubsection",
+"scroll_highlight": true
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

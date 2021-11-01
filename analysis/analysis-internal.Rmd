@@ -304,8 +304,11 @@ kable(mfxwn_tbl, digits=3)
 ```{r wn-mfx-make-plt}
 ## Plot marginal effects and standard errors
 mfxwn_long <- bind_rows(m1wn_mfx, m3wn_mfx) %>%
-    mutate(model=relevel(factor(rep(c("Unadjusted", "Adjusted"), each=3)),
-                         ref="Unadjusted"))
+    mutate(
+        model=relevel(factor(rep(c("Unadjusted", "Adjusted"), each=3)),
+                         ref="Unadjusted"),
+        raceeth = sub("^(\\w)", "\\U\\1", raceeth, perl = TRUE)
+    )
 dodge_wd <- 0.25
 wn_mfx_plt <- ggplot(mfxwn_long, 
        aes(x=raceeth, y=val, ymin=val-1.96*SE, ymax=val+1.96*SE,
@@ -338,7 +341,7 @@ wn_mfx_plt_cap <- paste(
 
 ```{r wn-mfx-plt, echo=FALSE, fig.cap=wn_mfx_plt_cap}
 wn_mfx_plt
-ggsave("images/marginal_effects_within.png", plot = wn_mfx_plt,
+ggsave("images/marginal_effects_within.pdf", plot = wn_mfx_plt,
        width=6.75, units='in')
 ```
 

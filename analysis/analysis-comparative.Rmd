@@ -128,7 +128,9 @@ I obtained combined sampling weights for the 2016 and 2018 waves of the DCAS. Ha
 I first combined the data and then multiply imputed the combined data to create a multiple imputation object, `dcasCsvy`, containing five multiply imputed samples.
 
 ```{r bn-combined-data}
-wgts <- foreign::read.spss('../data/DCAS_Reweight_U1044_Confidential.sav') %>%
+wgts <- foreign::read.spss(
+  '../data/dcas/DCAS_combined_weights.sav'
+  ) %>%
     as_tibble() %>%
     mutate(across(everything(), ~trimws(.x))) %>%
     mutate(
