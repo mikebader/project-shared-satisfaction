@@ -21,3 +21,23 @@ You will be prompted to download a `.zip` file. Extract the files from that `.zi
 After doing so, you should be able to replicate the analysis by opening the file `analysis/analysis.Rproj` in [RStudio](https://www.rstudio.com/) and building the project. 
 
 Note that lines 503-506 of the file `analysis/data-construction.Rmd` are commented out by default. This permits the replication using the exact version of `dcassvy.Rdata` used in the paper. If you un-comment those line, `dcassvy.Rdata` will be overwritten using randomized multiple imputation datasets that do not match the analysis, and doing so will result in slight variations from the reported results. 
+
+## Manuscript Typesetting
+
+The manuscript is written in Markdown and designed to be typeset with [my custom LaTeX class](https://github.com/mikebader/latex-baderart). To typeset in regular LaTeX, include the following at the end of the YAML block. 
+
+    header-includes: |
+        \usepackage{rotating}
+        \usepackage{adjustbox}
+        \usepackage{ragged2e}
+        \usepackage{caption}
+        \usepackage{hhline}
+        \usepackage{colortbl}
+        \usepackage{threeparttable}
+        \usepackage{tabularx}
+        `\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+        \newcolumntype{R}[1]{>{\raggedleft\hspace{0pt}\arraybackslash}b{#1}}
+        \newcolumntype{L}[1]{>{\RaggedRight\hspace{0pt}\arraybackslash}p{#1}}`{=latex}
+        \newcommand{\abouthere}[2]{%
+          \begin{center}[Insert #1 \ref{#2} about here]\end{center}%
+        }
