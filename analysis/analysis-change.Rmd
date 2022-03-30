@@ -98,14 +98,15 @@ ch_tbl <- report_models(
     use.headers = TRUE
 )
 statrow <- nrow(ch_tbl)-3
-ch_tbl <- insert_row(
-    ch_tbl, c("Tract fixed effects", rep("X", 4)),after=statrow) %>%
+ch_tbl_pres <- ch_tbl[,c(1,2,4)] %>%
+    insert_row(c("Tract fixed effects", rep("X", 2)), after=statrow) %>%
     set_top_border(statrow+1, everywhere, TRUE) %>%
     set_top_border(statrow+2, everywhere, FALSE) %>% 
     set_top_padding(0) %>%
     set_bottom_padding(0)
+ch_tbl_pres[2, 3] <- "(2)"
 cat(
-    sub("\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", to_latex(ch_tbl)),
+    sub("\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", to_latex(ch_tbl_pres)),
         file="tables/change.tex"
 )
 ch_tbl
