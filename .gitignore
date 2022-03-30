@@ -36,10 +36,14 @@ data/ltdb_*
 # Bookdown files
 analysis/_book
 analysis/_bookdown_files
-analysis/_multiethnic-nhoods-analysis
+analysis/_shared-satisfaction-analysis.Rmd
 
 # Excel files
 *.xlsx
+
+# Files used to produce copy-edits for production
+drafts/multiethnic-nhoods.tex
+drafts/multiethnic-nhoods.docx
 
 .Rproj.user
 .Rhistory

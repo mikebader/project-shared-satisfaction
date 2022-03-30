@@ -104,7 +104,6 @@ ch_tbl_pres <- ch_tbl[,c(1,2,4)] %>%
     set_top_border(statrow+2, everywhere, FALSE) %>% 
     set_top_padding(0) %>%
     set_bottom_padding(0)
-ch_tbl_pres[2, 3] <- "(2)"
 cat(
     sub("\\(\\\\#(tab:.+?)\\)", "\\\\label{\\1\\}", to_latex(ch_tbl_pres)),
         file="tables/change.tex"

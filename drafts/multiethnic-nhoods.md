@@ -1,7 +1,9 @@
 ---
 title: Shared Satisfaction among Residents Living in Multiracial Neighborhoods
 shorttitle: Shared Satisfaction in Multiracial Neighborhoods
-nodate: true
+author: "Michael D.\ M. Bader"
+unpub-note: "Manuscript accepted for publication at *Social Problems*"
+date: March 30, 2022
 abstract: |
     Multiracial neighborhood integration has become more common in US metropolitan areas over the past three decades. This article takes up the question: are residents satisfied living in multiracial neighborhoods? Traditional theories of racial change predict low levels of satisfaction in these neighborhoods while newer studies question that prediction. The article uses data representing all residents of multiracial neighborhoods in the Washington, DC area to study neighborhood satisfaction in multiracial neighborhoods. The analysis finds evidence of *shared satisfaction* among residents regardless of race: large and *equal* shares of each racial group were satisfied. White residents were less satisfied than white residents of neighborhoods elsewhere in the metropolitan region, but were unlikely to perceive neighborhood decline. The shared satisfaction among residents of all races and the lack of racial antipathy to change among white residents suggests that multiracial neighborhoods offer sites to promote racial equity.  
 keywords:

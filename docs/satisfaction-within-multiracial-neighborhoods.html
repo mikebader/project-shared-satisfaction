@@ -6,11 +6,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>5 Satisfaction Within Multiracial Neighborhoods | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’</title>
   <meta name="description" content="5 Satisfaction Within Multiracial Neighborhoods | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’" />
-  <meta name="generator" content="bookdown 0.21 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.25 and GitBook 2.6.7" />
 
   <meta property="og:title" content="5 Satisfaction Within Multiracial Neighborhoods | Replication File and Supplemental Analyses for ‘Shared Satisfaction among Residents Living in Multiracial Neighborhoods’" />
   <meta property="og:type" content="book" />
-  
   
   
   
@@ -24,7 +23,7 @@
 <meta name="author" content="Michael Bader" />
 
 
-<meta name="date" content="2021-11-01" />
+<meta name="date" content="2022-03-30" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -33,8 +32,8 @@
   
 <link rel="prev" href="sample-descriptive-statistics.html"/>
 <link rel="next" href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"/>
-<script src="libs/header-attrs-2.6/header-attrs.js"></script>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -50,7 +49,9 @@
 
 
 
-
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
 <link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 
@@ -120,6 +121,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 </head>
 
 <body>
@@ -132,78 +134,78 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Set Up</a></li>
-<li class="chapter" data-level="2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html"><i class="fa fa-check"></i><b>2</b> Description of DC-Area &amp; Multiracial Neighborhood Populations</a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Set Up<span></span></a></li>
+<li class="chapter" data-level="2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html"><i class="fa fa-check"></i><b>2</b> Description of DC-Area &amp; Multiracial Neighborhood Populations<span></span></a>
 <ul>
-<li class="chapter" data-level="2.1" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#dc-area-characteristics"><i class="fa fa-check"></i><b>2.1</b> DC-area characteristics</a></li>
-<li class="chapter" data-level="2.2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#multiracial-neighborhood-characteristics"><i class="fa fa-check"></i><b>2.2</b> Multiracial neighborhood characteristics</a></li>
-<li class="chapter" data-level="2.3" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#diverse-neighborhoods-excluded-for-having-a-majority-race"><i class="fa fa-check"></i><b>2.3</b> Diverse neighborhoods excluded for having a majority race</a></li>
+<li class="chapter" data-level="2.1" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#dc-area-characteristics"><i class="fa fa-check"></i><b>2.1</b> DC-area characteristics<span></span></a></li>
+<li class="chapter" data-level="2.2" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#multiracial-neighborhood-characteristics"><i class="fa fa-check"></i><b>2.2</b> Multiracial neighborhood characteristics<span></span></a></li>
+<li class="chapter" data-level="2.3" data-path="description-of-dc-area-multiracial-neighborhood-populations.html"><a href="description-of-dc-area-multiracial-neighborhood-populations.html#diverse-neighborhoods-excluded-for-having-a-majority-race"><i class="fa fa-check"></i><b>2.3</b> Diverse neighborhoods excluded for having a majority race<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="3" data-path="data-construction.html"><a href="data-construction.html"><i class="fa fa-check"></i><b>3</b> Data Construction</a>
+<li class="chapter" data-level="3" data-path="data-construction.html"><a href="data-construction.html"><i class="fa fa-check"></i><b>3</b> Data Construction<span></span></a>
 <ul>
-<li class="chapter" data-level="3.1" data-path="data-construction.html"><a href="data-construction.html#respondent-selection"><i class="fa fa-check"></i><b>3.1</b> Respondent Selection</a></li>
-<li class="chapter" data-level="3.2" data-path="data-construction.html"><a href="data-construction.html#variable-construction"><i class="fa fa-check"></i><b>3.2</b> Variable Construction</a>
+<li class="chapter" data-level="3.1" data-path="data-construction.html"><a href="data-construction.html#respondent-selection"><i class="fa fa-check"></i><b>3.1</b> Respondent Selection<span></span></a></li>
+<li class="chapter" data-level="3.2" data-path="data-construction.html"><a href="data-construction.html#variable-construction"><i class="fa fa-check"></i><b>3.2</b> Variable Construction<span></span></a>
 <ul>
-<li class="chapter" data-level="3.2.1" data-path="data-construction.html"><a href="data-construction.html#dependent-variables"><i class="fa fa-check"></i><b>3.2.1</b> Dependent Variables</a></li>
-<li class="chapter" data-level="3.2.2" data-path="data-construction.html"><a href="data-construction.html#independent-variable"><i class="fa fa-check"></i><b>3.2.2</b> Independent Variable</a></li>
-<li class="chapter" data-level="3.2.3" data-path="data-construction.html"><a href="data-construction.html#control-variables"><i class="fa fa-check"></i><b>3.2.3</b> Control Variables</a></li>
+<li class="chapter" data-level="3.2.1" data-path="data-construction.html"><a href="data-construction.html#dependent-variables"><i class="fa fa-check"></i><b>3.2.1</b> Dependent Variables<span></span></a></li>
+<li class="chapter" data-level="3.2.2" data-path="data-construction.html"><a href="data-construction.html#independent-variable"><i class="fa fa-check"></i><b>3.2.2</b> Independent Variable<span></span></a></li>
+<li class="chapter" data-level="3.2.3" data-path="data-construction.html"><a href="data-construction.html#control-variables"><i class="fa fa-check"></i><b>3.2.3</b> Control Variables<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="3.3" data-path="data-construction.html"><a href="data-construction.html#add-neighborhood-context-onto-survey-data"><i class="fa fa-check"></i><b>3.3</b> Add Neighborhood Context onto Survey Data</a></li>
-<li class="chapter" data-level="3.4" data-path="data-construction.html"><a href="data-construction.html#data-imputation-and-weighting"><i class="fa fa-check"></i><b>3.4</b> Data Imputation and Weighting</a></li>
-<li class="chapter" data-level="3.5" data-path="data-construction.html"><a href="data-construction.html#center-variables"><i class="fa fa-check"></i><b>3.5</b> Center Variables</a></li>
-<li class="chapter" data-level="3.6" data-path="data-construction.html"><a href="data-construction.html#save-data"><i class="fa fa-check"></i><b>3.6</b> Save Data</a></li>
+<li class="chapter" data-level="3.3" data-path="data-construction.html"><a href="data-construction.html#add-neighborhood-context-onto-survey-data"><i class="fa fa-check"></i><b>3.3</b> Add Neighborhood Context onto Survey Data<span></span></a></li>
+<li class="chapter" data-level="3.4" data-path="data-construction.html"><a href="data-construction.html#data-imputation-and-weighting"><i class="fa fa-check"></i><b>3.4</b> Data Imputation and Weighting<span></span></a></li>
+<li class="chapter" data-level="3.5" data-path="data-construction.html"><a href="data-construction.html#center-variables"><i class="fa fa-check"></i><b>3.5</b> Center Variables<span></span></a></li>
+<li class="chapter" data-level="3.6" data-path="data-construction.html"><a href="data-construction.html#save-data"><i class="fa fa-check"></i><b>3.6</b> Save Data<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="4" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Sample Descriptive Statistics</a>
+<li class="chapter" data-level="4" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html"><i class="fa fa-check"></i><b>4</b> Sample Descriptive Statistics<span></span></a>
 <ul>
-<li class="chapter" data-level="4.1" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#assign-labels-to-be-used-throughout-analyses"><i class="fa fa-check"></i><b>4.1</b> Assign labels to be used throughout analyses</a></li>
+<li class="chapter" data-level="4.1" data-path="sample-descriptive-statistics.html"><a href="sample-descriptive-statistics.html#assign-labels-to-be-used-throughout-analyses"><i class="fa fa-check"></i><b>4.1</b> Assign labels to be used throughout analyses<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html"><i class="fa fa-check"></i><b>5</b> Satisfaction <em>Within</em> Multiracial Neighborhoods</a>
+<li class="chapter" data-level="5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html"><i class="fa fa-check"></i><b>5</b> Satisfaction <em>Within</em> Multiracial Neighborhoods<span></span></a>
 <ul>
-<li class="chapter" data-level="5.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1</b> Distribution of respondents across neighborhoods</a>
+<li class="chapter" data-level="5.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1</b> Distribution of respondents across neighborhoods<span></span></a>
 <ul>
-<li class="chapter" data-level="5.1.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#median-satisfaction-level-in-tracts"><i class="fa fa-check"></i><b>5.1.1</b> Median satisfaction level in tracts</a></li>
-<li class="chapter" data-level="5.1.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#count-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1.2</b> Count of respondents across neighborhoods</a></li>
-<li class="chapter" data-level="5.1.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-by-race"><i class="fa fa-check"></i><b>5.1.3</b> Distribution of respondents by race</a></li>
+<li class="chapter" data-level="5.1.1" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#median-satisfaction-level-in-tracts"><i class="fa fa-check"></i><b>5.1.1</b> Median satisfaction level in tracts<span></span></a></li>
+<li class="chapter" data-level="5.1.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#count-of-respondents-across-neighborhoods"><i class="fa fa-check"></i><b>5.1.2</b> Count of respondents across neighborhoods<span></span></a></li>
+<li class="chapter" data-level="5.1.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-by-race"><i class="fa fa-check"></i><b>5.1.3</b> Distribution of respondents by race<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="5.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#descriptive-analysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.2</b> Descriptive analysis of neighborhood satisfaction</a></li>
-<li class="chapter" data-level="5.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#regression-anaysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.3</b> Regression anaysis of neighborhood satisfaction</a></li>
-<li class="chapter" data-level="5.4" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#marginal-effect-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.4</b> Marginal Effect of Race on Neighborhood Satisfaction</a></li>
-<li class="chapter" data-level="5.5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#partial-predicted-probabilities"><i class="fa fa-check"></i><b>5.5</b> Partial Predicted Probabilities</a></li>
-<li class="chapter" data-level="5.6" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#wald-statistics-of-model-fit"><i class="fa fa-check"></i><b>5.6</b> Wald Statistics of Model Fit</a></li>
+<li class="chapter" data-level="5.2" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#descriptive-analysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.2</b> Descriptive analysis of neighborhood satisfaction<span></span></a></li>
+<li class="chapter" data-level="5.3" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#regression-anaysis-of-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.3</b> Regression anaysis of neighborhood satisfaction<span></span></a></li>
+<li class="chapter" data-level="5.4" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#marginal-effect-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>5.4</b> Marginal Effect of Race on Neighborhood Satisfaction<span></span></a></li>
+<li class="chapter" data-level="5.5" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#partial-predicted-probabilities"><i class="fa fa-check"></i><b>5.5</b> Partial Predicted Probabilities<span></span></a></li>
+<li class="chapter" data-level="5.6" data-path="satisfaction-within-multiracial-neighborhoods.html"><a href="satisfaction-within-multiracial-neighborhoods.html#wald-statistics-of-model-fit"><i class="fa fa-check"></i><b>5.6</b> Wald Statistics of Model Fit<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="6" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><i class="fa fa-check"></i><b>6</b> Satisfaction Comparison <em>Between</em> Multiethnic Neighborhoods and DC-Area Population</a>
+<li class="chapter" data-level="6" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><i class="fa fa-check"></i><b>6</b> Satisfaction Comparison <em>Between</em> Multiethnic Neighborhoods and DC-Area Population<span></span></a>
 <ul>
-<li class="chapter" data-level="6.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#descriptive-analysis-of-satisfaction-by-race"><i class="fa fa-check"></i><b>6.1</b> Descriptive analysis of satisfaction by race</a></li>
-<li class="chapter" data-level="6.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#multivariable-influence-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>6.2</b> Multivariable influence of race on neighborhood satisfaction</a>
+<li class="chapter" data-level="6.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#descriptive-analysis-of-satisfaction-by-race"><i class="fa fa-check"></i><b>6.1</b> Descriptive analysis of satisfaction by race<span></span></a></li>
+<li class="chapter" data-level="6.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#multivariable-influence-of-race-on-neighborhood-satisfaction"><i class="fa fa-check"></i><b>6.2</b> Multivariable influence of race on neighborhood satisfaction<span></span></a>
 <ul>
-<li class="chapter" data-level="6.2.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#combining-dcas-2016-and-dcas-2018-data-for-analysis"><i class="fa fa-check"></i><b>6.2.1</b> Combining DCAS 2016 and DCAS 2018 data for analysis</a></li>
-<li class="chapter" data-level="6.2.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#estimate-model-of-satisfaction-using-combined-dcas-2016-and-dcas-2018-data"><i class="fa fa-check"></i><b>6.2.2</b> Estimate model of satisfaction using combined DCAS 2016 and DCAS 2018 data</a></li>
-<li class="chapter" data-level="6.2.3" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#calculate-predicted-probabilities-and-marginal-effects-from-between-data-comparison"><i class="fa fa-check"></i><b>6.2.3</b> Calculate predicted probabilities and marginal effects from between-data comparison</a></li>
+<li class="chapter" data-level="6.2.1" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#combining-dcas-2016-and-dcas-2018-data-for-analysis"><i class="fa fa-check"></i><b>6.2.1</b> Combining DCAS 2016 and DCAS 2018 data for analysis<span></span></a></li>
+<li class="chapter" data-level="6.2.2" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#estimate-model-of-satisfaction-using-combined-dcas-2016-and-dcas-2018-data"><i class="fa fa-check"></i><b>6.2.2</b> Estimate model of satisfaction using combined DCAS 2016 and DCAS 2018 data<span></span></a></li>
+<li class="chapter" data-level="6.2.3" data-path="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html"><a href="satisfaction-comparison-between-multiethnic-neighborhoods-and-dc-area-population.html#calculate-predicted-probabilities-and-marginal-effects-from-between-data-comparison"><i class="fa fa-check"></i><b>6.2.3</b> Calculate predicted probabilities and marginal effects from between-data comparison<span></span></a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="7" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html"><i class="fa fa-check"></i><b>7</b> Perceptions of Neighborhood Change</a>
+<li class="chapter" data-level="7" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html"><i class="fa fa-check"></i><b>7</b> Perceptions of Neighborhood Change<span></span></a>
 <ul>
-<li class="chapter" data-level="7.1" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#descriptive-analysis-of-percieved-neighborhood-change"><i class="fa fa-check"></i><b>7.1</b> Descriptive analysis of percieved neighborhood change</a></li>
-<li class="chapter" data-level="7.2" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#regression-analyses-of-perceived-neighborhood-change"><i class="fa fa-check"></i><b>7.2</b> Regression analyses of perceived neighborhood change</a></li>
+<li class="chapter" data-level="7.1" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#descriptive-analysis-of-percieved-neighborhood-change"><i class="fa fa-check"></i><b>7.1</b> Descriptive analysis of percieved neighborhood change<span></span></a></li>
+<li class="chapter" data-level="7.2" data-path="perceptions-of-neighborhood-change.html"><a href="perceptions-of-neighborhood-change.html#regression-analyses-of-perceived-neighborhood-change"><i class="fa fa-check"></i><b>7.2</b> Regression analyses of perceived neighborhood change<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="8" data-path="supplement.html"><a href="supplement.html"><i class="fa fa-check"></i><b>8</b> Supplement</a>
+<li class="chapter" data-level="8" data-path="supplement.html"><a href="supplement.html"><i class="fa fa-check"></i><b>8</b> Supplement<span></span></a>
 <ul>
-<li class="chapter" data-level="8.1" data-path="supplement.html"><a href="supplement.html#data-construction-1"><i class="fa fa-check"></i><b>8.1</b> Data Construction</a></li>
-<li class="chapter" data-level="8.2" data-path="supplement.html"><a href="supplement.html#within-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.2</b> Within Neighborhood Robustness Analysis</a>
+<li class="chapter" data-level="8.1" data-path="supplement.html"><a href="supplement.html#data-construction-1"><i class="fa fa-check"></i><b>8.1</b> Data Construction<span></span></a></li>
+<li class="chapter" data-level="8.2" data-path="supplement.html"><a href="supplement.html#within-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.2</b> Within Neighborhood Robustness Analysis<span></span></a>
 <ul>
-<li class="chapter" data-level="8.2.1" data-path="supplement.html"><a href="supplement.html#influence-of-length-of-residence-on-satisfaction"><i class="fa fa-check"></i><b>8.2.1</b> Influence of length of residence on satisfaction</a></li>
-<li class="chapter" data-level="8.2.2" data-path="supplement.html"><a href="supplement.html#influence-of-white-population-change"><i class="fa fa-check"></i><b>8.2.2</b> Influence of white population change</a></li>
-<li class="chapter" data-level="8.2.3" data-path="supplement.html"><a href="supplement.html#summary-of-within-neighborhood-robustness-analyses"><i class="fa fa-check"></i><b>8.2.3</b> Summary of within-neighborhood robustness analyses</a></li>
+<li class="chapter" data-level="8.2.1" data-path="supplement.html"><a href="supplement.html#influence-of-length-of-residence-on-satisfaction"><i class="fa fa-check"></i><b>8.2.1</b> Influence of length of residence on satisfaction<span></span></a></li>
+<li class="chapter" data-level="8.2.2" data-path="supplement.html"><a href="supplement.html#influence-of-white-population-change"><i class="fa fa-check"></i><b>8.2.2</b> Influence of white population change<span></span></a></li>
+<li class="chapter" data-level="8.2.3" data-path="supplement.html"><a href="supplement.html#summary-of-within-neighborhood-robustness-analyses"><i class="fa fa-check"></i><b>8.2.3</b> Summary of within-neighborhood robustness analyses<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="8.3" data-path="supplement.html"><a href="supplement.html#between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3</b> Between Neighborhood Robustness Analysis</a>
+<li class="chapter" data-level="8.3" data-path="supplement.html"><a href="supplement.html#between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3</b> Between Neighborhood Robustness Analysis<span></span></a>
 <ul>
-<li class="chapter" data-level="8.3.1" data-path="supplement.html"><a href="supplement.html#satisfaction-in-dc-area-by-neighborhood-entropy"><i class="fa fa-check"></i><b>8.3.1</b> Satisfaction in DC area by neighborhood entropy</a></li>
-<li class="chapter" data-level="8.3.2" data-path="supplement.html"><a href="supplement.html#differences-in-white-population-change-between-multiracial-and-other-neighborhoods"><i class="fa fa-check"></i><b>8.3.2</b> Differences in white population change between multiracial and other neighborhoods</a></li>
-<li class="chapter" data-level="8.3.3" data-path="supplement.html"><a href="supplement.html#summary-of-between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3.3</b> Summary of between-neighborhood robustness analysis</a></li>
+<li class="chapter" data-level="8.3.1" data-path="supplement.html"><a href="supplement.html#satisfaction-in-dc-area-by-neighborhood-entropy"><i class="fa fa-check"></i><b>8.3.1</b> Satisfaction in DC area by neighborhood entropy<span></span></a></li>
+<li class="chapter" data-level="8.3.2" data-path="supplement.html"><a href="supplement.html#differences-in-white-population-change-between-multiracial-and-other-neighborhoods"><i class="fa fa-check"></i><b>8.3.2</b> Differences in white population change between multiracial and other neighborhoods<span></span></a></li>
+<li class="chapter" data-level="8.3.3" data-path="supplement.html"><a href="supplement.html#summary-of-between-neighborhood-robustness-analysis"><i class="fa fa-check"></i><b>8.3.3</b> Summary of between-neighborhood robustness analysis<span></span></a></li>
 </ul></li>
-<li class="chapter" data-level="8.4" data-path="supplement.html"><a href="supplement.html#neighborhood-change-robustness-analysis"><i class="fa fa-check"></i><b>8.4</b> Neighborhood Change Robustness Analysis</a>
+<li class="chapter" data-level="8.4" data-path="supplement.html"><a href="supplement.html#neighborhood-change-robustness-analysis"><i class="fa fa-check"></i><b>8.4</b> Neighborhood Change Robustness Analysis<span></span></a>
 <ul>
-<li class="chapter" data-level="8.4.1" data-path="supplement.html"><a href="supplement.html#multinomial-logistic-regression-of-neighborhood-change-questions"><i class="fa fa-check"></i><b>8.4.1</b> Multinomial Logistic Regression of Neighborhood Change Questions</a></li>
+<li class="chapter" data-level="8.4.1" data-path="supplement.html"><a href="supplement.html#multinomial-logistic-regression-of-neighborhood-change-questions"><i class="fa fa-check"></i><b>8.4.1</b> Multinomial Logistic Regression of Neighborhood Change Questions<span></span></a></li>
 </ul></li>
 </ul></li>
 </ul>
@@ -223,12 +225,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="satisfaction-within-multiracial-neighborhoods" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Satisfaction <em>Within</em> Multiracial Neighborhoods</h1>
-<div id="distribution-of-respondents-across-neighborhoods" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> Distribution of respondents across neighborhoods</h2>
-<div id="median-satisfaction-level-in-tracts" class="section level3" number="5.1.1">
-<h3><span class="header-section-number">5.1.1</span> Median satisfaction level in tracts</h3>
+<div id="satisfaction-within-multiracial-neighborhoods" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">5</span> Satisfaction <em>Within</em> Multiracial Neighborhoods<a href="satisfaction-within-multiracial-neighborhoods.html#satisfaction-within-multiracial-neighborhoods" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="distribution-of-respondents-across-neighborhoods" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Distribution of respondents across neighborhoods<a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-across-neighborhoods" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="median-satisfaction-level-in-tracts" class="section level3 hasAnchor" number="5.1.1">
+<h3><span class="header-section-number">5.1.1</span> Median satisfaction level in tracts<a href="satisfaction-within-multiracial-neighborhoods.html#median-satisfaction-level-in-tracts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>To prevent large values on intercepts, I changed the reference value of the <code>sample_tract</code> variable to the tract with the median level of satisfaction among neighborhoods. When calculating the median, include only those tracts with at least two respondents.</p>
 <div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb111-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb111-1" aria-hidden="true" tabindex="-1"></a>mutrtall <span class="ot">&lt;-</span> dcas16 <span class="sc">%&gt;%</span></span>
 <span id="cb111-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb111-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(neighborhood<span class="sc">==</span><span class="st">&quot;Global Neighborhood&quot;</span>) <span class="sc">%&gt;%</span></span>
@@ -258,13 +260,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb111-26"><a href="satisfaction-within-multiracial-neighborhoods.html#cb111-26" aria-hidden="true" tabindex="-1"></a>    dcas16svy, <span class="at">sample_tract =</span> <span class="fu">relevel</span>(<span class="fu">factor</span>(sample_tract), <span class="at">ref=</span>medtrt))</span></code></pre></div>
 <p>The reference level for <code>sample_tract</code> was set to tract <code>24031700817</code>, in which 75% of residents reported being satisfied.</p>
 </div>
-<div id="count-of-respondents-across-neighborhoods" class="section level3" number="5.1.2">
-<h3><span class="header-section-number">5.1.2</span> Count of respondents across neighborhoods</h3>
+<div id="count-of-respondents-across-neighborhoods" class="section level3 hasAnchor" number="5.1.2">
+<h3><span class="header-section-number">5.1.2</span> Count of respondents across neighborhoods<a href="satisfaction-within-multiracial-neighborhoods.html#count-of-respondents-across-neighborhoods" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Plot the distribution of respondents per tract. There are 9 tracts in the sample with a single respondent. There are 6.5 respondents per tract on average (median=5) with a maximum of 20 respondents per tract. The sample size for the multiracial neighborhood resident sample used for analysis is 632.</p>
 <p><img src="_shared-satisfaction-analysis_files/figure-html/wn-n-per-nhood-1.png" width="672" /></p>
 </div>
-<div id="distribution-of-respondents-by-race" class="section level3" number="5.1.3">
-<h3><span class="header-section-number">5.1.3</span> Distribution of respondents by race</h3>
+<div id="distribution-of-respondents-by-race" class="section level3 hasAnchor" number="5.1.3">
+<h3><span class="header-section-number">5.1.3</span> Distribution of respondents by race<a href="satisfaction-within-multiracial-neighborhoods.html#distribution-of-respondents-by-race" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>The analyses below consider the distribution of <em>respondents</em> by race across neighborhoods. Since the data include respondents, I do not need imputed values. I pull the data from the first imputed dataset. From that dataset, I calculate the percentage and sum of respondents for each race across neighborhoods.</p>
 <div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Summarize respondents across neighborhoods</span></span>
 <span id="cb112-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb112-2" aria-hidden="true" tabindex="-1"></a>wndta <span class="ot">&lt;-</span> dcas16svy<span class="sc">$</span>designs[[<span class="dv">1</span>]]<span class="sc">$</span>variables</span>
@@ -357,8 +359,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </div>
 </div>
-<div id="descriptive-analysis-of-neighborhood-satisfaction" class="section level2" number="5.2">
-<h2><span class="header-section-number">5.2</span> Descriptive analysis of neighborhood satisfaction</h2>
+<div id="descriptive-analysis-of-neighborhood-satisfaction" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> Descriptive analysis of neighborhood satisfaction<a href="satisfaction-within-multiracial-neighborhoods.html#descriptive-analysis-of-neighborhood-satisfaction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Calculate the unconditional percentage of respondents who are satisfied in their neighborhood by race.</p>
 <div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb115-1" aria-hidden="true" tabindex="-1"></a>racedfs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
 <span id="cb115-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb115-2" aria-hidden="true" tabindex="-1"></a>    dcas16svy,</span>
@@ -420,8 +422,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 
 </div>
-<div id="regression-anaysis-of-neighborhood-satisfaction" class="section level2" number="5.3">
-<h2><span class="header-section-number">5.3</span> Regression anaysis of neighborhood satisfaction</h2>
+<div id="regression-anaysis-of-neighborhood-satisfaction" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Regression anaysis of neighborhood satisfaction<a href="satisfaction-within-multiracial-neighborhoods.html#regression-anaysis-of-neighborhood-satisfaction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Follow a similar process of model development as in the separate multiracial neighborhood and complete DC-area datasets. Add a fourth model that removes race from the model to examine whether removing the race variables improves the model fit. Include a neighborhood fixed effect in all models so that the coefficients represent the difference for residents <em>living in the same neighborhood</em>.</p>
 <ol style="list-style-type: decimal">
 <li>Race and neighborhood fixed effects</li>
@@ -565,8 +567,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </table>
 
 </div>
-<div id="marginal-effect-of-race-on-neighborhood-satisfaction" class="section level2" number="5.4">
-<h2><span class="header-section-number">5.4</span> Marginal Effect of Race on Neighborhood Satisfaction</h2>
+<div id="marginal-effect-of-race-on-neighborhood-satisfaction" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Marginal Effect of Race on Neighborhood Satisfaction<a href="satisfaction-within-multiracial-neighborhoods.html#marginal-effect-of-race-on-neighborhood-satisfaction" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Calculate the marginal effect of race on neighborhood satisfaction using white residents as the reference group. The function <code>MImargins()</code> is defined in the file <code>marginal_effects.R</code>. The function combines the standard errors of marginal effects from the multiply imputed datasets using Rubin’s rules (following this <a href="https://stats.idre.ucla.edu/wp-content/uploads/2016/02/multipleimputation.pdf">algorithm</a>).</p>
 <div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate partial effects of race</span></span>
 <span id="cb120-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb120-2" aria-hidden="true" tabindex="-1"></a>m1wn_mfx <span class="ot">&lt;-</span> <span class="fu">MImargins</span>(m1wn, <span class="at">param=</span><span class="st">&quot;margins&quot;</span>)</span>
@@ -689,15 +691,15 @@ latino
 <span id="cb121-33"><a href="satisfaction-within-multiracial-neighborhoods.html#cb121-33" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;Marginal effects of race on being satisfied in multiracial&quot;</span>,</span>
 <span id="cb121-34"><a href="satisfaction-within-multiracial-neighborhoods.html#cb121-34" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;neighborhoods compared to white residents of multiracial neighborhoods&quot;</span></span>
 <span id="cb121-35"><a href="satisfaction-within-multiracial-neighborhoods.html#cb121-35" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
-<div class="figure"><span id="fig:wn-mfx-plt"></span>
+<div class="figure"><span style="display:block;" id="fig:wn-mfx-plt"></span>
 <img src="_shared-satisfaction-analysis_files/figure-html/wn-mfx-plt-1.png" alt="Marginal effects of race on being satisfied in multiracial neighborhoods compared to white residents of multiracial neighborhoods" width="672" />
 <p class="caption">
 Figure 5.1: Marginal effects of race on being satisfied in multiracial neighborhoods compared to white residents of multiracial neighborhoods
 </p>
 </div>
 </div>
-<div id="partial-predicted-probabilities" class="section level2" number="5.5">
-<h2><span class="header-section-number">5.5</span> Partial Predicted Probabilities</h2>
+<div id="partial-predicted-probabilities" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Partial Predicted Probabilities<a href="satisfaction-within-multiracial-neighborhoods.html#partial-predicted-probabilities" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb122-1" aria-hidden="true" tabindex="-1"></a>m3wn_prd <span class="ot">&lt;-</span> <span class="fu">MImargins</span>(m3wn, <span class="at">param=</span><span class="st">&quot;predicted&quot;</span>)</span>
 <span id="cb122-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(m3wn_prd)</span></code></pre></div>
 <table>
@@ -762,8 +764,8 @@ latino
 </tbody>
 </table>
 </div>
-<div id="wald-statistics-of-model-fit" class="section level2" number="5.6">
-<h2><span class="header-section-number">5.6</span> Wald Statistics of Model Fit</h2>
+<div id="wald-statistics-of-model-fit" class="section level2 hasAnchor" number="5.6">
+<h2><span class="header-section-number">5.6</span> Wald Statistics of Model Fit<a href="satisfaction-within-multiracial-neighborhoods.html#wald-statistics-of-model-fit" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>Report the value of Wald tests measuring the change in model fit for the full model (Model 3) compared to a model without race covariates (Model 4).</p>
 <div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb123-1"><a href="satisfaction-within-multiracial-neighborhoods.html#cb123-1" aria-hidden="true" tabindex="-1"></a>racewn_wald <span class="ot">&lt;-</span> <span class="fu">lapply</span>(m3wn, regTermTest, <span class="at">test.terms=</span><span class="sc">~</span>raceeth, <span class="at">df=</span><span class="cn">NULL</span>)</span>
 <span id="cb123-2"><a href="satisfaction-within-multiracial-neighborhoods.html#cb123-2" aria-hidden="true" tabindex="-1"></a>racewn_wald_tbl <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
@@ -887,7 +889,6 @@ p
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -906,6 +907,7 @@ gitbook.start({
 "weibo": false,
 "instapaper": false,
 "vk": false,
+"whatsapp": false,
 "all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
 },
 "fontsettings": {
@@ -926,6 +928,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "subsubsection",
 "scroll_highlight": true
