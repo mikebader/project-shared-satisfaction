@@ -28,24 +28,6 @@ Note that lines 503-506 of the file `analysis/data-construction.Rmd` are comment
 
 ## Manuscript Typesetting
 
-The manuscript is written in Markdown and designed to be typeset with [my custom LaTeX class](https://github.com/mikebader/latex-baderart) using [pandoc](https://pandoc.org/). To typeset in LaTeX without the custom class, include the following immediately after `csl: bib/american-sociological-association.csl` in the file `drafts/multiethnic-noods.md`.
-
-    header-includes: |
-        \usepackage{rotating}
-        \usepackage{adjustbox}
-        \usepackage{ragged2e}
-        \usepackage{caption}
-        \usepackage{hhline}
-        \usepackage{colortbl}
-        \usepackage{threeparttable}
-        \usepackage{tabularx}
-        `\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
-            \newcolumntype{R}[1]{>{\raggedleft\hspace{0pt}\arraybackslash}b{#1}}
-            \newcolumntype{L}[1]{>{\RaggedRight\hspace{0pt}\arraybackslash}p{`{=la
-            \newcommand{\abouthere}[
-                \begin{center}[Insert #1 \ref{#2} about here]\end{center}%
-            }
-
-To typeset with pandoc, you will first need to install the [`pandoc-xnos`](https://github.com/tomduck/pandoc-xnos#installation) filter suite (instructions at link). Then navigate to the `drafts` directory and use the following command:
+The manuscript is written in Markdown and designed to be typeset into a PDF using [pandoc](https://pandoc.org/). To typeset with pandoc, you will first need to install the [`pandoc-xnos`](https://github.com/tomduck/pandoc-xnos#installation) filter suite (instructions at link). Then navigate to the `drafts` directory of the repository and use the following command:
 
     pandoc multiethnic-nhoods.md -o multiethnic-nhoods.pdf --filter pandoc-xnos --citeproc

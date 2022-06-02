@@ -21,6 +21,21 @@ classoption: unpub
 natbib: true
 bibliography: bib/multiethnic-nhoods.json
 csl: bib/american-sociological-association.csl
+header-includes: |
+    \usepackage{rotating}
+    \usepackage{adjustbox}
+    \usepackage{ragged2e}
+    \usepackage{caption}
+    \usepackage{hhline}
+    \usepackage{colortbl}
+    \usepackage{threeparttable}
+    \usepackage{tabularx}
+    `\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+    \newcolumntype{R}[1]{>{\raggedleft\hspace{0pt}\arraybackslash}b{#1}}
+    \newcolumntype{L}[1]{>{\RaggedRight\hspace{0pt}\arraybackslash}p{#1}}`{=latex}
+    \newcommand{\abouthere}[2]{%
+      \begin{center}[Insert #1 \ref{#2} about here]\end{center}%
+    }
 ---
 
 Multiracial neighborhoods---those neighborhoods shared among Asian, Black, Latino, and white neighbors---have become more common in metropolitan areas since 1980. Made possible by immigration reform and fair housing legislation that passed in the 1960s, the number of multiracial neighborhoods has grown since the 1980s [@logan_global_2010; @bader_fragmented_2016; @holloway_racially_2012]. In addition to traditional ports of entry like New York City and Los Angeles, multiracial neighborhoods have become more common in "new immigrant" destinations and metropolitan areas with large shares of immigrants [@singer_twenty-first_2008; @zhang_global_2016]. 
