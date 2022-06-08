@@ -103,8 +103,7 @@ variations from the reported results.
 
 The manuscript is written in Markdown and designed to be typeset into a PDF
 using [pandoc](https://pandoc.org/). To typeset with pandoc, you will first
-need to install the [`pandoc-xnos`]
-(https://github.com/tomduck/pandoc-xnos#installation) filter suite
+need to install the [`pandoc-xnos`](https://github.com/tomduck/pandoc-xnos#installation) filter suite
 (instructions at link). Then navigate to the `drafts` directory of the
 repository and use the following command:
 
