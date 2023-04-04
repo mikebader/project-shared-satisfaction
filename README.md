@@ -2,7 +2,10 @@
 
 ## Description
 
-The repository contains data and files necessary to replicate the analyses in "Shared Satisfaction among Residents Living in Multiracial Neighborhoods" (Bader, forthcoming). 
+The repository contains data and files necessary to replicate the analyses in 
+
+Bader, Michael D. M. 2022. “Shared Satisfaction among Residents Living in Multiracial Neighborhoods.” Social Problems. doi: [10.1093/socpro/spac038](https://doi.org/10.1093/socpro/spac038).
+
 
 ## Documentation
 
